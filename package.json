@@ -1,7 +1,8 @@
 {
   "name": "CrowdTranscript",
-  "description": "Welcome",
+  "description": "A Crowd sourcing tool for transcripts",
   "version": "0.0.0",
+  "license": "MIT",
   "homepage": "",
   "main": "src",
   "keywords": [
@@ -10,6 +11,10 @@
   "author": {
     "name": "Drew Alexander",
     "email": "22423862@student.uwa.edu.au"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DrewAlexander98/CrowdTranscript-Backend.git"
   },
   "contributors": [],
   "bugs": {},
@@ -37,7 +42,10 @@
     "@feathersjs/socketio": "^3.2.9",
     "compression": "^1.7.3",
     "cors": "^2.8.5",
+    "feathers-mongodb": "^4.0.4",
     "helmet": "^3.15.0",
+    "mongodb": "^3.1.13",
+    "mongodb-core": "^3.1.11",
     "serve-favicon": "^2.5.0",
     "winston": "^3.1.0"
   },
