@@ -9,6 +9,16 @@ var adminRouter = require('./routes/admin');
 
 var app = express();
 
+var { db } = require('./config/config.js')
+
+db.any('SELECT * FROM users')
+  .then(function (data) {
+    console.log('DATA:', data)
+  })
+  .catch(function (error) {
+    console.log('ERROR:', error)
+  })
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
