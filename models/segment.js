@@ -10,9 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
   Segment.associate = (models) => {
+    Segment.belongsTo(models.Episode, {
+      foreignKey: 'episodeId',
+      as: 'episodeSegments'
+    });
     Segment.hasMany(models.Submission, {
       foreignKey: 'segmentId',
-      as: 'segmentSubmissions',
+      as: 'segmentSubmissions'
     });
   };
   return Segment;

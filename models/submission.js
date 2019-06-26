@@ -2,7 +2,10 @@ module.exports = (sequelize, DataTypes) => {
   const Submission = sequelize.define('Submission', {
     text: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: true
+    },
+    pass: {
+      type: DataTypes.INTEGER
     }
   });
   Submission.associate = (models) => {

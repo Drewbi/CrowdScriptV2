@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     number: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true
     },
     name: {
       type: DataTypes.STRING,
@@ -11,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
   });
   Episode.associate = (models) => {
     Episode.hasMany(models.Segment, {
-      foreignKey: 'episodeID',
-      as: 'segments',
+      foreignKey: 'episodeId',
+      as: 'episodeSegments',
     });
   };
   return Episode;
