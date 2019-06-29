@@ -4,10 +4,13 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const helmet = require('helmet')
+const session = require('express-session');
+const secret = require('./config').secret;
+const dotenv = require('dotenv').config();
 
 const indexRouter = require('./routes/index');
 const adminRouter = require('./routes/admin');
-const apiRouter = require('./routes/api');
+const transcriptRouter = require('./routes/transcript')
 
 const app = express();
 
@@ -18,13 +21,27 @@ app.set('view engine', 'pug');
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
+app.use(session({ secret: secret, resave: false, saveUninitialized: false, cookie: { maxAge:  5000 } }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+// Access the session as req.session
+// app.get('/', function(req, res, next) {
+//   console.log(req.session);
+//   if (req.session.valid) {
+//     res.setHeader('Content-Type', 'text/html')
+//     res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
+//     res.end()
+//   } else {
+//     req.session.valid = true
+//     res.end('Session has expired.')
+//   }
+// })
+
 app.use('/admin', adminRouter);
-require('./routes/api')(app);
+app.use('/transcript', transcriptRouter);
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
