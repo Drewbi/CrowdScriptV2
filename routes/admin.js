@@ -1,9 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const userController = require('../controllers/users');
+const submissionController = require('../controllers/submissions');
+
+const router = require('express').Router();
 
 /* GET admin portal. */
-router.get('/admin', function(req, res, next) {
-  res.send('Admin page');
+router.get('/', function(req, res, next) {
+  res.render('admin', {
+    title: 'Admin', 
+    Users:   userController.list(),
+    Submissions: submissionController.list });
 });
 
 module.exports = router;
