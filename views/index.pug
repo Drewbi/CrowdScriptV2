@@ -1,5 +1,16 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .main-container
+    h1= title
+    p Welcome to #{title}
+    .row
+      form(method='POST' action='/register')
+          .form-group
+              lable(for='name') Name:
+              input#name.form-control(type='text' name='name')
+          .form-group
+              lable(for='credit') Would you like to be credited?
+              input#credit.form-control(type='checkbox' name='credit' value='credit' checked)
+          .form-group
+              input#submit.form-control(type='submit', value='Continue')

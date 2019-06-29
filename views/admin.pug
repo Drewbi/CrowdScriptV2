@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  .main-container
+    h1= title
+    ul
+      li= Users
+    ul
+    each submission in Submissions.length ? Submissions : ['No submissions have been created']
+      li= submission
