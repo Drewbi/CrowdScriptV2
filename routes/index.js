@@ -1,8 +1,9 @@
-const router = require('express').Router();
+const user = require('./user');
+const submission = require('./submission');
+const episode = require('./episode');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'CrowdScript' });
-});
-
-module.exports = router;
+module.exports = {
+  user,
+  submission,
+  episode,
+};

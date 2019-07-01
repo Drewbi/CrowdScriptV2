@@ -8,9 +8,7 @@ const session = require('express-session');
 const secret = require('./config').secret;
 const dotenv = require('dotenv').config();
 
-const indexRouter = require('./routes/index');
-const adminRouter = require('./routes/admin');
-const transcriptRouter = require('./routes/transcript')
+const routes =require('./routes');
 
 const app = express();
 
@@ -26,22 +24,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Access the session as req.session
-// app.get('/', function(req, res, next) {
-//   console.log(req.session);
-//   if (req.session.valid) {
-//     res.setHeader('Content-Type', 'text/html')
-//     res.write('<p>expires in: ' + (req.session.cookie.maxAge / 1000) + 's</p>')
-//     res.end()
-//   } else {
-//     req.session.valid = true
-//     res.end('Session has expired.')
-//   }
-// })
+app.use('/user', routes.user);
+app.use('/submission', routes.submission);
+app.use('/episode', routes.episode);
 
-app.use('/admin', adminRouter);
-app.use('/transcript', transcriptRouter);
-app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

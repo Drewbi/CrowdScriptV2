@@ -3,9 +3,7 @@ const Submission = require('../models').Submission;
 module.exports = {
   list(req, res) {
     return Submission
-    .findAll({
-      attributes: ['text', 'userId']
-    })
+    .findAll()
     .then(submissions => res.status(201).send(submissions))
     .catch(error => res.status(400).send(error));
   },

@@ -1,19 +1,14 @@
 const User = require('../models').User;
-const db = require('../models');
-module.exports = {
-  list() {
-    return db.sequelize.query("SELECT * FROM \"Users\"").then(([results, metadata]) => {
-      // Results will be an empty array and metadata will contain the number of affected rows.
-      return results;
-    })
-    // User
-    // .findAll({
-    //   attributes: ['name', 'id']
-    // })
-    // .then(users => console.log(JSON.stringify(users)))
-    // .catch(error => console.log(error));
-  },
 
+module.exports = {
+  list(req, res) {
+    return User
+    .findAll({
+      attributes: ['name', 'id']
+    })
+    .then(users => res.status(201).send(users))
+    .catch(error => res.status(400).send(error));
+  },
   create(req, res) {
     return User
       .create({
