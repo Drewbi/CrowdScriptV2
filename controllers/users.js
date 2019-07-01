@@ -5,9 +5,9 @@ module.exports = {
     return User
     .findAll({
       attributes: ['name', 'id']
-    })
-    .then(users => res.status(201).send(users))
-    .catch(error => res.status(400).send(error));
+    });
+    // .then(users => res.status(201).send(users))
+    // .catch(error => res.status(400).send(error));
   },
   create(req, res) {
     return User
