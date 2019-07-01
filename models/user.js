@@ -14,11 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     credit: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    },
-    ip: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    }
   });
   User.associate = (models) => {
     User.hasMany(models.Submission, {
