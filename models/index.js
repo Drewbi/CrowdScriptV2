@@ -1,38 +1,19 @@
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const basename = path.basename(module.filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(`${__dirname}/../config/config.json`)[env];
-const db = {};
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable]);
-} else {
-  sequelize = new Sequelize(
-    config.database, config.username, config.password, config
-  );
-}
+//Import the mongoose module
+var mongoose = require('mongoose');
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => 
-    (file.indexOf('.') !== 0) && 
-    (file !== basename) && 
-    (file.slice(-3) === '.js'))
-  .forEach(file => {
-    const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+//Set up default mongoose connection
+var mongoURI = `${config.dialect}://${config.username}:${process.env.DB_PASS}@${config.host}:${config.port}/${config.database}`;
+mongoose.connect(mongoURI, { useNewUrlParser: true });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+//Get the default connection
+var db = mongoose.connection;
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+
 
 module.exports = db;

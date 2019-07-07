@@ -1,18 +1,16 @@
 {
   "development": {
     "username": "admin",
-    "password": null,
     "database": "crowdscript",
     "host": "localhost",
     "port": 5432,
-    "dialect": "postgres"
+    "dialect": "mongodb"
   },
   "test": {
     "username": "admin",
-    "password": null,
     "database": "crowdscript_test",
     "host": "localhost",
     "port": 5432,
-    "dialect": "postgres"
+    "dialect": "mongodb"
   }
 }
