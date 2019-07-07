@@ -14,16 +14,13 @@
     "ftp": "^0.3.10",
     "helmet": "^3.18.0",
     "http-errors": "~1.6.2",
+    "mongodb": "^3.2.7",
+    "mongoose": "^5.6.3",
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
-    "pg": "^7.11.0",
-    "pg-hstore": "^2.3.3",
-    "pg-promise": "^8.7.2",
-    "pug": "^2.0.4",
-    "sequelize": "^5.8.12"
+    "pug": "^2.0.4"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1",
-    "sequelize-cli": "^5.5.0"
+    "nodemon": "^1.19.1"
   }
 }
