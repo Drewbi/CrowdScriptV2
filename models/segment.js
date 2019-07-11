@@ -1,23 +1,27 @@
-module.exports = (sequelize, DataTypes) => {
-  const Segment = sequelize.define('Segment', {
-    length: {
-      type: DataTypes.STRING,
-      allowNull: false,
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema.Types;
+
+module.exports = () => {
+  const segmentSchema = mongoose.Schema ({
+    number: {
+      type: Number,
+      required: true,
+      index: true,
+      unique: true,
+      min: 0
     },
     passes: {
-      type: DataTypes.STRING,
-      defaultValue: 0,
-    }
+      type: Number,
+      default: 0
+    },
+    episode: {
+      type: ObjectId,
+      ref: 'Episode'
+    },
+    submission: [{
+      type: ObjectId,
+      ref: 'Submission'
+    }]
   });
-  Segment.associate = (models) => {
-    Segment.belongsTo(models.Episode, {
-      foreignKey: 'episodeId',
-      as: 'episodeSegments'
-    });
-    Segment.hasMany(models.Submission, {
-      foreignKey: 'segmentId',
-      as: 'segmentSubmissions'
-    });
-  };
-  return Segment;
+  return mongoose.model('Segment', segmentSchema);
 };

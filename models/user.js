@@ -1,26 +1,25 @@
-module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    id: {
-      type: DataTypes.UUID,
-      primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
-      allowNull: false,
-      autoIncrement: false,
-    },
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema.Types;
+
+module.exports = () => {
+  const userSchema = mongoose.Schema({
+    accessToken: String,
     name: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true
     },
     credit: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false
-    }
+      type: Boolean,
+      default: false
+    },
+    admin: {
+      type: Boolean,
+      default: false
+    },
+    submission: [{
+      type: ObjectId,
+      ref: 'Submission'
+    }]
   });
-  User.associate = (models) => {
-    User.hasMany(models.Submission, {
-      foreignKey: 'userId',
-      as: 'userSubmissions'
-    });
-  };
   return User;
 };

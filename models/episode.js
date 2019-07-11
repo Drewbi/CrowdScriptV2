@@ -1,20 +1,23 @@
-module.exports = (sequelize, DataTypes) => {
-  const Episode = sequelize.define('Episode', {
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Schema.Types;
+
+module.exports = () => {
+  const episodeSchema = mongoose.Schema({
     number: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true
+      type: Number,
+      required: true,
+      index: true,
+      unique: true,
+      min: 1
     },
     name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    }
+      type: String,
+      required: true
+    },
+    segment: [{
+      type: ObjectId,
+      ref: 'Segment'
+    }]
   });
-  Episode.associate = (models) => {
-    Episode.hasMany(models.Segment, {
-      foreignKey: 'episodeId',
-      as: 'episodeSegments',
-    });
-  };
-  return Episode;
+  return mongoose.model('Episode', episodeSchema);
 };
