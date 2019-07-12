@@ -6,10 +6,21 @@ router.get('/', (req, res) => {
         .then(data => {
             let userArray = data.map(user => user.dataValues);
             console.log(userArray);
-            res.render('index', {userData: userArray[0].name});
+            res.render('index', {title: '/user', message: 'User find', userData: userArray});
+        })
+        .catch(error => {
+            res.render('index', {title: '/user', message: error});
         })
 });
 
-router.post('/', userController.create);
+router.post('/', (req, res) => {
+    userController.create()
+        .then(data => {
+            console.log(data);
+            res.render('index', {title: '/user', message: 'User create', userData: data});
+        }).catch(error => {
+            res.render('index', {title: '/user', message: error});
+        })
+    });
 
 module.exports = router;
