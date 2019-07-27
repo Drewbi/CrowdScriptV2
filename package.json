@@ -11,6 +11,7 @@
     "dotenv": "^8.0.0",
     "express": "~4.16.0",
     "express-session": "^1.16.2",
+    "express-sslify": "^1.2.0",
     "ftp": "^0.3.10",
     "helmet": "^3.18.0",
     "http-errors": "~1.6.2",
