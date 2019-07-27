@@ -15,3 +15,6 @@ block content
           .form-group
               input#submit.form-control(type='submit', value='Continue')
     .row
+    h2= message
+    each user in userData
+      p= user.name
