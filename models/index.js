@@ -1,17 +1,27 @@
-const env = process.env.NODE_ENV || 'development';
-const config = require(`${__dirname}/../config/config.json`)[env];
+const mongoose = require('mongoose');
 
-//Import the mongoose module
-var mongoose = require('mongoose');
+if (process.env.NODE_ENV === 'production') {
+  mongoURI = process.env.MONGODB_URI;
+} else {
+  mongoURI = process.env.DEV_MONGODB_URI;
+}
 
-//Set up default mongoose connection
-var mongoURI = `${config.dialect}://${config.username}:${process.env.DB_PASS}@${config.host}:${config.port}/${config.database}`;
 mongoose.connect(mongoURI, { useNewUrlParser: true });
 
-//Get the default connection
-var db = mongoose.connection;
+mongoose.connection.on('connected', () => {
+  console.log(`Mongoose connected to ${mongoURI}`);
+});
 
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose.connection.on('error', (err) => {
+  console.log(`Mongoose connection error ${err}`);
+});
 
-module.exports = db;
+mongoose.connection.on('disconected', () => {
+  console.log('Mongoose disconnected');
+});
+
+require('./user');
+require('./episode');
+require('./segment');
+require('./session');
+require('./submission');
