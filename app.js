@@ -1,16 +1,26 @@
-const createError = require('http-errors');
 const express = require('express');
-const path = require('path');
+const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
 const helmet = require('helmet')
+const logger = require('morgan');
+const path = require('path');
+const enforce = require('express-sslify');
 const session = require('express-session');
-const secret = require('./config').secret;
-const dotenv = require('dotenv').config();
+const passport = require('passport');
 
-const routes =require('./routes');
+
+require('dotenv').config();
+require('./app_server/models');
+require('./app_server/config/passport');
+
+const index = require('./app_server/routes/index');
 
 const app = express();
+
+// HTTPS Enforcement 
+if (process.env.NODE_ENV === 'production') {
+  app.use(enforce.HTTPS());
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,15 +29,45 @@ app.set('view engine', 'pug');
 app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(session({ secret: secret, resave: false, saveUninitialized: false, cookie: { maxAge:  5000 } }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/user', routes.user);
-app.use('/submission', routes.submission);
-app.use('/episode', routes.episode);
+if (process.env.NODE_ENV === 'production') {
+  app.use(session({
+    secret: process.env.secret,
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      httpOnly: true,
+      maxAge: 1800000, // 30 mins
+    },
+  }));
+} else {
+  app.use(session({
+    secret: 'secret',
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      maxAge: 1800000, // 30 mins
+    },
+  }));
+}
 
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
