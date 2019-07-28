@@ -6,6 +6,7 @@ if (process.env.NODE_ENV === 'production') {
   mongoURI = process.env.DEV_MONGODB_URI;
 }
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 mongoose.connection.on('connected', () => {
