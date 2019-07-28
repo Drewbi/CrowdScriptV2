@@ -1,9 +1,10 @@
-const user = require('./user');
-const submission = require('./submission');
-const episode = require('./episode');
+const express = require('express');
 
-module.exports = {
-  user,
-  submission,
-  episode,
-};
+const router = express.Router();
+
+/* GET users listing. */
+router.get('/', (req, res) => {
+  res.send('respond with a resource');
+});
+
+module.exports = router;
