@@ -8,13 +8,16 @@ const enforce = require('express-sslify');
 const session = require('express-session');
 const passport = require('passport');
 
-
 require('dotenv').config();
 require('./models');
 require('./config/passport');
 
-const index = require('./routes/index');
-const users = require('./routes/users');
+const transcript = require('./routes/transcript');
+const login = require('./routes/login');
+const register = require('./routes/register');
+const about = require('./routes/about');
+const submission = require('./routes/submission');
+
 
 const app = express();
 
@@ -68,8 +71,12 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/', index);
-app.use('/users', users);
+app.use('/', transcript);
+app.use('/login', login)
+app.use('/register', register)
+app.use('/about', about)
+app.use('/submission', submission)
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
