@@ -3,9 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 /* GET users listing. */
-router.post('/', (req, res) => {
-  console.log(req.body);
-  res.redirect('/');
+router.get('/', (req, res) => {
+  res.render('admin', { title: 'Admin' });
 });
 
 module.exports = router;
