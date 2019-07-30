@@ -7,14 +7,13 @@ block content
     .row
       form(method='POST' action='/user')
           .form-group
-              lable(for='name') Name:
-              input#name.form-control(type='text' name='name')
+            lable(for='name') Name:
+            input#name.form-control(type='text' name='name')
           .form-group
-              lable(for='credit') Would you like to be credited?
-              input#credit.form-control(type='checkbox' name='credit' value='credit' checked)
+            lable(for='name') Email:
+            input#name.form-control(type='email' name='name')
           .form-group
-              input#submit.form-control(type='submit', value='Continue')
-    .row
-    h2= message
-    each user in userData
-      p= user.name
+            lable(for='credit') Would you like to be credited?
+            input#credit.form-control(type='checkbox' name='credit' value='credit' checked)
+          .form-group
+            input#submit.form-control(type='submit', value='Continue')
