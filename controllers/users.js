@@ -13,6 +13,9 @@ module.exports.addUser = (req, res) => {
   user.save((err) => {
     if (err) {
       res.status(500).json({ message: err });
+    } else {
+      res.redirect('/');
     }
+
   });
 };
