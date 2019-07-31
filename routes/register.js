@@ -7,4 +7,8 @@ router.get('/', (req, res) => {
   res.send('Register');
 });
 
+router.post('/', (req, res) => {
+  addUser(req, res);
+})
+
 module.exports = router;
