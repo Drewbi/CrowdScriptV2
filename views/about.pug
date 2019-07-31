@@ -5,13 +5,16 @@ block content
     h1= title
     p Welcome to #{title}
     .row
-      form(method='POST' action='/user')
+      form(method='POST' action='/about')
           .form-group
             lable(for='name') Name:
             input#name.form-control(type='text' name='name')
           .form-group
-            lable(for='name') Email:
-            input#name.form-control(type='email' name='name')
+            lable(for='email') Email:
+            input#name.form-control(type='email' name='email')
+          .form-group
+            lable(for='password') password:
+            input#name.form-control(type='password' name='password')
           .form-group
             lable(for='credit') Would you like to be credited?
             input#credit.form-control(type='checkbox' name='credit' value='credit' checked)
