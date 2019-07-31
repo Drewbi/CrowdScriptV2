@@ -4,7 +4,11 @@ const router = express.Router();
 
 /* GET users listing. */
 router.get('/', (req, res) => {
-  res.render('login', { title: 'Login' });
+  res.send('Login');
 });
+
+router.post('/', (req, res) => {
+  addUser(req, res);
+})
 
 module.exports = router;
