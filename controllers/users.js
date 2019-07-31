@@ -30,16 +30,12 @@ module.exports.validateUser = (req, res) => {
 
     if (!user) {
       console.log('no user');
-      res.status(402).json({ message: err });
+      res.status(401).json({ message: err });
       return;
     }
     req.logIn(user, (err2) => {
       if (err2) { next(err); }
-      if (req.body.lengthOfStay) {
-        res.redirect(307, '/locations/'.concat(req.body.lengthOfStay)); // show vacancies
-      }
       res.redirect('/admin');
     });
   })(req, res, next);
 };
-}
