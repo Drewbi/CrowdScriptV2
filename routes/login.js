@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  addUser(req, res);
+  console.log(req.body);
+  // addUser(req, res);
 })
 
 module.exports = router;

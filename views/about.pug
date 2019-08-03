@@ -4,19 +4,41 @@ block content
   .main-container
     h1= title
     p Welcome to #{title}
-    .row
-      form(method='POST' action='/about')
-          .form-group
-            lable(for='name') Name:
-            input#name.form-control(type='text' name='name')
-          .form-group
-            lable(for='email') Email:
-            input#name.form-control(type='email' name='email')
-          .form-group
-            lable(for='password') password:
-            input#name.form-control(type='password' name='password')
-          .form-group
-            lable(for='credit') Would you like to be credited?
-            input#credit.form-control(type='checkbox' name='credit' value='credit' checked)
-          .form-group
-            input#submit.form-control(type='submit', value='Continue')
+    form.form#regForm(onsubmit='register()')
+      .formInput
+        lable(for='name') Name:
+        input#reg_name(type='text' name='name')
+      .formInput
+        lable(for='email') Email:
+        input#reg_email(type='email' name='email')
+      .formInput
+        lable(for='password') Password:
+        input#reg_password(type='password' name='password')
+      .formInput
+        lable(for='credit') Would you like to be credited?
+        input#credit(type='checkbox' name='credit' value='credit' checked)
+      .formInput
+        input(type='submit', value='Continue') 
+  script.
+    function register() {
+      data = {
+        name: document.getElementById('reg_name').value,
+        email: document.getElementById('reg_email').value,
+        password: document.getElementById('reg_password').value,
+        credit: document.getElementById('credit').checked
+      };
+      postData('/register', data)
+        .then(data => console.log(JSON.stringify(data))) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+    }
+
+    function postData(url = '', data = {}) {
+        //- Default options are marked with *
+        return fetch(url, {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        })
+    }

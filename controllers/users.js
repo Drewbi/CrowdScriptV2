@@ -11,12 +11,11 @@ module.exports.addUser = (req, res) => {
   user.email = req.body.email;
   user.credit = !!req.body.credit;
   user.setPassword(req.body.password);
-
+  console.log(user);
   user.save((err) => {
     if (err) {
+      console.log(err);
       res.status(500).json({ message: err });
-    } else {
-      res.redirect('/')
     }
   });
 };
