@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  .main-container
+    form.form#regForm(action='/register' method='post')
+      .formInput
+        lable(for='name') Name:
+        input#reg_name(type='text' name='name')
+      .formInput
+        lable(for='email') Email:
+        input#reg_email(type='email' name='email')
+      .formInput
+        lable(for='password') Password:
+        input#reg_password(type='password' name='password')
+      .formInput
+        lable(for='credit') Would you like to be credited?
+        input#credit(type='checkbox' name='credit' value='credit' checked)
+      .formInput
+        input(type='submit', value='Continue')
