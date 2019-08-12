@@ -1,15 +1,17 @@
 const express = require('express');
-
+const passport = require('passport');
+const { validateUser } = require('../controllers/users')
 const router = express.Router();
 
 /* GET users listing. */
 router.get('/', (req, res) => {
-  res.send('Login');
+  res.render('login', {
+    title: 'Login',
+  });
 });
 
 router.post('/', (req, res) => {
-  console.log(req.body);
-  // addUser(req, res);
-})
+  validateUser(req, res);
+});
 
 module.exports = router;
