@@ -2,12 +2,15 @@ const express = require('express');
 const { addUser } = require('../controllers/users')
 const router = express.Router();
 
-/* GET users listing. */
+/* GET register page. */
 router.get('/', (req, res) => {
-  res.send('Register');
+  res.render('register', {
+    title: 'Register',
+  });
 });
 
 router.post('/', (req, res) => {
+  console.log('"Registering" User');
   addUser(req, res);
   res.redirect('/');
 })
