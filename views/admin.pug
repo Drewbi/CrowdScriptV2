@@ -4,7 +4,19 @@ block content
   .main-container
     h1= title
     ul
-      li= Users
+    h2= 'Users'
+    if Users && Users.length > 0
+      each user in Users ? Users : []
+        li= user.name
+        li= user.email
+        br
+    else
+      li= 'No users have been created'
     ul
-    each submission in Submissions.length ? Submissions : ['No submissions have been created']
-      li= submission
+    h2= 'Submissions'
+    if Submissions && Submissions.length > 0
+      each submission in Submissions
+        li= submission
+        br
+    else
+      li= 'No submissions have been created'
