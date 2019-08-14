@@ -3,8 +3,8 @@ extends layout
 block content
   .main-container
     h1= episodeName
-    // submission form
-    form(method='POST' action='/submission')
-      div.form-group
-        textarea(cols="80", rows="15", maxlength=1000 style="resize: none;")= placeholderText
-      button.btn.btn-primary(type='submit') Sign up
+    form(method='post')
+      .formInput
+        textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= placeholderText
+      .formInput
+        input(type='submit', value='Continue')
