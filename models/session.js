@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
-const sessionSchema = mongoose.Schema ({
+const sessionSchema = mongoose.Schema({
   sessionKey: {
     type: String,
     required: true,
@@ -9,12 +9,12 @@ const sessionSchema = mongoose.Schema ({
   },
   currentSegment: {
     type: ObjectId,
-    ref: 'Segment'
+    ref: "Segment"
   },
   user: {
     type: ObjectId,
-    ref: 'User'
+    ref: "User"
   }
 });
 
-mongoose.model('Session', sessionSchema);
+mongoose.model("Session", sessionSchema);

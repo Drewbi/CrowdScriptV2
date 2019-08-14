@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
+const mongoose = require("mongoose");
+const passport = require("passport");
 
-const User = mongoose.model('User');
+const User = mongoose.model("User");
 
 module.exports.addUser = (req, res) => {
   const user = new User();
@@ -10,28 +10,36 @@ module.exports.addUser = (req, res) => {
   user.email = req.body.email;
   user.credit = !!req.body.credit;
   user.setPassword(req.body.password);
-  user.save((err) => {
+  user.save(err => {
     if (err) {
       console.error(`Error registering user: ${err}`);
-      res.redirect('/register')
+      res.redirect("/register");
     } else {
-      res.redirect('/')
+      res.redirect("/");
     }
   });
 };
 
 module.exports.validateUser = (req, res, next) => {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
+  passport.authenticate("local", function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.redirect("/login");
+    }
     req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      if (user.admin) { return res.redirect('/admin'); }
-      return res.redirect('/');
+      if (err) {
+        return next(err);
+      }
+      if (user.admin) {
+        return res.redirect("/admin");
+      }
+      return res.redirect("/");
     });
   })(req, res, next);
 };
 
 module.exports.getAllUsers = () => {
-  return User.find({});
-}
+  return User.find({}, "name email");
+};

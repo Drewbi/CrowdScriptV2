@@ -9,8 +9,14 @@ router.get("/", async (req, res) => {
     getAllUsers(),
     getSubmissions()
   ]);
+  console.log(users);
 
   res.render("admin", { title: "Admin", submissions, users });
+});
+
+router.post("/", (req, res) => {
+  console.log(req.body);
+  res.send(req.body);
 });
 
 module.exports = router;

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
-const segmentSchema = mongoose.Schema ({
+const segmentSchema = mongoose.Schema({
   number: {
     type: Number,
     required: true,
@@ -15,16 +15,18 @@ const segmentSchema = mongoose.Schema ({
   },
   episode: {
     type: ObjectId,
-    ref: 'Episode'
+    ref: "Episode"
   },
-  submission: [{
-    type: ObjectId,
-    ref: 'Submission'
-  }]
+  submission: [
+    {
+      type: ObjectId,
+      ref: "Submission"
+    }
+  ]
 });
 
-segmentSchema.pre('remove', function(next) {
-  this.model('Submission').deleteMany({ segment: this._id }, next);
+segmentSchema.pre("remove", function(next) {
+  this.model("Submission").deleteMany({ segment: this._id }, next);
 });
- 
-mongoose.model('Segment', segmentSchema);
+
+mongoose.model("Segment", segmentSchema);

@@ -22,6 +22,30 @@ block content
       li= 'No submissions have been created'
     br
     h2= 'Episode Upload'
-    input(type="file", name="episode-file")
-    br
-    input(type='submit', value='Continue')
+    form(action="/admin" method="post")
+      lable(for="episodeNum")= "Episode Number:"
+      input(type='text', placeholder="324", name="episodeNum")
+      br
+      input(type="file", name="episodeFile")
+      br
+      input(type='submit', value='Continue' onclick='upload()')
+  
+  //- script.
+  //-   const submit = document.querySelector("div.fileUpload input[type='submit']");
+  //-   const upload = () => {
+  //-     const numField = document.querySelector("div.fileUpload input[type='text']");
+  //-     const fileField = document.querySelector("div.fileUpload input[type='file']");
+  //-     if (!numField.value || !fileField.files[0]){
+  //-       console.log("Fields incomplete");
+  //-       return;
+  //-     }
+  //-     var data = new FormData()
+  //-     data.append('file', fileField.files[0])
+  //-     data.append('num', numField.value)
+  //-     console.log(fileField.files[0]);
+  //-     console.log(numField.value);
+  //-     fetch('/admin', {
+  //-       method: 'POST',
+  //-       body: data,
+  //-     }).then(res => res.json()).then(data => console.log(data));
+  //-   };
