@@ -1,19 +1,16 @@
-const express = require('express');
-const { getAllUsers } = require('../controllers/users')
-const { getSubmissions } = require('../controllers/submissions')
+const express = require("express");
+const { getAllUsers } = require("../controllers/users");
+const { getSubmissions } = require("../controllers/submissions");
 const router = express.Router();
 
 /* GET users listing. */
-router.get('/', (req, res) => {
-  getAllUsers().then((users) => {
-    const usersData = users.map(user => {
-      const {name, email } = user;
-      return { name, email }; 
-    });
-    getSubmissions().then((submissions) => {
-      res.render('admin', { title: 'Admin', Submissions: submissions, Users: usersData});
-    })
-  })
+router.get("/", async (req, res) => {
+  const [users, submissions] = await Promise.all([
+    getAllUsers(),
+    getSubmissions()
+  ]);
+
+  res.render("admin", { title: "Admin", submissions, users });
 });
 
 module.exports = router;
