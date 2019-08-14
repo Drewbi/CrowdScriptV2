@@ -16,7 +16,6 @@ const transcript = require('./routes/transcript');
 const login = require('./routes/login');
 const register = require('./routes/register');
 const about = require('./routes/about');
-const submission = require('./routes/submission');
 const admin = require('./routes/admin');
 
 
@@ -76,7 +75,6 @@ app.use('/', transcript);
 app.use('/login', login)
 app.use('/register', register)
 app.use('/about', about)
-app.use('/submission', submission)
 app.use('/admin', admin)
 
 // catch 404 and forward to error handler
