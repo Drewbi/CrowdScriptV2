@@ -12,8 +12,10 @@ module.exports.addUser = (req, res) => {
   user.setPassword(req.body.password);
   user.save((err) => {
     if (err) {
-      console.error('Error registering user');
-      res.redirect('/register');
+      console.error(`Error registering user: ${err}`);
+      res.redirect('/register')
+    } else {
+      res.redirect('/')
     }
   });
 };
