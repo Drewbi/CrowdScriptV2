@@ -2,7 +2,7 @@ extends layout
 
 block content
   .main-container
-    form.form#regForm(action='/register' method='post')
+    form(action='/register' method='post')
       .formInput
         lable(for='name') Name:
         input#reg_name(type='text' name='name')
