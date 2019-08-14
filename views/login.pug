@@ -10,24 +10,4 @@ block content
         lable(for='password') Password:
         input#log_password(type='password' name='password')
       .formInput
-        input(type='submit', value='Continue') 
-  script.
-    function login() {
-      data = {
-        email: document.getElementById('log_email').value,
-        password: document.getElementById('log_password').value,
-      };
-      postData('/login', data)
-        .then(data => console.log(JSON.stringify(data)))
-        .catch(error => console.error(error));
-    }
-
-    function postData(url = '', data = {}) {
-        return fetch(url, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-    }
+        input(type='submit', value='Continue')
