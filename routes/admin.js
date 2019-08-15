@@ -1,4 +1,6 @@
 const express = require("express");
+const multer = require("multer");
+const upload = multer();
 const { getAllUsers } = require("../controllers/users");
 const { getSubmissions } = require("../controllers/submissions");
 const router = express.Router();
@@ -14,7 +16,8 @@ router.get("/", async (req, res) => {
   res.render("admin", { title: "Admin", submissions, users });
 });
 
-router.post("/", (req, res) => {
+router.post("/", upload.single("episodeAudio"), (req, res) => {
+  console.log(req.file);
   console.log(req.body);
   res.send(req.body);
 });
