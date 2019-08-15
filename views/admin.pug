@@ -31,7 +31,7 @@ block content
       input(type='submit', value='Continue' onclick='upload()')
   
   script.
-    const upload = () => {
+    function upload() {
       const numField = document.querySelector("div.fileUpload input[type='text']");
       const fileField = document.querySelector("div.fileUpload input[type='file']");
       if (!numField.value || !fileField.files[0]){
@@ -39,13 +39,13 @@ block content
         return;
       }
       var data = new FormData()
-      data.append('file', fileField.files[0])
-      data.append('num', numField.value)
+      data.append('episodeAudio', fileField.files[0])
+      data.append('episodeNum', numField.value)
       console.log(fileField.files[0]);
       console.log(numField.value);
       fetch('/admin', {
         method: 'POST',
         body: data,
-        enctype="multipart/form-data"
+        enctype: "multipart/form-data"
       }).then(res => res.json()).then(data => console.log(data));
     };
