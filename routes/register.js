@@ -10,7 +10,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log('"Registering" User');
   addUser(req, res);
 });
 
