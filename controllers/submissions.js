@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const Submission = mongoose.model("Submission");
 
-module.exports.getSubmissions = (req, res) => {
+module.exports.getSubmissions = () => {
   return Submission.find({});
 };
 
-module.exports.createSubmissions = (req, res) => {
+module.exports.createSubmissions = req => {
   const submission = new Submission();
 
   submission.text = req.body.text;
