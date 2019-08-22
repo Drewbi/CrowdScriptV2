@@ -2,6 +2,7 @@ const express = require("express");
 const { getAllUsers } = require("../controllers/users");
 const { getSubmissions } = require("../controllers/submissions");
 const upload = require("../controllers/multer");
+const { ftpUpload, ftpList, ftpChdir } = require("../controllers/ftp");
 const fs = require("fs");
 const router = express.Router();
 
@@ -21,18 +22,18 @@ router.post("/", upload.single("episodeAudio"), (req, res, next) => {
     const error = new Error("Please upload a file");
     error.httpStatusCode = 400;
     return next(error);
-  } else {
-    fs.rename(
-      `public/uploads/${file.originalname}`,
-      `public/uploads/${file.fieldname + req.body.episodeNum}.mp3`,
-      err => {
-        if (err) {
-          console.log(err);
-        }
-      }
-    );
   }
-  // uploadFile(req.file);
+  const fileName = `public/uploads/${file.fieldname + req.body.episodeNum}.mp3`;
+  fs.rename(
+    `public/uploads/${file.originalname}`,
+    `public/uploads/${file.fieldname + req.body.episodeNum}.mp3`,
+    err => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
+  ftpUpload(fileName);
   res.redirect("/admin");
 });
 

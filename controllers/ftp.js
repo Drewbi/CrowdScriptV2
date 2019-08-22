@@ -1,14 +1,12 @@
 const FTP = require("ftp");
 
-module.exports.uploadFile = file => {
+module.exports.ftpUpload = fileName => {
   const ftp = new FTP();
-  ftp.on("ready", function() {
-    console.log(file);
-
-    //   ftp.put(res.file, "Test", function(err) {
-    //     if (err) throw err;
-    //     ftp.end();
-    //   });
+  ftp.on("ready", () => {
+    ftp.put(fileName, `segments/${fileName}`, err => {
+      if (err) throw err;
+      ftp.end();
+    });
   });
   ftp.connect({
     host: process.env.FTP_HOST,
