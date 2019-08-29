@@ -23,8 +23,13 @@ block content
     br
     h2= 'Episode Upload'
     form(action="/admin" enctype="multipart/form-data" method="POST")
-      label(for="episodeAudio") File Upload: 
-      input(type="file" name="episodeAudio")
       label(for="episodeNum") Episode Number: 
       input(type="text" name="episodeNum")
+      br
+      label(for="audioFile") Episode Audio: 
+      input(type="file" name="audioFile")
+      br
+      label(for="srtFile") Episode SRT: 
+      input(type="file" name="srtFile")
+      br
       input(type="submit" value="Continue")

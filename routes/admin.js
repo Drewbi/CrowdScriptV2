@@ -2,7 +2,7 @@ const express = require("express");
 const { getAllUsers } = require("../controllers/users");
 const { getSubmissions } = require("../controllers/submissions");
 const upload = require("../controllers/multer");
-const { ftpUpload, ftpList, ftpChdir } = require("../controllers/ftp");
+const { ftpUpload } = require("../controllers/ftp");
 const fs = require("fs");
 const router = express.Router();
 
@@ -15,26 +15,43 @@ router.get("/", async (req, res) => {
   res.render("admin", { title: "Admin", submissions, users });
 });
 
-router.post("/", upload.single("episodeAudio"), (req, res, next) => {
-  console.log(req.body.episodeNum);
-  const file = req.file;
-  if (!file) {
-    const error = new Error("Please upload a file");
-    error.httpStatusCode = 400;
-    return next(error);
-  }
-  const fileName = `public/uploads/${file.fieldname + req.body.episodeNum}.mp3`;
-  fs.rename(
-    `public/uploads/${file.originalname}`,
-    `public/uploads/${file.fieldname + req.body.episodeNum}.mp3`,
-    err => {
-      if (err) {
-        console.log(err);
-      }
+/* POST audio and transcript */
+router.post(
+  "/",
+  upload.fields([
+    { name: "audioFile", maxCount: 1 },
+    { name: "srtFile", maxCount: 1 }
+  ]),
+  (req, res, next) => {
+    const files = req.files;
+    if (!files) {
+      const error = new Error("Please upload a file");
+      error.httpStatusCode = 400;
+      return next(error);
     }
-  );
-  ftpUpload(fileName);
-  res.redirect("/admin");
-});
+    console.log(files);
+    const { audioFile } = files;
+    const { srtFile } = files;
+    [audioFile, srtFile].forEach(file => {
+      let extention = "";
+      if (file.mimetype === "audio/mp3") {
+        extention = ".mp3";
+      } else {
+        extention = ".srt";
+      }
+      const fileName = `public/episodes/${file.fieldname +
+        req.body.episodeNum +
+        extention}`;
+      fs.rename(file.path, fileName, err => {
+        if (err) {
+          console.log(err);
+        }
+      });
+      ftpUpload(fileName);
+    });
+
+    res.redirect("/admin");
+  }
+);
 
 module.exports = router;
