@@ -14,6 +14,7 @@ require("./config/passport");
 
 const transcript = require("./routes/transcript");
 const login = require("./routes/login");
+const logout = require("./routes/logout");
 const register = require("./routes/register");
 const about = require("./routes/about");
 const admin = require("./routes/admin");
@@ -76,13 +77,16 @@ app.use(passport.session());
 
 app.use("/", transcript);
 app.use("/login", login);
+app.use("/logout", logout);
 app.use("/register", register);
 app.use("/about", about);
 app.use("/admin", admin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.render("404", {
+    title: "404, Page not found"
+  });
 });
 
 // error handler
