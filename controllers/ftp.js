@@ -3,9 +3,10 @@ const FTP = require("ftp");
 module.exports.ftpUpload = fileName => {
   const ftp = new FTP();
   ftp.on("ready", () => {
-    ftp.put(fileName, `segments/${fileName}`, err => {
-      if (err) throw err;
+    ftp.put(`public/episodes/${fileName}`, `segments/${fileName}`, err => {
+      if (err) console.log(err);
       ftp.end();
+      console.log("FTP Transfer Successful");
     });
   });
   ftp.connect({
