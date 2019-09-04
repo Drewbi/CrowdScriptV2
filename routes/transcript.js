@@ -1,10 +1,10 @@
 const express = require("express");
-
 const router = express.Router();
 
 /* GET users listing. */
 router.get("/", (req, res) => {
-  res.render("transcript", {
+  if (!req.user) res.redirect("/about");
+  else res.render("transcript", {
     title: "Transcripter",
     episodeName: "Episode 230: Words about words",
     placeholderText:

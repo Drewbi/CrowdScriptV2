@@ -4,7 +4,8 @@ const router = express.Router();
 
 /* GET register page. */
 router.get("/", (req, res) => {
-  res.render("register", {
+  if (req.user) res.redirect("/");
+  else res.render("register", {
     title: "Register"
   });
 });
