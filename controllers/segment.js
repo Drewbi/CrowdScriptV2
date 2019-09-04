@@ -1,13 +1,8 @@
 const mongoose = require("mongoose");
 
 const Segment = mongoose.model("Segment");
-
-module.exports.spliceSergments = episodeFile => {
-  return Segment.find({});
-};
+const Episode = mongoose.model("Episode");
 
 module.exports.getSegment = (epNum, segNum) => {
-  return Segment.find({});
+  return Segment.find({  });
 };
-
-module.exports.serveSegment = () => {};
