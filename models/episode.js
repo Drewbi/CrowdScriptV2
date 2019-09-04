@@ -18,7 +18,11 @@ const episodeSchema = mongoose.Schema({
       type: ObjectId,
       ref: "Segment"
     }
-  ]
+  ],
+  completed: {
+    type: Boolean,
+    required: true
+  }
 });
 
 episodeSchema.pre("remove", function(next) {

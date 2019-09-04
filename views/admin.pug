@@ -13,6 +13,15 @@ block content
     else
       li= 'No users have been created'
     ul
+    h2= 'Episodes'
+    if episodes && episodes.length > 0
+      each episode in episodes ? episodes : []
+        li= episode.number
+        li= episode.name
+        br
+    else
+      li= 'No submissions have been created'
+    br
     h2= 'Submissions'
     if submissions && submissions.length > 0
       each submission in submissions
@@ -23,6 +32,9 @@ block content
     br
     h2= 'Episode Upload'
     form(action="/admin" enctype="multipart/form-data" method="POST")
+      label(for="episodeName") Episode Name: 
+      input(type="text" name="episodeName")
+      br
       label(for="episodeNum") Episode Number: 
       input(type="text" name="episodeNum")
       br
