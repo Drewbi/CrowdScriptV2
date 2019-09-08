@@ -2,9 +2,10 @@ extends layout
 
 block content
   .main-container
-    h1= episodeName
+  h1= episode.number || "No episodes found"
+    h1= episode.name || ""
     form(method='post')
       .formInput
-        textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= placeholderText
+        textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= segment.message
       .formInput
         input(type='submit', value='Continue')
