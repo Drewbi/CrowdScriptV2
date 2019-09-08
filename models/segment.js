@@ -9,6 +9,10 @@ const segmentSchema = mongoose.Schema({
     unique: true,
     min: 0
   },
+  text: {
+    type: String,
+    required: true
+  },
   passes: {
     type: Number,
     default: 0
