@@ -11,3 +11,5 @@ block content
         input#log_password(type='password' name='password')
       .formInput
         input(type='submit', value='Continue')
+    while error = flash.shift()
+      p(.error)= error.message 
