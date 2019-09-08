@@ -7,6 +7,7 @@ const path = require("path");
 const enforce = require("express-sslify");
 const session = require("express-session");
 const passport = require("passport");
+const flash = require("flash");
 
 require("dotenv").config();
 require("./models");
@@ -74,7 +75,7 @@ app.use((req, res, next) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(flash());
 app.use("/", transcript);
 app.use("/login", login);
 app.use("/logout", logout);
