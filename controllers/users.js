@@ -30,6 +30,7 @@ module.exports.validateUser = (req, res, next) => {
       return next(err);
     }
     if (!user) {
+      res.flash('error', 'Invalid credentials');
       return res.redirect("/login");
     }
     req.logIn(user, function(err) {
