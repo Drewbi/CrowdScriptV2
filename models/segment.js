@@ -5,9 +5,6 @@ const segmentSchema = mongoose.Schema({
   number: {
     type: Number,
     required: true,
-    index: true,
-    unique: true,
-    min: 0
   },
   text: {
     type: String,
