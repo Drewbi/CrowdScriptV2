@@ -2,8 +2,9 @@ const express = require("express");
 const { getAllUsers } = require("../controllers/users");
 const { getSubmissions } = require("../controllers/submissions");
 const { addEpisode, getEpisodes } = require("../controllers/episode");
+const { generateSegments } = require("../controllers/segment");
 const upload = require("../controllers/multer");
-const { ftpUpload } = require("../controllers/ftp");
+const { ftpUpload, uploadSegments } = require("../controllers/ftp");
 const parser = require('subtitles-parser');
 const fs = require("fs");
 const router = express.Router();
@@ -31,7 +32,7 @@ router.post(
     { name: "audioFile", maxCount: 1 },
     { name: "srtFile", maxCount: 1 }
   ]),
-  (req, res, next) => {
+  async (req, res, next) => {
     if (!req.user) res.redirect('/login');
     else {
       const files = req.files;
@@ -40,23 +41,25 @@ router.post(
         error.httpStatusCode = 400;
         return next(error);
       }
-      const episodePath = "public/episodes/";
       // SRT file processing
       const [srtFile] = files.srtFile;
       let data = fs.readFileSync(srtFile.path,'utf8');
       data = data.replace(/(\d{2}:\d{2}:\d{2},\d{2})(\s)/g, '$10$2');
       const srt = parser.fromSrt(data, true);
-      console.log(srt);
       // Audio file processing
       const [audioFile] = files.audioFile;
-      const audioFileName = `${audioFile.fieldname + req.body.episodeNum}.mp3`;
-      fs.rename(audioFile.path, episodePath + audioFileName, err => {
-        if (err) {
-          console.log(err);
-        }
+      addEpisode(req).then(episode => {
+        generateSegments(srt, episode, audioFile.path)
+        .then(segmentList => {
+          console.log("Updating episode with segments");
+          console.log(segmentList);
+          episode.segment = segmentList;
+          episode.save();
+          uploadSegments()
+        });
       });
-      // ftpUpload(audioFileName);
-      addEpisode(req, res);
+      
+      res.redirect('/admin')
     }
   }
 );
