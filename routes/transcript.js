@@ -8,7 +8,8 @@ router.get("/", async (req, res) => {
   if (!req.user) res.redirect("/about");
   else {
     const [episode] = await getLowestEpisode();
-    const segment = await getSegment(episode._id, 0);
+    let segment = null;
+    if(episode) segment = await getSegment(episode._id, 0);
     console.log(episode);
     res.render("transcript", {
       title: "Transcripter",
