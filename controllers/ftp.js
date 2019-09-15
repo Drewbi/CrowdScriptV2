@@ -1,51 +1,47 @@
-const FTP = require("ftp");
-const FtpDeploy = require("ftp-deploy");
+const PromiseFTP = require("promise-ftp");
 const fs = require("fs");
-const path = require('path');
+const path = require("path");
 
-module.exports.ftpUpload = (path, name) => {
-  const ftp = new FTP();
-  ftp.on("ready", () => {
-    ftp.put(path, `segments/${name}`, err => {
-      if (err) console.log(err);
-      ftp.end();
-    });
-  });  
-  ftp.connect({
-    host: process.env.FTP_HOST,
-    user: process.env.FTP_USER,
-    password: process.env.FTP_PASS
-  });
-};
-
-module.exports.uploadSegments = (episodeNum) => {
+module.exports.uploadSegments = (episodeNum, numSegments) => {
   return new Promise((resolve, reject) => {
     console.log("Uploading segments");
     const directory = `${process.env.PWD}/public/exports/${episodeNum}`;
-    const ftpDeploy = new FtpDeploy();
+    const ftpDirectory = `segments/${episodeNum}`;
+    const ftp = new PromiseFTP();
     const config = {
       user: process.env.FTP_USER,
       password: process.env.FTP_PASS,
-      host: process.env.FTP_HOST,
-      port: 21,
-      localRoot: directory,
-      remoteRoot: `/segments/${episodeNum}`,
-      include: ["*.mp3"]
+      host: process.env.FTP_HOST
     };
-    ftpDeploy.deploy(config, (err, res) => {
-      console.log("Segments uploaded");
-      if (err) reject(err);
-      else {
+    ftp.connect(config)
+      .then(() => {
+        return ftp.mkdir(ftpDirectory);
+      })
+      .then(() => {
+        let promises = [];
+        for (let i = 1; i <= numSegments; i++) {
+          const fileName = `${episodeNum}-${i}.mp3`;
+          const promise = ftp.put(
+            `${directory}/${fileName}`,
+            `${ftpDirectory}/${fileName}`
+          );
+          promises.push(promise);
+        }
+        return promises;
+      })
+      .then(() => {
+        return ftp.end();
+      })
+      .then(() => {
         fs.readdir(directory, (err, files) => {
           if (err) reject(err);
           for (const file of files) {
-            fs.unlink(path.join(directory, file), err => {
-              if (err) reject(err);
-            });
+            fs.unlinkSync(path.join(directory, file));
           }
+          fs.rmdirSync(directory);
         });
-        resolve(res)
-      };
-    });
+        console.log("Upload successful");
+        resolve();
+      });
   });
 };
