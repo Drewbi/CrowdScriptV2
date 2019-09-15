@@ -18,10 +18,10 @@ module.exports.ftpUpload = (path, name) => {
   });
 };
 
-module.exports.uploadSegments = () => {
+module.exports.uploadSegments = (episodeNum) => {
   return new Promise((resolve, reject) => {
     console.log("Uploading segments");
-    const directory = process.env.PWD + "/public/exports";
+    const directory = `${process.env.PWD}/public/exports/${episodeNum}`;
     const ftpDeploy = new FtpDeploy();
     const config = {
       user: process.env.FTP_USER,
@@ -29,7 +29,7 @@ module.exports.uploadSegments = () => {
       host: process.env.FTP_HOST,
       port: 21,
       localRoot: directory,
-      remoteRoot: "/segments",
+      remoteRoot: `/segments/${episodeNum}`,
       include: ["*.mp3"]
     };
     ftpDeploy.deploy(config, (err, res) => {

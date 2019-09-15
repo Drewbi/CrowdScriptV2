@@ -41,7 +41,7 @@ router.post(
         error.httpStatusCode = 400;
         return next(error);
       }
-      // SRT file processing
+      // SRT file processing˝
       const [srtFile] = files.srtFile;
       let data = fs.readFileSync(srtFile.path,'utf8');
       data = data.replace(/(\d{2}:\d{2}:\d{2},\d{2})(\s)/g, '$10$2');
@@ -52,10 +52,9 @@ router.post(
         generateSegments(srt, episode, audioFile.path)
         .then(segmentList => {
           console.log("Updating episode with segments");
-          console.log(segmentList);
           episode.segment = segmentList;
           episode.save();
-          uploadSegments()
+          uploadSegments(episode.number)
         });
       });
       
