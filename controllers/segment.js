@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const ffmpeg = require('fluent-ffmpeg');
+const fs = require('fs');
 
 const Segment = mongoose.model("Segment");
 
@@ -22,6 +23,10 @@ function addSegment(episode, number, text) {
 
 module.exports.generateSegments = (srt, episode, file) => {
   return new Promise(async (resolve, reject) => {
+    const directory = `${process.env.PWD}/public/exports/${episode.number}`;
+    fs.mkdir(directory, err => {
+      console.log(err);
+    })
     let segmentPromises = [];
     srt.forEach(srtSegment => {
       const promise = new Promise((resolve, reject) => {
@@ -33,7 +38,7 @@ module.exports.generateSegments = (srt, episode, file) => {
           console.log('Finished ' + srtSegment.id);
         })
         .setStartTime(startTime/1000).duration((endTime-startTime)/1000)
-        .save(`public/exports/${episode.number}-${srtSegment.id}.mp3`);
+        .save(`public/exports/${episode.number}/${episode.number}-${srtSegment.id}.mp3`);
         const segment = addSegment(episode, srtSegment.id, srtSegment.text);
         resolve(segment);
       });
