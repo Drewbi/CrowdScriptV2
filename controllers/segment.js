@@ -24,9 +24,7 @@ function addSegment(episode, number, text) {
 module.exports.generateSegments = (srt, episode, file) => {
   return new Promise(async (resolve, reject) => {
     const directory = `${process.env.PWD}/public/exports/${episode.number}`;
-    fs.mkdir(directory, err => {
-      console.log(err);
-    })
+    fs.mkdirSync(directory);
     let segmentPromises = [];
     srt.forEach(srtSegment => {
       const promise = new Promise((resolve, reject) => {
@@ -36,11 +34,11 @@ module.exports.generateSegments = (srt, episode, file) => {
         })
         .on('end', () => {
           console.log('Finished ' + srtSegment.id);
+          const segment = addSegment(episode, srtSegment.id, srtSegment.text);
+          resolve(segment);
         })
         .setStartTime(startTime/1000).duration((endTime-startTime)/1000)
         .save(`public/exports/${episode.number}/${episode.number}-${srtSegment.id}.mp3`);
-        const segment = addSegment(episode, srtSegment.id, srtSegment.text);
-        resolve(segment);
       });
       segmentPromises.push(promise);
     });
