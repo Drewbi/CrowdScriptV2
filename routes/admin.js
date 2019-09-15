@@ -4,7 +4,7 @@ const { getSubmissions } = require("../controllers/submissions");
 const { addEpisode, getEpisodes } = require("../controllers/episode");
 const { generateSegments } = require("../controllers/segment");
 const upload = require("../controllers/multer");
-const { ftpUpload, uploadSegments } = require("../controllers/ftp");
+const { uploadSegments } = require("../controllers/ftp");
 const parser = require('subtitles-parser');
 const fs = require("fs");
 const router = express.Router();
@@ -41,7 +41,7 @@ router.post(
         error.httpStatusCode = 400;
         return next(error);
       }
-      // SRT file processing˝
+      // SRT file processing
       const [srtFile] = files.srtFile;
       let data = fs.readFileSync(srtFile.path,'utf8');
       data = data.replace(/(\d{2}:\d{2}:\d{2},\d{2})(\s)/g, '$10$2');
@@ -54,7 +54,11 @@ router.post(
           console.log("Updating episode with segments");
           episode.segment = segmentList;
           episode.save();
-          uploadSegments(episode.number)
+          uploadSegments(episode.number, segmentList.length)
+          .then(() => {
+            fs.unlinkSync(audioFile.path);
+            fs.unlinkSync(srtFile.path);
+          });
         });
       });
       
