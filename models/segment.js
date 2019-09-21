@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema.Types;
 
 const segmentSchema = mongoose.Schema({
+  slug: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   number: {
     type: Number,
     required: true,
