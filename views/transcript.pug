@@ -6,6 +6,6 @@ block content
     h1= episode.name || ""
     form(method='post')
       .formInput
-        textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= segment.message
+        textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= segment.text
       .formInput
         input(type='submit', value='Continue')
