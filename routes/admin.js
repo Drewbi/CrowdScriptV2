@@ -36,10 +36,12 @@ router.post(
     if (!req.user) res.redirect('/login');
     else {
       const files = req.files;
-      if (Object.entries(files).length === 0) {
-        const error = new Error("Please upload a file");
-        error.httpStatusCode = 400;
-        return next(error);
+      if (Object.entries(files).length !== 2) {
+        req.flash("Please upload both files");
+        return res.redirect('/admin');
+      } else {
+        res.flash('Processing files');
+        res.redirect('/admin')
       }
       // SRT file processing
       const [srtFile] = files.srtFile;
@@ -48,21 +50,16 @@ router.post(
       const srt = parser.fromSrt(data, true);
       // Audio file processing
       const [audioFile] = files.audioFile;
-      addEpisode(req).then(episode => {
-        generateSegments(srt, episode, audioFile.path)
-        .then(segmentList => {
-          console.log("Updating episode with segments");
-          episode.segment = segmentList;
-          episode.save();
-          uploadSegments(episode.number, segmentList.length)
-          .then(() => {
-            fs.unlinkSync(audioFile.path);
-            fs.unlinkSync(srtFile.path);
-          });
-        });
-      });
+      const episode = await addEpisode(req);
+      const segmentList = await generateSegments(srt, episode, audioFile.path)
+      console.log("Updating episode with segments");
+      episode.segment = segmentList;
+      episode.save();
+      await uploadSegments(episode.number, segmentList.length);
+      console.log("Unlinking uploaded files");
+      fs.unlinkSync(audioFile.path);
+      fs.unlinkSync(srtFile.path);
       
-      res.redirect('/admin')
     }
   }
 );
