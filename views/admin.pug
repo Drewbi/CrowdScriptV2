@@ -45,3 +45,5 @@ block content
       input(type="file" name="srtFile")
       br
       input(type="submit" value="Continue")
+      while error = flash.shift()
+        p(.error)= error.message 
