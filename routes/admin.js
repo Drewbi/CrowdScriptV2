@@ -1,15 +1,15 @@
 const express = require("express");
 const { getAllUsers } = require("../controllers/users");
-const { getSubmissions } = require("../controllers/submissions");
+const { getSubmissions } = require("../controllers/submission");
 const { addEpisode, getEpisodes } = require("../controllers/episode");
 const { generateSegments } = require("../controllers/segment");
 const upload = require("../controllers/multer");
 const { uploadSegments } = require("../controllers/ftp");
-const parser = require('subtitles-parser');
+const { parseSRT } = require("../controllers/srt");
 const fs = require("fs");
 const router = express.Router();
 
-/* GET users listing. */
+/* Get admin page */
 router.get("/", async (req, res) => {
   if (!req.user) {
     res.redirect("/login");
@@ -36,27 +36,34 @@ router.post(
     if (!req.user) res.redirect('/login');
     else {
       const files = req.files;
+
+      // Double check for both files
       if (Object.entries(files).length !== 2) {
-        req.flash("Please upload both files");
+        res.flash("Please upload both files");
         return res.redirect('/admin');
       } else {
         res.flash('Processing files');
         res.redirect('/admin')
       }
+
       // SRT file processing
       const [srtFile] = files.srtFile;
-      let data = fs.readFileSync(srtFile.path,'utf8');
-      data = data.replace(/(\d{2}:\d{2}:\d{2},\d{2})(\s)/g, '$10$2');
-      const srt = parser.fromSrt(data, true);
+      const srt = parseSRT(srtFile);
+      
       // Audio file processing
       const [audioFile] = files.audioFile;
       const episode = await addEpisode(req);
       const segmentList = await generateSegments(srt, episode, audioFile.path)
       console.log("Updating episode with segments");
+      // Updating episode with segment ids
       episode.segment = segmentList;
       episode.save();
+
+      // Upload segments to ftp server
       await uploadSegments(episode.number, segmentList.length);
       console.log("Unlinking uploaded files");
+
+      // Remove uploaded files
       fs.unlinkSync(audioFile.path);
       fs.unlinkSync(srtFile.path);
       
