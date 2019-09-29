@@ -6,14 +6,16 @@ module.exports.getSubmissions = () => {
   return Submission.find({});
 };
 
-module.exports.createSubmissions = req => {
+module.exports.createSubmission = (req, segmentId, pass)  => {
   const submission = new Submission();
-
+  submission.pass = pass;
+  submission.segment = segmentId;
   submission.text = req.body.text;
   submission.user = req.user._id;
   submission.save(err => {
     if (err) {
-      console.error("Error creating submission");
+      console.error("Error creating submission " + err);
     }
   });
+  return submission;
 };
