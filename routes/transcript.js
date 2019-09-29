@@ -1,38 +1,54 @@
 const express = require("express");
-const { getLowestEpisode, getEpisodeById } = require("../controllers/episode");
-const { getSegment, getSegmentBySlug } = require("../controllers/segment");
+const { getLowestEpisodes, getEpisodeById } = require("../controllers/episode");
+const { getSegmentBySlug, getNextSegment, getSegmentById, updateSegment} = require("../controllers/segment");
+const { createSubmission } = require("../controllers/submission");
+const { createSession, getSessionByUser, discardSession, checkSegment } = require("../controllers/session");
 const router = express.Router();
 
 router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
-  if (!req.user) res.redirect("/login");
-  else {
-    const [segment] = await getSegmentBySlug(req.params.segmentId);
-    console.log(segment);
-    const [episode] = await getEpisodeById(segment.episode);
-    console.log(episode);
-    res.render("transcript", {
-      title: "Transcripter",
-      episode: episode,
-      segment: segment
-    });
-  }
+  if (!req.user) return res.redirect("/login");
+  const [segment] = await getSegmentBySlug(req.params.segmentId);
+  if(!segment) return res.redirect("/");
+  const [episode] = await getEpisodeById(segment.episode);
+  res.render("transcript", {
+    title: "Transcripter",
+    episode: episode,
+    segment: segment
+  });
 });
-/* GET users listing. */
+/* get transcript page. */
 router.get("/", async (req, res) => {
-  if (!req.user) res.redirect("/about");
-  else {
-    const [episode] = await getLowestEpisode();
-    console.log(episode);
-    console.log("Epsiode found");
-    const [segment] = await getSegment(episode._id, 0);
-    console.log(segment);
-    if(segment) return res.redirect("/" + segment.slug);
-    else res.render("404");
+  if (!req.user) return res.redirect("/about");
+  const [session] = await getSessionByUser(req.user._id);
+  if(session) {
+    const [segment] = await getSegmentById(session.segment);
+    const segmentFree = await checkSegment(segment);
+    if(!segmentFree) return res.redirect("/" + segment.slug);
   }
+  const episodes = await getLowestEpisodes();
+  const segmentPromises = [];
+  episodes.forEach((episode) => {
+    const promise = getNextSegment(episode, episode.passCompleted + 1);
+    segmentPromises.push(promise);
+  });
+  const segments = await Promise.all(segmentPromises);
+  const [validSegment] = segments.filter((segment) => !!segment)
+  if(validSegment){
+    createSession(req, validSegment);
+    return res.redirect("/" + validSegment.slug);
+  }
+  // No segments found that need completing
+  return res.render("completed");
 });
 
-router.post("/", (req, res) => {
-  // if (req.user) res.redirect("/");
+
+router.post("/:segmentId([A-F0-9]{10})", async (req, res) => {
+  if (!req.user) return res.redirect("/login");
+  const [segment] = await getSegmentBySlug(req.params.segmentId);
+  const submission = await createSubmission(req, segment._id, segment.passes + 1);
+  await updateSegment(segment._id, segment.passes + 1, submission)
+  await discardSession(req.user._id);
+  res.redirect('/');
 });
 
 module.exports = router;
