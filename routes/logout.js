@@ -1,14 +1,16 @@
 const express = require("express");
-const { logoutUser } = require("../controllers/users");
+const { discardSession } = require("../controllers/session");
+
 const router = express.Router();
 
 /* GET users listing. */
 router.get("/", (req, res) => {
   if (!req.user) {
-    res.redirect("/login");
-  } else {
-    logoutUser(req, res);
+    return res.redirect("/login");
   }
+  discardSession(req.user._id)
+  req.logout();
+  return res.redirect('/login');
 });
 
 module.exports = router;

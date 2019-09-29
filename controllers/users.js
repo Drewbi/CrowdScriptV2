@@ -45,11 +45,6 @@ module.exports.validateUser = (req, res, next) => {
   })(req, res, next);
 };
 
-module.exports.logoutUser = (req, res) => {
-  req.logout();
-  res.redirect('/login');
-};
-
 module.exports.getAllUsers = () => {
   return User.find({}, "name email");
 };
