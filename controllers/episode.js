@@ -10,8 +10,8 @@ module.exports.getEpisodeById = (episodeId) => {
   return Episode.find({ _id: episodeId });
 };
 
-module.exports.getLowestEpisode = () => {
-  return Episode.find().sort( { number: 1 } ).limit(1);
+module.exports.getLowestEpisodes = () => {
+  return Episode.find({ completed: false }).sort( { number: 1 } ).limit(2);
 };
 
 module.exports.addEpisode = (req) => {
