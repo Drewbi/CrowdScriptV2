@@ -1,0 +1,64 @@
+extends layout
+
+block header
+  .navigation.section.no-padding.bg-dark
+    .navigation-inner.section-inner
+      .toggle-container.hidden
+        button.nav-toggle.toggle(type='button')
+          .bar
+          .bar
+          .bar
+        button.search-toggle.toggle(type='button')
+          .metal
+          .glass
+          .handle
+        .clear
+      .blog-search.hidden(style='display: none;')
+        form#searchform.searchform(role='search' method='get' action='https://talkthetalkpodcast.com/')
+          div
+            label.screen-reader-text(for='s') Search for:
+            input#s(type='text' value='' name='s')
+            input#searchsubmit(type='submit' value='Search')
+      ul.blog-menu
+        li#menu-item-1495.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-home.menu-item-1495
+          a(href='http://talkthetalkpodcast.com') Home
+        li#menu-item-1530.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-1530
+          a(href='https://talkthetalkpodcast.com/about-us/') About Us
+        li#menu-item-4428.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-4428
+          a(href='https://talkthetalkpodcast.com/how-to-listen-to-talk-the-talk/') How to listen
+        li#menu-item-1516.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-has-children.has-children.menu-item-1516
+          a(href='https://talkthetalkpodcast.com/how-to-listen-to-talk-the-talk/') More
+          ul.sub-menu
+            li#menu-item-1652.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1652
+              a(href='https://www.patreon.com/talkthetalk?ty=h') Become a Patreon patron
+            li#menu-item-3165.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-3165
+              a(href='https://talkthetalkpodcast.com/patreon-extras/') Patreon extras
+            li#menu-item-1498.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1498
+              a(href='http://rtrfm.com.au/subscribe') Subscribe to RTRFM
+            li#menu-item-1511.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1511
+              a(href='http://facebook.com/talkthetalkpodcast/') Facebook
+            li#menu-item-1512.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1512
+              a(href='https://twitter.com/talkpod') Twitter
+            li#menu-item-1513.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1513
+              a(href='https://www.instagram.com/talkthetalkpodcast/') Instagram
+            li#menu-item-1497.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1497
+              a(href='http://becauselanguage.com') Because Language
+            li#menu-item-1540.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-1540
+              a(href='https://talkthetalkpodcast.com/promote-talk-the-talk/') Promote TtT
+            li#menu-item-3303.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-3303
+              a(href='https://talkthetalkpodcast.com/talk-the-talk-tunes-on-spotify/') TtT tunes on Spotify
+        li#menu-item-1905.menu-item.menu-item-type-post_type.menu-item-object-w4pl.menu-item-1905
+          a(href='https://talkthetalkpodcast.com/w4pl/all-episodes/') All episodes
+        li#menu-item-1516.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-has-children.has-children.menu-item-1516
+          a(href='localhost:3000' aria-current="page") Transcribe
+          ul.sub-menu
+            li#menu-item-1652.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1652
+              a(href='localhost:3000/about') About
+            li#menu-item-3165.menu-item.menu-item-type-post_type.menu-item-object-page.menu-item-3165
+              a(href='localhost:3000') Transcribe
+            li#menu-item-1498.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1498
+              a(href='localhost:3000/register') Register
+            li#menu-item-1511.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1511
+              a(href='localhost:3000/login') Login
+            li#menu-item-1511.menu-item.menu-item-type-custom.menu-item-object-custom.menu-item-1511
+              a(href='localhost:3000/logout') Logout
