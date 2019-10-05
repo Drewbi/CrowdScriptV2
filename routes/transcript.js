@@ -18,6 +18,7 @@ router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
 });
 /* get transcript page. */
 router.get("/", async (req, res) => {
+  console.log(req.headers)
   if (!req.user) return res.redirect("/about");
   const [session] = await getSessionByUser(req.user._id);
   if(session) {
@@ -47,7 +48,7 @@ router.post("/:segmentId([A-F0-9]{10})", async (req, res) => {
   const [segment] = await getSegmentBySlug(req.params.segmentId);
   const submission = await createSubmission(req, segment._id, segment.passes + 1);
   await updateSegment(segment._id, segment.passes + 1, submission)
-  await discardSession(req.user._id);
+  discardSession(req.user._id);
   res.redirect('/');
 });
 
