@@ -1,9 +1,12 @@
-extends header
+extends layout
 
 block content
   .main-container
-  h1= episode.number || "No episodes found"
+    h1= episode.number || "No episodes found"
     h1= episode.name || ""
+    audio(controls='')
+      source(src=audio type='audio/mpeg')
+      | Your browser does not support the audio element.
     form(method='post')
       .formInput
         textarea(name="text", cols="80", rows="15", maxlength=1000 style="resize: none;")= segment.text

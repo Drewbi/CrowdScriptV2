@@ -1,26 +1,31 @@
-extends header
+extends layout
 
 block content
   .main-container
     h1= title
     ul
     h2= 'Episode Upload'
-    form(action="/admin" enctype="multipart/form-data" method="POST")
-      label(for="episodeName") Episode Name: 
-      input(type="text" name="episodeName")
-      br
-      label(for="episodeNum") Episode Number: 
-      input(type="text" name="episodeNum")
-      br
-      label(for="audioFile") Episode Audio: 
-      input(type="file" name="audioFile")
-      br
-      label(for="srtFile") Episode SRT: 
-      input(type="file" name="srtFile")
-      br
-      input(type="submit" value="Continue")
-      while error = flash.shift()
-        p(.error)= error.message
+    form.form(action="/admin" enctype="multipart/form-data" method="POST")
+      .formInput
+        label(for="episodeName") Episode Name: 
+        input(type="text" name="episodeName")
+        br
+      .formInput
+        label(for="episodeNum") Episode Number: 
+        input(type="text" name="episodeNum")
+        br
+      .formInput
+        label(for="audioFile") Episode Audio: 
+        input(type="file" name="audioFile")
+        br
+      .formInput
+        label(for="srtFile") Episode SRT: 
+        input(type="file" name="srtFile")
+        br
+      .formInput
+        input(type="submit" value="Continue")
+        while error = flash.shift()
+          p(.error)= error.message
     br 
     h2= 'Users'
     if users && users.length > 0
