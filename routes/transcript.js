@@ -3,6 +3,7 @@ const { getLowestEpisodes, getEpisodeById } = require("../controllers/episode");
 const { getSegmentBySlug, getNextSegment, getSegmentById, updateSegment} = require("../controllers/segment");
 const { createSubmission } = require("../controllers/submission");
 const { createSession, getSessionByUser, discardSession, checkSegment } = require("../controllers/session");
+const { downloadSegment, removeDownloaded } = require("../controllers/ftp");
 const router = express.Router();
 
 router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
@@ -10,15 +11,17 @@ router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
   const [segment] = await getSegmentBySlug(req.params.segmentId);
   if(!segment) return res.redirect("/");
   const [episode] = await getEpisodeById(segment.episode);
+  const filePath = await downloadSegment(episode.number, segment.number);
+  downloadSegment(episode.number, segment.number + 1);
   res.render("transcript", {
     title: "Transcripter",
     episode: episode,
-    segment: segment
+    segment: segment,
+    audio: filePath
   });
 });
 /* get transcript page. */
 router.get("/", async (req, res) => {
-  console.log(req.headers)
   if (!req.user) return res.redirect("/about");
   const [session] = await getSessionByUser(req.user._id);
   if(session) {
@@ -46,9 +49,11 @@ router.get("/", async (req, res) => {
 router.post("/:segmentId([A-F0-9]{10})", async (req, res) => {
   if (!req.user) return res.redirect("/login");
   const [segment] = await getSegmentBySlug(req.params.segmentId);
+  const [episode] = await getEpisodeById(segment.episode);
   const submission = await createSubmission(req, segment._id, segment.passes + 1);
   await updateSegment(segment._id, segment.passes + 1, submission)
   discardSession(req.user._id);
+  removeDownloaded(episode.number, segment.number);
   res.redirect('/');
 });
 

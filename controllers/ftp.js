@@ -1,6 +1,11 @@
 const PromiseFTP = require("promise-ftp");
 const fs = require("fs");
 const path = require("path");
+const config = {
+  user: process.env.FTP_USER,
+  password: process.env.FTP_PASS,
+  host: process.env.FTP_HOST
+};
 
 module.exports.uploadSegments = (episodeNum, numSegments) => {
   return new Promise(async (resolve, reject) => {
@@ -8,11 +13,6 @@ module.exports.uploadSegments = (episodeNum, numSegments) => {
     const directory = `${process.env.PWD}/public/exports/${episodeNum}`;
     const ftpDirectory = `segments/${episodeNum}`;
     const ftp = new PromiseFTP();
-    const config = {
-      user: process.env.FTP_USER,
-      password: process.env.FTP_PASS,
-      host: process.env.FTP_HOST
-    };
     await ftp.connect(config);
     await ftp.mkdir(ftpDirectory);
     const tasks = Array(numSegments).fill(null).map((_, index) => {
@@ -35,3 +35,53 @@ module.exports.uploadSegments = (episodeNum, numSegments) => {
     resolve();
   });
 };
+
+module.exports.downloadSegment = (episodeNum,  segmentNum) => {
+  return new Promise(async (resolve, reject) => {
+    const ftpFilePath = `segments/${episodeNum}/${episodeNum}-${segmentNum}.mp3`;
+    const filePath = `audio/${episodeNum}-${segmentNum}.mp3`
+    const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
+    if(!exports.segmentDownloaded(episodeNum, segmentNum)){
+      const ftp = new PromiseFTP();
+      await ftp.connect(config);
+      const stream = await ftp.get(ftpFilePath);
+      const streamDownload = new Promise((resolve, reject) => {
+        stream.once("close", resolve);
+        stream.once('error', reject);
+        stream.pipe(fs.createWriteStream(localFilePath));
+      })
+      await streamDownload;
+      ftp.end();
+    }
+    resolve(filePath)
+  });
+};
+
+module.exports.segmentDownloaded = (episodeNum, segmentNum) => {
+  const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
+  return fs.existsSync(localFilePath);
+}
+
+module.exports.removeDownloaded = (episodeNum, segmentNum) => {
+  const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
+  fs.unlinkSync(localFilePath);
+}
+
+
+
+// var PromiseFtp = require('promise-ftp');
+// var fs = require('fs');
+
+// var ftp = new PromiseFtp();
+// ftp.connect({host: host, user: user, password: password})
+// .then(function (serverMessage) {
+//   return ftp.get('foo.txt');
+// }).then(function (stream) {
+//   return new Promise(function (resolve, reject) {
+//     stream.once('close', resolve);
+//     stream.once('error', reject);
+//     stream.pipe(fs.createWriteStream('foo.local-copy.txt'));
+//   });
+// }).then(function () {
+//   return ftp.end();
+// });
