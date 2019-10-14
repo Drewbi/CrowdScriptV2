@@ -36,6 +36,22 @@ module.exports.uploadSegments = (episodeNum, numSegments) => {
   });
 };
 
+module.exports.downloadNextSegments = (episode, currentSegment, downloadNumber) => {
+  const numSegments = episode.segment.length;
+  let segmentNum = currentSegment + 1;
+  let segmentPromises = [];
+  let numDownloaded = 0;
+  while(segmentNum <= numSegments && numDownloaded < downloadNumber){
+    segmentPromises.push(exports.downloadSegment(episode.number, segmentNum));
+    numDownloaded++;
+    segmentNum++;
+  }
+  if(numDownloaded !== downloadNumber){
+    segmentPromises.push(exports.downloadSegment(episode.number + 1, 1));
+  }
+  Promise.all(segmentPromises);
+}
+
 module.exports.downloadSegment = (episodeNum,  segmentNum) => {
   return new Promise(async (resolve, reject) => {
     const ftpFilePath = `segments/${episodeNum}/${episodeNum}-${segmentNum}.mp3`;
@@ -50,7 +66,7 @@ module.exports.downloadSegment = (episodeNum,  segmentNum) => {
         stream.once('error', reject);
         stream.pipe(fs.createWriteStream(localFilePath));
       })
-      await streamDownload;
+      await streamDownload.catch(reject);
       ftp.end();
     }
     resolve(filePath)
