@@ -3,7 +3,7 @@ const { getLowestEpisodes, getEpisodeById } = require("../controllers/episode");
 const { getSegmentBySlug, getNextSegment, getSegmentById, updateSegment} = require("../controllers/segment");
 const { createSubmission } = require("../controllers/submission");
 const { createSession, getSessionByUser, discardSession, checkSegment } = require("../controllers/session");
-const { downloadSegment, removeDownloaded } = require("../controllers/ftp");
+const { downloadSegment, downloadNextSegments, removeDownloaded } = require("../controllers/ftp");
 const router = express.Router();
 
 router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
@@ -12,7 +12,7 @@ router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
   if(!segment) return res.redirect("/");
   const [episode] = await getEpisodeById(segment.episode);
   const filePath = await downloadSegment(episode.number, segment.number);
-  downloadSegment(episode.number, segment.number + 1);
+  downloadNextSegments(episode, segment.number, 3);
   res.render("transcript", {
     title: "Transcripter",
     episode: episode,
