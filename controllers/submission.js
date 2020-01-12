@@ -6,6 +6,10 @@ module.exports.getSubmissions = () => {
   return Submission.find({});
 };
 
+module.exports.getSubmissionById = (_id) => {
+  return Submission.find({ _id });
+};
+
 module.exports.createSubmission = (req, segmentId, pass)  => {
   const submission = new Submission();
   submission.pass = pass;

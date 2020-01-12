@@ -12,6 +12,8 @@ module.exports.addUser = (req, res) => {
   user.save(err => {
     if (err) {
       console.error(`Error registering user: ${err}`);
+      if(err.code === 11000) res.flash('error', 'Email already registered');
+      else res.flash('error', 'Error signing in');
       res.redirect("/register");
     } else {
       req.login(user, function(err) {

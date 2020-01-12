@@ -17,3 +17,7 @@ block content
         input#credit(type='checkbox' name='credit' value='credit' checked)
       .formInput
         input(type='submit', value='Continue')
+    p Already have an account? 
+      a(href='/login') login
+    while error = flash.shift()
+      p(.error)= error.message 

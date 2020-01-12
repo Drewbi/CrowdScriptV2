@@ -2,22 +2,27 @@ const mongoose = require("mongoose");
 const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const { checkSegment } = require("../controllers/session");
+const { getSubmissionById } = require("../controllers/submission");
 
 const Segment = mongoose.model("Segment");
 
-module.exports.getSegment = (episodeId, segNum) => {
+const getSegment = (episodeId, segNum) => {
   return Segment.find({ episode: episodeId, number: segNum });
 };
 
-module.exports.getSegmentById = (segmentId) => {
+const getSegmentById = (segmentId) => {
   return Segment.find({ _id: segmentId });
 };
 
-module.exports.getSegmentBySlug = segmentSlug => {
+const getSegmentsByEpisode = (episodeId) => {
+  return Segment.find({ episode: episodeId });
+};
+
+const getSegmentBySlug = segmentSlug => {
   return Segment.find({ slug: segmentSlug });
 };
 
-module.exports.getNextSegment = async (episode, pass) => {
+const getNextSegment = async (episode, pass) => {
   const segments = await Segment.find({ episode: episode, passes: { $lt: pass } }).sort("number");
   const filteredSegments = segments.filter(async (segment) => {
     return await checkSegment(segment);
@@ -39,7 +44,7 @@ function addSegment(slug, episode, number, text) {
   });
 }
 
-module.exports.updateSegment = (segmentId, passes, submission) =>{
+const updateSegment = (segmentId, passes, submission) =>{
    return Segment.updateOne({_id: segmentId}, {$push: {submission: submission}, passes: passes});
 }
 
@@ -49,7 +54,7 @@ function generateUID() {
       .toString(16)
       .substring(2, 12)
       .toUpperCase();
-    const res = await exports.getSegmentBySlug(slug);
+    const res = await getSegmentBySlug(slug);
     if (res.length !== 0) {
       slug = generateUID();
     }
@@ -57,9 +62,10 @@ function generateUID() {
   });
 }
 
-module.exports.generateSegments = (srt, episode, file) => {
+const generateSegments = (srt, episode, file) => {
   return new Promise(async (resolve, reject) => {
     const directory = `${process.env.PWD}/public/exports/${episode.number}`;
+    if(fs.existsSync(directory)) fs.rmdirSync(directory, { recursive: true })
     fs.mkdirSync(directory);
     const segmentPromises = srt.map(srtSegment => {
       const promise = new Promise((resolve, reject) => {
@@ -92,3 +98,33 @@ module.exports.generateSegments = (srt, episode, file) => {
     resolve(segmentList);
   });
 };
+
+const getSubmissionsFromEpisode = async (episodeId) => {
+  const segments = await getSegmentsByEpisode(episodeId);
+  if (!segments) return []
+  const submissionIds = segments.filter(({ submission }) => {
+    return submission.length > 0
+  })
+  .map(({ submission }) => {
+    return submission[submission.length - 1]
+  })
+  if(!submissionIds) return []
+  const submissionPromises = submissionIds.map((submissionId) => {
+    return new Promise((resolve) => {
+      getSubmissionById(submissionId).then((res) => {
+        resolve(res)
+      })
+    })
+  })
+  return await Promise.all(submissionPromises)
+}
+
+module.exports = {
+  getSegment,
+  getSegmentById,
+  getSegmentBySlug,
+  getNextSegment,
+  updateSegment,
+  generateSegments,
+  getSubmissionsFromEpisode
+}

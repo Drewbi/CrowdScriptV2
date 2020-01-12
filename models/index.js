@@ -7,6 +7,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 mongoose.set("useCreateIndex", true);
+mongoose.set("useUnifiedTopology", true);
 mongoose.connect(mongoURI, { useNewUrlParser: true });
 
 mongoose.connection.on("connected", () => {

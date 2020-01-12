@@ -1,8 +1,7 @@
 const express = require("express");
 const { getAllUsers } = require("../controllers/users");
-const { getSubmissions } = require("../controllers/submission");
-const { addEpisode, getEpisodes } = require("../controllers/episode");
-const { generateSegments } = require("../controllers/segment");
+const { addEpisode, getEpisodes, getEpisodeByNum } = require("../controllers/episode");
+const { generateSegments, getSubmissionsFromEpisode } = require("../controllers/segment");
 const upload = require("../controllers/multer");
 const { uploadSegments } = require("../controllers/ftp");
 const { parseSRT } = require("../controllers/srt");
@@ -16,14 +15,32 @@ router.get("/", async (req, res) => {
   } else if (!req.user.admin) {
     res.redirect("/");
   } else {
-    const [users, submissions, episodes] = await Promise.all([
+
+    const [users, episodes] = await Promise.all([
       getAllUsers(),
-      getSubmissions(),
       getEpisodes()
     ]);
-    res.render("admin", { title: "Admin", submissions, users, episodes });
+
+    const episodePromises = episodes.map(async (episode) => {
+      const submissions = await getSubmissionsFromEpisode(episode._id)
+      return { episode, submissions: [ submissions ] }
+    })
+    const episodeData = await Promise.all(episodePromises)
+    res.render("admin", { title: "Admin", episodeData, users });
   }
 });
+
+router.get('/:epNum', async (req, res) => {
+  const episode = await getEpisodeByNum(req.params.epNum)
+  const submissions = await getSubmissionsFromEpisode(episode._id)
+  console.log(submissions)
+  const submissionText = submissions.reduce((acc, curr) => {
+    console.log(curr)
+    return acc + ' ' + curr.text
+  }, '')
+  console.log(submissionText)
+  res.render("episode", { title: "Episode" + req.params.epNum, episode, submissionText });
+})
 
 /* POST audio and transcript */
 router.post(
