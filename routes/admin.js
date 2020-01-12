@@ -3,7 +3,7 @@ const { getAllUsers } = require("../controllers/users");
 const { addEpisode, getEpisodes, getEpisodeByNum } = require("../controllers/episode");
 const { generateSegments, getSubmissionsFromEpisode } = require("../controllers/segment");
 const upload = require("../controllers/multer");
-const { uploadSegments } = require("../controllers/ftp");
+const { uploadSegments, uploadEpisode, downloadEpisode } = require("../controllers/ftp");
 const { parseSRT } = require("../controllers/srt");
 const fs = require("fs");
 const router = express.Router();
@@ -31,15 +31,13 @@ router.get("/", async (req, res) => {
 });
 
 router.get('/:epNum', async (req, res) => {
-  const episode = await getEpisodeByNum(req.params.epNum)
+  const [ episode ] = await getEpisodeByNum(req.params.epNum)
   const submissions = await getSubmissionsFromEpisode(episode._id)
-  console.log(submissions)
-  const submissionText = submissions.reduce((acc, curr) => {
-    console.log(curr)
+  const submissionText = submissions.reduce((acc, [ curr ]) => {
     return acc + ' ' + curr.text
   }, '')
-  console.log(submissionText)
-  res.render("episode", { title: "Episode" + req.params.epNum, episode, submissionText });
+  const audioPath = await downloadEpisode(req.params.epNum)
+  res.render("episode", { title: "Episode" + req.params.epNum, episode: episode, submissionText, audio: audioPath });
 })
 
 /* POST audio and transcript */
@@ -79,7 +77,7 @@ router.post(
       // Upload segments to ftp server
       await uploadSegments(episode.number, segmentList.length);
       console.log("Unlinking uploaded files");
-
+      await uploadEpisode(episode.number, audioFile.path)
       // Remove uploaded files
       fs.unlinkSync(audioFile.path);
       fs.unlinkSync(srtFile.path);

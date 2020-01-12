@@ -2,6 +2,9 @@ extends layout
 
 block content
   .main-container
-    h1= episode
-
-    p= submissionText
+    h1= episode.number
+    h2= episode.name
+    audio(controls='')
+      source(src=audio type='audio/mpeg')
+      | Your browser does not support the audio element.
+    textarea(name="text", cols="120", rows="20", maxlength=10000 style="resize: none;")= submissionText

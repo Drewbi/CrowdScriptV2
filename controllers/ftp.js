@@ -7,7 +7,7 @@ const config = {
   host: process.env.FTP_HOST
 };
 
-module.exports.uploadSegments = (episodeNum, numSegments) => {
+const uploadSegments = (episodeNum, numSegments) => {
   return new Promise(async (resolve, reject) => {
     console.log("Uploading segments");
     const directory = `${process.env.PWD}/public/exports/${episodeNum}`;
@@ -36,28 +36,28 @@ module.exports.uploadSegments = (episodeNum, numSegments) => {
   });
 };
 
-module.exports.downloadNextSegments = (episode, currentSegment, downloadNumber) => {
-  const numSegments = episode.segment.length;
-  let segmentNum = currentSegment + 1;
-  let segmentPromises = [];
-  let numDownloaded = 0;
-  while(segmentNum <= numSegments && numDownloaded < downloadNumber){
-    segmentPromises.push(exports.downloadSegment(episode.number, segmentNum));
-    numDownloaded++;
-    segmentNum++;
-  }
-  if(numDownloaded !== downloadNumber){
-    segmentPromises.push(exports.downloadSegment(episode.number + 1, 1));
-  }
-  Promise.all(segmentPromises);
+const uploadEpisode = async (epNum, filePath) => {
+  return new Promise(async (resolve, reject) => {
+    console.log("Uploading episode");
+    const ftp = new PromiseFTP();
+    await ftp.connect(config);
+    const ftpDirectory = 'episodes';
+    const fileName = `${epNum}.mp3`;
+    ftp.put(filePath, `${ftpDirectory}/${fileName}`).catch(err => {
+      reject(err)
+    }).then(res => {
+      ftp.end();
+      resolve(res)
+    })
+  })
 }
 
-module.exports.downloadSegment = (episodeNum,  segmentNum) => {
+const downloadEpisode = (episodeNum) => {
   return new Promise(async (resolve, reject) => {
-    const ftpFilePath = `segments/${episodeNum}/${episodeNum}-${segmentNum}.mp3`;
-    const filePath = `audio/${episodeNum}-${segmentNum}.mp3`
-    const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
-    if(!exports.segmentDownloaded(episodeNum, segmentNum)){
+    const ftpFilePath = `episodes/${episodeNum}.mp3`;
+    const filePath = `/audio/${episodeNum}.mp3`
+    const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}.mp3`;
+    if(!episodeDownloaded(episodeNum)){
       const ftp = new PromiseFTP();
       await ftp.connect(config);
       const stream = await ftp.get(ftpFilePath);
@@ -73,31 +73,65 @@ module.exports.downloadSegment = (episodeNum,  segmentNum) => {
   });
 };
 
-module.exports.segmentDownloaded = (episodeNum, segmentNum) => {
+const downloadNextSegments = (episode, currentSegment, downloadNumber) => {
+  const numSegments = episode.segment.length;
+  let segmentNum = currentSegment + 1;
+  let segmentPromises = [];
+  let numDownloaded = 0;
+  while(segmentNum <= numSegments && numDownloaded < downloadNumber){
+    segmentPromises.push(downloadSegment(episode.number, segmentNum));
+    numDownloaded++;
+    segmentNum++;
+  }
+  if(numDownloaded !== downloadNumber){
+    segmentPromises.push(downloadSegment(episode.number + 1, 1));
+  }
+  Promise.all(segmentPromises);
+}
+
+const episodeDownloaded = (episodeNum) => {
+  const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}.mp3`;
+  return fs.existsSync(localFilePath);
+}
+
+const downloadSegment = (episodeNum,  segmentNum) => {
+  return new Promise(async (resolve, reject) => {
+    const ftpFilePath = `segments/${episodeNum}/${episodeNum}-${segmentNum}.mp3`;
+    const filePath = `/audio/${episodeNum}-${segmentNum}.mp3`
+    const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
+    if(!segmentDownloaded(episodeNum, segmentNum)){
+      const ftp = new PromiseFTP();
+      await ftp.connect(config);
+      const stream = await ftp.get(ftpFilePath);
+      const streamDownload = new Promise((resolve, reject) => {
+        stream.once("close", resolve);
+        stream.once('error', reject);
+        stream.pipe(fs.createWriteStream(localFilePath));
+      })
+      await streamDownload.catch(reject);
+      ftp.end();
+    }
+    resolve(filePath)
+  });
+};
+
+const segmentDownloaded = (episodeNum, segmentNum) => {
   const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
   return fs.existsSync(localFilePath);
 }
 
-module.exports.removeDownloaded = (episodeNum, segmentNum) => {
+const removeDownloaded = (episodeNum, segmentNum) => {
   const localFilePath = `${process.env.PWD}/public/audio/${episodeNum}-${segmentNum}.mp3`;
   fs.unlinkSync(localFilePath);
 }
 
-
-
-// var PromiseFtp = require('promise-ftp');
-// var fs = require('fs');
-
-// var ftp = new PromiseFtp();
-// ftp.connect({host: host, user: user, password: password})
-// .then(function (serverMessage) {
-//   return ftp.get('foo.txt');
-// }).then(function (stream) {
-//   return new Promise(function (resolve, reject) {
-//     stream.once('close', resolve);
-//     stream.once('error', reject);
-//     stream.pipe(fs.createWriteStream('foo.local-copy.txt'));
-//   });
-// }).then(function () {
-//   return ftp.end();
-// });
+module.exports = {
+  uploadSegments,
+  uploadEpisode,
+  downloadEpisode,
+  downloadNextSegments,
+  episodeDownloaded,
+  downloadSegment,
+  segmentDownloaded,
+  removeDownloaded
+}

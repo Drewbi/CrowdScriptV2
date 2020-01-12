@@ -7,19 +7,19 @@ const { getSubmissionById } = require("../controllers/submission");
 const Segment = mongoose.model("Segment");
 
 const getSegment = (episodeId, segNum) => {
-  return Segment.find({ episode: episodeId, number: segNum });
+  return Segment.find({ episode: episodeId, number: segNum }).sort('number');
 };
 
 const getSegmentById = (segmentId) => {
-  return Segment.find({ _id: segmentId });
+  return Segment.find({ _id: segmentId }).sort('number');
 };
 
 const getSegmentsByEpisode = (episodeId) => {
-  return Segment.find({ episode: episodeId });
+  return Segment.find({ episode: episodeId }).sort('number');
 };
 
 const getSegmentBySlug = segmentSlug => {
-  return Segment.find({ slug: segmentSlug });
+  return Segment.find({ slug: segmentSlug }).sort('number');
 };
 
 const getNextSegment = async (episode, pass) => {

@@ -39,7 +39,7 @@ block content
     h2 Episodes
     if episodeData && episodeData.length > 0
       each episode in episodeData ? episodeData : []
-        li= episode.episode.number
+        li #[a(href='/admin/' + episode.episode.number)= episode.episode.number] 
         li= episode.episode.name
         if episode.submissions && episode.submissions.length > 0
           each submission in episode.submissions
