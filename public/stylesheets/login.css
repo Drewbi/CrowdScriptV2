@@ -1,0 +1,35 @@
+.main-container {
+  display: flex;
+  justify-content: center;
+}
+
+.form {
+  padding: 20px;
+  justify-self: center;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 10px;
+  border-color: #dddddd;
+}
+
+.formInput {
+  margin: 20px 10px;
+}
+
+lable {
+  color: rgb(53, 53, 53);
+  margin-right: 5px;
+}
+
+.button {
+  background-color: rgb(76, 122, 175); /* Green */
+  border: none;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 100%;
+}

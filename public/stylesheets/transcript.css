@@ -1,0 +1,43 @@
+.main-container {
+  display: grid;
+  grid-template-columns: 50px auto 50px;
+  grid-template-rows: 50px auto 50px;
+  grid-template-areas: 
+    "side title otherside"
+    "side main otherside"
+    "footer footer footer";
+  justify-content: center;
+}
+
+textarea {
+  grid-area: 'main';
+	font-family: 'Lato', sans-serif;
+	font-size: 20px;
+	border-radius: 15px;
+  padding: 20px;
+  justify-self: center;
+}
+
+audio {
+  grid-area: 'main';
+}
+
+audio:focus, input:focus, textarea:focus, select:focus{
+  outline: none;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.eptitle, .epnumber {
+  grid-area: 'title';
+}
