@@ -1,23 +1,24 @@
 extends layout
 
 block content
+  link(rel='stylesheet', href='/stylesheets/login.css')
   .main-container
-    form(action='/register' method='post')
+    form.form(action='/register' method='post')
       .formInput
-        lable(for='name') Name:
+        lable(for='name') Name
         input#reg_name(type='text' name='name')
       .formInput
-        lable(for='email') Email:
+        lable(for='email') Email
         input#reg_email(type='email' name='email')
       .formInput
-        lable(for='password') Password:
+        lable(for='password') Password
         input#reg_password(type='password' name='password')
       .formInput
         lable(for='credit') Would you like to be credited?
         input#credit(type='checkbox' name='credit' value='credit' checked)
       .formInput
-        input(type='submit', value='Continue')
-    p Already have an account? 
-      a(href='/login') login
+        input.button(type='submit', value='Continue')
+      .formInput Already have an account? 
+        a(href='/login') login
     while error = flash.shift()
       p(.error)= error.message 
