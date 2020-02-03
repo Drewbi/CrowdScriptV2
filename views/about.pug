@@ -3,8 +3,8 @@ extends layout
 block content
   .main-container
     h3 Thanks for helping us transcribe episodes of Talk the Talk!
-    p our work will help more people enjoy our shows. 
+    p Your work will help more people enjoy our shows. 
     if !user
       p Please #[a(href='/login') log in] or #[a(href='/register') sign up].
-    else 
-      button(type='button') #[a(href='/') Get Started]
+    else
+      .button(type='button') #[a(href='/') Get Started]

@@ -1,10 +1,12 @@
 extends layout
 
 block content
+  link(rel='stylesheet', href='/stylesheets/episode.css')
   .main-container
-    h1= episode.number
-    h2= episode.name
+    h1.epnumber= episode.number
+    h2.eptitle= episode.name
     audio(controls='')
       source(src=audio type='audio/mpeg')
       | Your browser does not support the audio element.
-    textarea(name="text", cols="120", rows="20", maxlength=10000 style="resize: none;")= submissionText
+    .formInput
+      textarea(name="text", cols="40", rows="10", maxlength=10000 style="resize: none;")= submissionText

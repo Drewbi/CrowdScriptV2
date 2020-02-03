@@ -3,6 +3,7 @@ extends layout
 block content
   link(rel='stylesheet', href='/stylesheets/transcript.css')
   .main-container
+    .progress-bar(style="width: calc(" + segment.number / segment.total + "* 100%);")
     h1.epnumber= episode.number || "No episodes found"
     h1.eptitle= episode.name || ""
     audio(controls='')
@@ -13,3 +14,5 @@ block content
         textarea(name="text", cols="40", rows="10", maxlength=1000 style="resize: none;")= segment.text
       .formInput
         input.button(type='submit', value='Continue')
+      .formInput.right
+        input.button(type='submit', value='Submit and Exit')

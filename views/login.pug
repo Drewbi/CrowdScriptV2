@@ -6,10 +6,10 @@ block content
     form.form#regForm(action='/login' method='post')
       .formInput
         lable(for='email') Email
-        input#log_email(type='email' name='email')
+        input.text-field(type='email' name='email')
       .formInput
         lable(for='password') Password
-        input#log_password(type='password' name='password')
+        input.text-field(type='password' name='password')
       .formInput
         input.button(type='submit', value='Continue')
       .formInput Don't have an account? 
