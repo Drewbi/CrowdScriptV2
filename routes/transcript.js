@@ -13,11 +13,13 @@ router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
   const [episode] = await getEpisodeById(segment.episode);
   const filePath = await downloadSegment(episode.number, segment.number);
   downloadNextSegments(episode, segment.number, 3);
+  segment.total = episode.segment.length
   res.render("transcript", {
     title: "Transcripter",
     episode: episode,
     segment: segment,
-    audio: filePath
+    audio: filePath,
+    user: req.user
   });
 });
 /* get transcript page. */
