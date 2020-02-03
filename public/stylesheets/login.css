@@ -12,8 +12,10 @@
   border-color: #dddddd;
 }
 
-.formInput {
-  margin: 20px 10px;
+.text-field {
+  width: 100%;
+  height: 20px;
+  margin: 5px 0;
 }
 
 lable {
@@ -22,7 +24,7 @@ lable {
 }
 
 .button {
-  background-color: rgb(76, 122, 175); /* Green */
+  background-color: #1abc9c; /* Green */
   border: none;
   color: white;
   padding: 10px;
