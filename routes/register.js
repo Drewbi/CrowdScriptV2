@@ -6,7 +6,8 @@ const router = express.Router();
 router.get("/", (req, res) => {
   if (req.user) res.redirect("/");
   else res.render("register", {
-    title: "Register"
+    title: "Register",
+    user: req.user
   });
 });
 
