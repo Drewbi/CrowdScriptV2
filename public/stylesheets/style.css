@@ -1,11 +1,47 @@
-body {
-	margin: 60px;
-	padding: 0;
-	border: none;
+html, body { margin:0; padding:0;}
+
+html, body {
 	font-family: 'Lato', sans-serif;
 }
 
-.formInput {
-	margin: 10px;
+.main-container {
+	padding: 40px
 }
 
+.formInput {
+  margin: 20px 10px;
+}
+
+.button {
+  background-color: #1abc9c; /* turquoise */
+  border: none;
+	padding: 15px 32px;
+	color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+	border-radius: 5px;
+}
+
+.button * {
+	color: white;
+	padding: 15px 32px;
+}
+
+.button:hover {
+	color: rgb(63, 63, 63);
+	cursor: pointer;
+}
+
+ol, ul { list-style:none; }
+
+body a {
+	color: #1abc9c;
+	text-decoration: none;
+}
+
+body a:hover {
+	color: #1abc9c;
+	text-decoration: none;
+}

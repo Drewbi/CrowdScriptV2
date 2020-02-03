@@ -1,0 +1,64 @@
+/* Original theme by Anders Noren 
+https://www.andersnoren.se/teman/baskerville-wordpress-theme/ */
+
+.clear { clear: both; }
+.right { float: right; }
+
+::selection {
+	background: #1abc9c;
+	color: #333;
+}
+
+body a {
+	 transition: all 0.1s ease-in-out;
+}
+
+.blog-menu a{
+	 transition: all 0.2s ease-in-out;
+}
+
+.header {
+	background: #1D1D1D;
+	background-size: cover;
+	padding: 0 20px;
+}
+
+.header ul {
+	margin: 0;
+}
+
+.blog-menu li { position: relative; }
+.blog-menu > li { float: left; }
+
+/* Adds centered backslash */
+.blog-menu > li:before {
+	content: "/";
+	display: block;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -9px;
+	margin-left: -3px;
+	font-size: 16px;
+	color: #444;
+	font-weight: 300;
+	z-index: 1000;
+}
+
+/* removes backslash before first menu item */
+.blog-menu > li:first-child:before { content: none; }
+
+.menu-item a {
+	display: block;
+	padding: 27px 20px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	color: rgba( 255, 255, 255, 0.5 );
+	font-size: 13px;
+}
+
+.menu-item:hover a {
+	color: #FFF;
+	cursor: pointer;
+}
+
