@@ -8,7 +8,8 @@ router.get("/", (req, res) => {
     res.redirect("/");
   } else {
     res.render("login", {
-      title: "Login"
+      title: "Login",
+      user: req.user
     });
   }
 });

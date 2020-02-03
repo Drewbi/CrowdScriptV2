@@ -26,7 +26,12 @@ router.get("/", async (req, res) => {
       return { episode, submissions: [ submissions ] }
     })
     const episodeData = await Promise.all(episodePromises)
-    res.render("admin", { title: "Admin", episodeData, users });
+    res.render("admin", {
+      title: "Admin",
+      episodeData, 
+      users,
+      user: req.user
+    });
   }
 });
 
@@ -37,7 +42,13 @@ router.get('/:epNum', async (req, res) => {
     return acc + ' ' + curr.text
   }, '')
   const audioPath = await downloadEpisode(req.params.epNum)
-  res.render("episode", { title: "Episode" + req.params.epNum, episode: episode, submissionText, audio: audioPath });
+  res.render("episode", { 
+    title: "Episode " + req.params.epNum, 
+    episode: episode,
+    submissionText, 
+    audio: audioPath,
+    user: req.user
+  });
 })
 
 /* POST audio and transcript */
