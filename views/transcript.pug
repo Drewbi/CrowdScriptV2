@@ -4,14 +4,17 @@ block content
   link(rel='stylesheet', href='/stylesheets/transcript.css')
   .main-container
     .progress-bar(style="width: calc(" + segment.number / segment.total + "* 100%);")
-    h1.epnumber= episode.number || "No episodes found"
-    h1.eptitle= episode.name || ""
+    .load-bar
+    a.title(href="/about")
+      img(src="/images/arrow_left.svg")
+      h1.epnumber= "Episode " + episode.number || "No episodes found"
+      h1.eptitle= episode.name || ""
     audio(controls='')
       source(src=audio type='audio/mpeg')
       | Your browser does not support the audio element.
     form(method='post')
       .formInput
-        textarea(name="text", cols="40", rows="10", maxlength=1000 style="resize: none;")= segment.text
+        textarea(name="text" cols="55", rows="12", maxlength=1000 style="resize: none;")= segment.text
       .formInput.form-buttons.left
         input.button.secondary-button(type='submit', value='Submit and Exit')
       .formInput.form-buttons.right

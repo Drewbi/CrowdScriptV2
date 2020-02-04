@@ -1,11 +1,11 @@
 .main-container {
   display: grid;
-  grid-template-columns: 20% auto 20%;
-  grid-template-rows: 50px auto 50px;
+  grid-template-columns: 25% 50% 25%;
+  grid-template-rows: auto 80%;
   grid-template-areas: 
-    "title head"
-    "side main";
-  justify-content: left;
+    "title head farside"
+    "side main farside";
+  justify-content: center;
   padding: 40px 20px;
 }
 
@@ -16,15 +16,22 @@ form {
 textarea {
 	font-family: 'Lato', sans-serif;
 	font-size: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: none;
   padding: 20px;
   justify-self: center;
   box-shadow: 0px 0px 5px #b4b4b4;
+  resize:both; 
+  max-width:100%; 
+  min-width:100%;
+  max-height: 100%;
+  min-height: 100%;
 }
 
 audio {
-  grid-area: 'main';
+  grid-area: head;
+  width: 50%;
+  justify-self: center;
 }
 
 audio:focus, input:focus, textarea:focus, select:focus{
@@ -35,11 +42,39 @@ audio:focus, input:focus, textarea:focus, select:focus{
   display: inline;
 }
 
-.eptitle, .epnumber {
-  font-size: 20px;
+.title {
   grid-area: title;
+  position: absolute;
+  top: 90px;
+  left: 0;
+}
+
+.title:hover .eptitle, .title:hover .epnumber {
+  color: #777777;
+}
+
+.eptitle, .epnumber, .epicon {
+  font-size: 16px;
+  font-weight: lighter;
+  margin: 3px;
+  color: #999999;
   display: inline;
+}
+
+.eptitle, .epnumber, .epicon {
+  font-size: 16px;
+  font-weight: lighter;
+  margin: 3px;
+  color: #999999;
+  display: inline;
+}
+
+.epicon {
   margin: 0;
+}
+
+.arrow {
+  fill: #999999;
 }
 
 .progress-bar {
@@ -48,4 +83,15 @@ audio:focus, input:focus, textarea:focus, select:focus{
   left: 0;
   background-color: #1abc9c;
   height: 15px;
+  z-index: 2;
+}
+
+.load-bar {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  width: 100%;
+  background-color: #DDDDDD;
+  height: 15px;
+  z-index: 1;
 }

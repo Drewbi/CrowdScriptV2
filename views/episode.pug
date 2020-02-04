@@ -1,12 +1,16 @@
 extends layout
 
 block content
-  link(rel='stylesheet', href='/stylesheets/episode.css')
+  link(rel='stylesheet', href='/stylesheets/transcript.css')
+  //- link(rel='stylesheet', href='/stylesheets/episode.css')
   .main-container
-    h1.epnumber= episode.number
-    h2.eptitle= episode.name
+    a.title(href="/admin")
+      img(src="/images/arrow_left.svg")
+      h1.epnumber= "Episode " + episode.number
+      h2.eptitle= episode.name
     audio(controls='')
       source(src=audio type='audio/mpeg')
       | Your browser does not support the audio element.
-    .formInput
-      textarea(name="text", cols="40", rows="10", maxlength=10000 style="resize: none;")= submissionText
+    form
+      .formInput
+        textarea(name="text", cols="55", rows="10", maxlength=10000 style="resize: none;")= submissionText
