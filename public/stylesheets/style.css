@@ -4,6 +4,9 @@ html, body {
 	font-family: 'Lato', sans-serif;
 }
 
+.right { float: right; }
+.left { float: left; }
+
 .main-container {
 	padding: 40px
 }
@@ -32,6 +35,10 @@ html, body {
 .button:hover {
 	color: rgb(63, 63, 63);
 	cursor: pointer;
+}
+
+.secondary-button {
+	background-color: rgb(192, 192, 192);
 }
 
 ol, ul { list-style:none; }

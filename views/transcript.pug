@@ -12,7 +12,7 @@ block content
     form(method='post')
       .formInput
         textarea(name="text", cols="40", rows="10", maxlength=1000 style="resize: none;")= segment.text
-      .formInput
-        input.button(type='submit', value='Continue')
-      .formInput.right
-        input.button(type='submit', value='Submit and Exit')
+      .formInput.form-buttons.left
+        input.button.secondary-button(type='submit', value='Submit and Exit')
+      .formInput.form-buttons.right
+        input.button(type='submit', value='Submit')
