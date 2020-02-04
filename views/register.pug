@@ -6,19 +6,19 @@ block content
     form.form(action='/register' method='post')
       .formInput
         lable(for='name') Name
-        input#reg_name(type='text' name='name')
+        input.text-field(type='text' name='name')
       .formInput
         lable(for='email') Email
-        input#reg_email(type='email' name='email')
+        input.text-field(type='email' name='email')
       .formInput
         lable(for='password') Password
-        input#reg_password(type='password' name='password')
+        input.text-field(type='password' name='password')
       .formInput
         lable(for='credit') Would you like to be credited?
-        input#credit(type='checkbox' name='credit' value='credit' checked)
+        input(type='checkbox' name='credit' value='credit' checked)
+      while error = flash.shift()
+        p.error= error.message 
       .formInput
         input.button(type='submit', value='Continue')
       .formInput Already have an account? 
         a(href='/login') login
-    while error = flash.shift()
-      p(.error)= error.message 

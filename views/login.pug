@@ -10,9 +10,10 @@ block content
       .formInput
         lable(for='password') Password
         input.text-field(type='password' name='password')
+      while error = flash.shift()
+        p.error= error.message 
       .formInput
         input.button(type='submit', value='Continue')
       .formInput Don't have an account? 
         a(href='/register') register
-    while error = flash.shift()
-      p(.error)= error.message 
+    
