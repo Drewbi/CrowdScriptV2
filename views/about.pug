@@ -1,9 +1,14 @@
 extends layout
 
 block content
+  link(rel='stylesheet', href='/stylesheets/about.css')
   .main-container
     h3 Thanks for helping us transcribe episodes of Talk the Talk!
-    p Your work will help more people enjoy our shows. 
+    p Your work will help more people enjoy our shows.
+    h4 How to transcribe
+    p 1. Listen to the short piece of an episode provided
+    p 2. Correct the auto generated transcript where possible
+    p 3. Submit when satisfactory, ambiguous punctuation and names will be corrected later
     if !user
       p Please #[a(href='/login') log in] or #[a(href='/register') sign up].
     else
