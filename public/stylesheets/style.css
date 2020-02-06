@@ -33,7 +33,7 @@ html, body {
 }
 
 .button:hover {
-	color: rgb(63, 63, 63);
+	color: #3e3e3e;
 	cursor: pointer;
 }
 
@@ -51,4 +51,9 @@ body a {
 body a:hover {
 	color: #1abc9c;
 	text-decoration: none;
+}
+
+h4 {
+	color: #999999;
+	font-size: 20px;
 }
