@@ -44,7 +44,10 @@ router.get("/", async (req, res) => {
     return res.redirect("/" + validSegment.slug);
   }
   // No segments found that need completing
-  return res.render("completed");
+  return res.render("completed", {
+    user: req.user
+  }
+  );
 });
 
 
