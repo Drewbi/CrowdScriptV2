@@ -44,10 +44,11 @@ router.get("/", async (req, res) => {
   //   return res.redirect("/" + validSegment.slug);
   // }
   // No segments found that need completing
-  return res.render("completed", {
-    user: req.user
-  }
-  );
+  // return res.render("completed", {
+  //   user: req.user
+  // }
+  // );
+  res.json('yete')
 });
 
 
