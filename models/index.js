@@ -8,7 +8,8 @@ if (process.env.NODE_ENV === "production") {
 
 mongoose.set("useCreateIndex", true);
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect(mongoURI, { useNewUrlParser: true });
+mongoose.set("useNewUrlParser", true);
+mongoose.connect(mongoURI);
 
 mongoose.connection.on("connected", () => {
   console.log(`Mongoose connected to ${mongoURI}`);
