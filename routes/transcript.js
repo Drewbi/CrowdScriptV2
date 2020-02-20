@@ -24,30 +24,31 @@ router.get("/:segmentId([A-F0-9]{10})", async (req, res) => {
 });
 /* get transcript page. */
 router.get("/", async (req, res) => {
-  if (!req.user) return res.redirect("/about");
-  const [session] = await getSessionByUser(req.user._id);
-  if(session) {
-    const [segment] = await getSegmentById(session.segment);
-    const segmentFree = await checkSegment(segment);
-    if(!segmentFree) return res.redirect("/" + segment.slug);
-  }
-  const episodes = await getLowestEpisodes();
-  const segmentPromises = [];
-  episodes.forEach((episode) => {
-    const promise = getNextSegment(episode, episode.passCompleted + 1);
-    segmentPromises.push(promise);
-  });
-  const segments = await Promise.all(segmentPromises);
-  const [validSegment] = segments.filter((segment) => !!segment)
-  if(validSegment){
-    createSession(req, validSegment);
-    return res.redirect("/" + validSegment.slug);
-  }
-  // No segments found that need completing
-  return res.render("completed", {
-    user: req.user
-  }
-  );
+  // if (!req.user) return res.redirect("/about");
+  // const [session] = await getSessionByUser(req.user._id);
+  // if(session) {
+  //   const [segment] = await getSegmentById(session.segment);
+  //   const segmentFree = await checkSegment(segment);
+  //   if(!segmentFree) return res.redirect("/" + segment.slug);
+  // }
+  // const episodes = await getLowestEpisodes();
+  // const segmentPromises = [];
+  // episodes.forEach((episode) => {
+  //   const promise = getNextSegment(episode, episode.passCompleted + 1);
+  //   segmentPromises.push(promise);
+  // });
+  // const segments = await Promise.all(segmentPromises);
+  // const [validSegment] = segments.filter((segment) => !!segment)
+  // if(validSegment){
+  //   createSession(req, validSegment);
+  //   return res.redirect("/" + validSegment.slug);
+  // }
+  // // No segments found that need completing
+  // return res.render("completed", {
+  //   user: req.user
+  // }
+  // );
+  res.json('hey')
 });
 
 
