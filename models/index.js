@@ -5,9 +5,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   mongoURI = process.env.DEV_MONGODB_URI;
 }
-console.log('-----')
-console.log(process.env.NODE_ENV)
-console.log('-----')
+
 mongoose.set("useCreateIndex", true);
 mongoose.set("useUnifiedTopology", true);
 mongoose.connect(mongoURI, { useNewUrlParser: true });
