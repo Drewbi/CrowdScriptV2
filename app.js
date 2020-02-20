@@ -1,10 +1,9 @@
 const express = require("express");
-const createError = require("http-errors");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
+const compression = require('compression')
 const logger = require("morgan");
 const path = require("path");
-const enforce = require("express-sslify");
 const session = require("express-session");
 const passport = require("passport");
 const flash = require("flash");
@@ -22,16 +21,12 @@ const admin = require("./routes/admin");
 
 const app = express();
 
-// HTTPS Enforcement
-if (process.env.NODE_ENV === "production") {
-  // app.use(enforce.HTTPS());
-}
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
 app.use(helmet());
+app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
