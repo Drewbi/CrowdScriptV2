@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, "public")));
 if (process.env.NODE_ENV === "production") {
   app.use(
     session({
-      secret: process.env.secret,
+      secret: process.env.SECRET,
       resave: false,
       rolling: true,
       saveUninitialized: false,
