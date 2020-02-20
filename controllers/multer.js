@@ -1,4 +1,5 @@
 const multer = require("multer");
+const fs = require("fs");
 // Multer storage setup
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -11,4 +12,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-module.exports = upload;
+const createFolder = (path) => {
+  if(!fs.existsSync(path)){
+    fs.mkdirSync(path)
+  }
+}
+
+module.exports = { upload, createFolder };

@@ -2,7 +2,7 @@ const express = require("express");
 const { getAllUsers } = require("../controllers/users");
 const { addEpisode, getEpisodes, getEpisodeByNum } = require("../controllers/episode");
 const { generateSegments, getSubmissionsFromEpisode } = require("../controllers/segment");
-const upload = require("../controllers/multer");
+const {upload, createFolder } = require("../controllers/multer");
 const { uploadSegments, uploadEpisode, downloadEpisode } = require("../controllers/ftp");
 const { parseSRT } = require("../controllers/srt");
 const fs = require("fs");
@@ -15,7 +15,9 @@ router.get("/", async (req, res) => {
   } else if (!req.user.admin) {
     res.redirect("/");
   } else {
-
+    createFolder('public/uploads')
+    createFolder('public/audio')
+    createFolder('public/exports')
     const [users, episodes] = await Promise.all([
       getAllUsers(),
       getEpisodes()
@@ -71,7 +73,7 @@ router.post(
         res.flash('Processing files');
         res.redirect('/admin')
       }
-
+      
       // SRT file processing
       const [srtFile] = files.srtFile;
       const srt = parseSRT(srtFile);
