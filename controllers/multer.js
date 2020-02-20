@@ -12,10 +12,4 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const createFolder = (path) => {
-  if(!fs.existsSync(path)){
-    fs.mkdirSync(path)
-  }
-}
-
-module.exports = { upload, createFolder };
+module.exports = { upload };
