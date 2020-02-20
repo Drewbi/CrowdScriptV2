@@ -24,7 +24,7 @@ const app = express();
 
 // HTTPS Enforcement
 if (process.env.NODE_ENV === "production") {
-  app.use(enforce.HTTPS());
+  // app.use(enforce.HTTPS());
 }
 
 // view engine setup
