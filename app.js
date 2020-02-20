@@ -41,7 +41,7 @@ if (process.env.NODE_ENV === "production") {
       rolling: true,
       saveUninitialized: false,
       cookie: {
-        secure: true,
+        secure: false,
         httpOnly: true,
         maxAge: 1800000 // 30 mins
       }
@@ -79,14 +79,14 @@ app.use("/about", about);
 app.use("/admin", admin);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function(req, res) {
   res.render("404", {
     title: "404, Page not found"
   });
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
