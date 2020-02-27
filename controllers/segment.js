@@ -68,22 +68,22 @@ const generateSegments = (srt, episode, file) => {
     if(fs.existsSync(directory)) fs.rmdirSync(directory, { recursive: true })
     fs.mkdirSync(directory);
     const segmentPromises = srt.map(srtSegment => {
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise(async (resolve, reject) => {
         const { startTime, endTime } = srtSegment;
+        const slug = await generateUID();
+        const segment = await addSegment(
+          slug,
+          episode,
+          srtSegment.id,
+          srtSegment.text
+        );
+        console.log("Generated segment " + slug);
         ffmpeg(file)
           .on("error", err => {
             reject(err.message);
           })
-          .on("end", async () => {
+          .on("end", () => {
             console.log("Finished processing " + srtSegment.id);
-            const slug = await generateUID();
-            const segment = await addSegment(
-              slug,
-              episode,
-              srtSegment.id,
-              srtSegment.text
-            );
-            console.log("Generated segment " + slug);
             resolve(segment);
           })
           .setStartTime(startTime / 1000)

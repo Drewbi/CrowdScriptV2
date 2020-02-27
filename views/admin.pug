@@ -22,6 +22,9 @@ block content
         input(type="file" name="srtFile")
         br
       .formInput
+        lable(for='credit') Upload to FTP?
+        input(type='checkbox' name='upload' value='upload' checked)
+      .formInput
         input(type="submit" value="Upload")
         while error = flash.shift()
           p(.error)= error.message

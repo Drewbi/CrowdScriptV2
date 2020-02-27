@@ -85,13 +85,14 @@ router.post(
       episode.save();
 
       // Upload segments to ftp server
-      await uploadSegments(episode.number, segmentList.length);
-      console.log("Unlinking uploaded files");
-      await uploadEpisode(episode.number, audioFile.path)
+      if(!!req.body.upload) {
+        await uploadSegments(episode.number, segmentList.length);
+        await uploadEpisode(episode.number, audioFile.path)
+      }
       // Remove uploaded files
+      console.log("Unlinking uploaded files");
       fs.unlinkSync(audioFile.path);
       fs.unlinkSync(srtFile.path);
-      
     }
   }
 );
