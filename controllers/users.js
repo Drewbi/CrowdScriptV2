@@ -51,10 +51,6 @@ module.exports.getAllUsers = () => {
   return User.find({}, "name email");
 };
 
-module.exports.userWantsCredit = (id) => {
-  return User.findOne({_id: id}, 'credit')
-}
-
 module.exports.getUser = (id) => {
-  return User.findOne({_id: id}, 'name')
+  return User.findOne({_id: id}, 'name credit')
 }
