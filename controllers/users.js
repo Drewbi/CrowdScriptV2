@@ -50,3 +50,11 @@ module.exports.validateUser = (req, res, next) => {
 module.exports.getAllUsers = () => {
   return User.find({}, "name email");
 };
+
+module.exports.userWantsCredit = (id) => {
+  return User.findOne({_id: id}, 'credit')
+}
+
+module.exports.getUser = (id) => {
+  return User.findOne({_id: id}, 'name')
+}
