@@ -20,5 +20,6 @@ block content
         each submission in userSubmissionNumbers
           li= submission.name
             p= "Completed " + submission.submissions + (submission.submissions > 1 ? " submissions" : " submission")
+            p= submission.credit ? "Wants credit" : "No credit"
       else
         p No user submissions
