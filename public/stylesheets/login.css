@@ -40,3 +40,8 @@ lable {
   border-radius: 5px;
   width: 100%;
 }
+
+.formInput p {
+  font-size: 12px;
+  color: #999999;
+}
