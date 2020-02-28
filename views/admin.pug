@@ -46,7 +46,10 @@ block content
         li= episode.episode.name
         if episode.submissions && episode.submissions.length > 0
           each submission in episode.submissions
-            li= submission.length + '/' + episode.episode.segment.length + ' segments completed'
+            if submission.length === episode.episode.segment.length
+              li Complete
+            else
+              li= submission.length + '/' + episode.episode.segment.length + ' segments completed'
             br
         else
           li= 'No submissions have been created'

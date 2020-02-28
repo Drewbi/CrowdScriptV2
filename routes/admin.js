@@ -34,11 +34,11 @@ router.get("/", async (req, res) => {
 });
 
 router.get('/:epNum', async (req, res) => {
-  // if (!req.user) {
-  //   return res.redirect("/login");
-  // } else if (!req.user.admin) {
-  //   return res.redirect("/");
-  // }
+  if (!req.user) {
+    return res.redirect("/login");
+  } else if (!req.user.admin) {
+    return res.redirect("/");
+  }
   const [ episode ] = await getEpisodeByNum(req.params.epNum)
   const submissions = await getSubmissionsFromEpisode(episode._id)
   const submissionText = submissions.reduce((acc, [ curr ]) => {
