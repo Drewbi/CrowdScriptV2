@@ -14,3 +14,11 @@ block content
     form
       .formInput
         textarea(name="text", cols="55", rows="10", maxlength=10000 style="resize: none;")= submissionText
+    .instructions
+      if userSubmissionNumbers !== []
+        ul
+        each submission in userSubmissionNumbers
+          li= submission.name
+            p= "Completed " + submission.submissions + (submission.submissions > 1 ? " submissions" : " submission")
+      else
+        p No user submissions

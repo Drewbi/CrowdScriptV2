@@ -16,6 +16,8 @@ block content
       .formInput
         textarea(name="text" cols="55", rows="12", maxlength=1000 style="resize: none;")= segment.text
       .formInput.form-buttons.left
-        input.button.secondary-button(type='submit', value='Submit and Exit')
+        a.button.secondary-button(href='/about') Exit
       .formInput.form-buttons.right
         input.button(type='submit', value='Submit')
+    .instructions
+      p Please just type the words you hear, even if there is more than one person talking. If you can manage punctuation, that's great, too. When you've corrected the text, click Submit and you'll get another sample. When you're done, click the exit button.

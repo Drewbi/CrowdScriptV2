@@ -4,7 +4,8 @@
   grid-template-rows: auto 80%;
   grid-template-areas: 
     "title head farside"
-    "side main farside";
+    "side main farside"
+    "side instructions farside";
   justify-content: center;
   padding: 40px 20px;
 }
@@ -94,4 +95,9 @@ audio:focus, input:focus, textarea:focus, select:focus{
   background-color: #DDDDDD;
   height: 15px;
   z-index: 1;
+}
+
+.instructions {
+  grid-area: instructions;
+  color: #999999;
 }
