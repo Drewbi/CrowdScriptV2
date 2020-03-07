@@ -3,3 +3,6 @@ node_modules
 *.mp3
 *.srt
 *.srt.doc
+.now
+.vscode
+*.key
