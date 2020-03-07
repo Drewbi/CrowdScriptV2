@@ -10,7 +10,6 @@ module.exports = (req, res) => {
 }
 
 const getUsers = async (req, res) => {
-  console.log(req);
   if(!verifyUser(req)) return res.status(401).json({ message: "Requires user authorisation"})
   const users = await User.find();
   res.status(200).json({ users })
