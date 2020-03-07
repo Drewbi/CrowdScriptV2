@@ -1,18 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 const { ObjectId } = mongoose.Schema.Types;
 
 const submissionSchema = mongoose.Schema({
   text: {
-    type: String
+    type: String,
   },
   user: {
     type: ObjectId,
-    ref: "User"
+    ref: 'User',
   },
   segment: {
     type: ObjectId,
-    ref: "Segment"
-  }
+    ref: 'Segment',
+  },
 });
 
-mongoose.model("Submission", submissionSchema);
+mongoose.model('Submission', submissionSchema);

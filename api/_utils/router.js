@@ -1,7 +1,7 @@
 module.exports.routeHandler = (req, res, router) => {
-  const handler = router[req.method]
-  if(handler){
-    return handler(req, res)
+  const handler = router[req.method];
+  if (handler) {
+    return handler(req, res);
   }
-  res.status(405).json({ message: "Invalid request"})
-}
+  return res.status(405).json({ message: 'Invalid request' });
+};
