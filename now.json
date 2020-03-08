@@ -5,5 +5,12 @@
     "DEV_MONGODB_URI": "@dev_mongodb_uri",
     "PRIVATE_KEY": "@private_key",
     "PUBLIC_KEY": "@public_key"
-  }
+  },
+  "builds": [
+    { "src": "package.json", "use": "@now/static-build" },
+    { "src": "api/*.js", "use": "@now/node" }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+  ]
 }
