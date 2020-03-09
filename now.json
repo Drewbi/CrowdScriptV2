@@ -7,10 +7,11 @@
     "PUBLIC_KEY": "@public_key"
   },
   "builds": [
-    { "src": "package.json", "use": "@now/static-build" },
+    { "src": "client/package.json", "use": "@now/static-build" },
     { "src": "api/*.js", "use": "@now/node" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "src": "/(.*)", "dest": "/client/$1" }
   ]
 }
