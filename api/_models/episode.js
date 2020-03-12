@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types
 
 const episodeSchema = mongoose.Schema({
   number: {
@@ -8,26 +8,26 @@ const episodeSchema = mongoose.Schema({
     required: true,
     index: true,
     unique: true,
-    min: 1,
+    min: 1
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   src: {
     type: String,
-    required: true,
+    required: true
   },
   segments: [
     {
       type: ObjectId,
-      ref: 'Segment',
-    },
+      ref: 'Segment'
+    }
   ],
   completed: {
     type: Boolean,
-    required: true,
-  },
-});
+    required: true
+  }
+})
 
-mongoose.model('Episode', episodeSchema);
+mongoose.model('Episode', episodeSchema)

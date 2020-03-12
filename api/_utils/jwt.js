@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken')
 
-const privateKEY = Buffer.from(process.env.PRIVATE_KEY, 'base64').toString();
-const publicKEY = Buffer.from(process.env.PUBLIC_KEY, 'base64').toString();
+const privateKEY = Buffer.from(process.env.PRIVATE_KEY, 'base64').toString()
+const publicKEY = Buffer.from(process.env.PUBLIC_KEY, 'base64').toString()
 
 module.exports = {
   sign: (payload, $Options) => {
@@ -17,9 +17,9 @@ module.exports = {
       subject: $Options.subject,
       audience: $Options.audience,
       expiresIn: '30d', // 30 days validity
-      algorithm: 'RS256',
-    };
-    return jwt.sign(payload, privateKEY, signOptions);
+      algorithm: 'RS256'
+    }
+    return jwt.sign(payload, privateKEY, signOptions)
   },
 
   verify: (token, $Option) => {
@@ -35,21 +35,20 @@ module.exports = {
       subject: $Option.subject,
       audience: $Option.audience,
       expiresIn: '30d',
-      algorithm: ['RS256'],
+      algorithm: ['RS256']
     }; try {
-      return jwt.verify(token, publicKEY, verifyOptions);
+      return jwt.verify(token, publicKEY, verifyOptions)
     } catch (err) {
-      return false;
+      return false
     }
   },
 
-  decode: (token) => jwt.decode(token, { complete: true }), // returns null if token is invalid
-
+  decode: token => jwt.decode(token, { complete: true }), // returns null if token is invalid
 
   retrieve: (string) => {
-    const regex = /[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/;
-    const token = string.match(regex);
-    if (!token) return null;
-    return token[0];
-  },
-};
+    const regex = /[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*/
+    const token = string.match(regex)
+    if (!token) return null
+    return token[0]
+  }
+}

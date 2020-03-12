@@ -1,44 +1,44 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
-const { ObjectId } = mongoose.Schema.Types;
+const { ObjectId } = mongoose.Schema.Types
 
 const userSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true,
+    unique: true
   },
   name: {
     type: String,
-    required: true,
+    required: true
   },
   credit: {
     type: Boolean,
-    default: false,
+    default: false
   },
   admin: {
     type: Boolean,
-    default: false,
+    default: false
   },
   hash: {
     type: String,
-    required: true,
+    required: true
   },
   salt: {
     type: String,
-    required: true,
+    required: true
   },
   submission: [
     {
       type: ObjectId,
-      ref: 'Submission',
-    },
-  ],
-});
+      ref: 'Submission'
+    }
+  ]
+})
 
 userSchema.pre('remove', (next) => {
-  this.model('Submission').deleteMany({ user: this.id }, next);
-  this.model('Session').deleteMany({ user: this.id }, next);
-});
+  this.model('Submission').deleteMany({ user: this.id }, next)
+  this.model('Session').deleteMany({ user: this.id }, next)
+})
 
-mongoose.model('User', userSchema);
+mongoose.model('User', userSchema)
