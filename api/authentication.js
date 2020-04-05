@@ -2,18 +2,16 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 
-const mongoose = require('./_utils/mongoose')
-require('./_models/user')
+require('./_utils/mongoose')
+const User = require('./_models/user')
 const { validatePassword } = require('./_utils/password')
 const { sign } = require('./_utils/jwt')
-
-const User = mongoose.model('User')
 
 const config = {
   issuer: 'crowdscript'
 }
 
-const authUser = async (req, res) => {
+app.post('/', async (req, res) => {
   const { email, password } = req.body
   const user = await User.findOne({ email })
 
@@ -25,8 +23,6 @@ const authUser = async (req, res) => {
   config.audience = req.headers.host
   const token = sign({ id: user.id, admin: user.admin }, config)
   return res.status(200).json({ token })
-}
-
-app.post('/api/authentication', authUser)
+})
 
 module.exports = app

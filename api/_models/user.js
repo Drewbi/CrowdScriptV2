@@ -41,4 +41,4 @@ userSchema.pre('remove', (next) => {
   this.model('Session').deleteMany({ user: this.id }, next)
 })
 
-mongoose.model('User', userSchema)
+module.exports = mongoose.model('User', userSchema)

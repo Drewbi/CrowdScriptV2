@@ -30,4 +30,4 @@ const episodeSchema = mongoose.Schema({
   }
 })
 
-mongoose.model('Episode', episodeSchema)
+module.exports = mongoose.model('Episode', episodeSchema)

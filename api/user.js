@@ -1,18 +1,19 @@
-const mongoose = require('./_utils/mongoose')
-require('./_models/user')
-const { routeHandler } = require('./_utils/router')
+const express = require('express')
+const app = express()
+app.use(express.json())
+
+require('./_utils/mongoose')
+const User = require('./_models/user')
 const { generateSalt, generateHash } = require('./_utils/password')
 const { verifyUser, verifyAdmin } = require('./_utils/restrict')
 
-const User = mongoose.model('User')
-
-const getUsers = async (req, res) => {
+app.get('/', async (req, res) => {
   if (!verifyUser(req)) return res.status(401).json({ message: 'Requires user authorisation' })
   const users = await User.find()
   return res.status(200).json({ users })
-}
+})
 
-const addUser = (req, res) => {
+app.post('/', (req, res) => {
   const {
     name, email, credit, password
   } = req.body
@@ -31,22 +32,14 @@ const addUser = (req, res) => {
       if (err.code === 11000) return res.status(409).json({ message: 'Email already registered' })
       return res.status(400).json({ message: 'Error registering', error: err })
     })
-}
+})
 
-const deleteUser = async (req, res) => {
+app.delete('/', async (req, res) => {
   if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
   const { email } = req.body
   if (!email) return res.status(400).json({ message: 'Must supply email of user to delete' })
   const result = await User.deleteOne({ email })
   return res.status(200).json({ result })
-}
+})
 
-const router = {
-  GET: getUsers,
-  POST: addUser,
-  DELETE: deleteUser
-}
-
-module.exports = (req, res) => {
-  routeHandler(req, res, router)
-}
+module.exports = app

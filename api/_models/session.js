@@ -20,4 +20,4 @@ const sessionSchema = mongoose.Schema({
   }
 })
 
-mongoose.model('Session', sessionSchema)
+module.exports = mongoose.model('Session', sessionSchema)

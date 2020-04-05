@@ -27,4 +27,4 @@ segmentSchema.pre('remove', (next) => {
   this.model('Submission').deleteMany({ segment: this.id }, next)
 })
 
-mongoose.model('Segment', segmentSchema)
+module.exports = mongoose.model('Segment', segmentSchema)

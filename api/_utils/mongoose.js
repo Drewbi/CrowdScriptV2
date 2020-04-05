@@ -1,9 +1,5 @@
 const mongoose = require('mongoose')
-
-let mongoURI = process.env.DEV_MONGODB_URI
-if (process.env.NODE_ENV === 'production') {
-  mongoURI = process.env.MONGODB_URI
-}
+const mongoURI = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : process.env.DEV_MONGODB_URI
 
 mongoose.set('useCreateIndex', true)
 mongoose.set('useUnifiedTopology', true)
