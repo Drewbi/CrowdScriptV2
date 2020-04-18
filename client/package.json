@@ -1,5 +1,5 @@
 {
-  "name": "crowdscript",
+  "name": "crowdscript-client",
   "version": "1.0.0",
   "description": "A transcripting web app for podcasts",
   "author": "Drew Alexander",
@@ -13,9 +13,6 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/vuetify": "0.5.5",
-    "dotenv": "^8.2.0",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.4",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {

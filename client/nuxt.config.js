@@ -1,5 +1,4 @@
 import colors from 'vuetify/es5/util/colors'
-process.env.NODE_ENV !== 'production' && require('dotenv').config()
 
 export default {
   /*
@@ -60,12 +59,5 @@ export default {
       error: colors.deepOrange.accent4,
       success: colors.green.accent3
     }
-  },
-  serverMiddleware: [
-    { path: '/api/user', handler: '~/api/user.js' },
-    { path: '/api/authentication', handler: '~/api/authentication.js' },
-    { path: '/api/submission', handler: '~/api/submission.js' },
-    { path: '/api/segment', handler: '~/api/segment.js' },
-    { path: '/api/episode', handler: '~/api/episode.js' }
-  ]
+  }
 }

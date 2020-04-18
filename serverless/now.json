@@ -1,11 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "/api/authentication.js", "use": "@now/node" }
-  ],
-  "routes": [
-    { "src": "/authentication", "dest": "/api/authentication.js" }
-  ],
+  "routes": [{ "src": "/api/segment/next", "dest": "/api/segment.js" }],
   "env": {
     "MONGODB_URI": "@mongodb_uri",
     "DEV_MONGODB_URI": "@dev_mongodb_uri",

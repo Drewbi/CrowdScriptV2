@@ -7,13 +7,13 @@ const Episode = mongoose.model('Episode')
 
 const { verifyUser, verifyAdmin } = require('../_utils/restrict')
 
-router.get('/', async (req, res) => {
+router.get('*', async (req, res) => {
   if (!verifyUser(req)) return res.status(401).json({ message: 'Requires user authorisation' })
   const episodes = await Episode.find()
   return res.status(200).json({ episodes })
 })
 
-router.post('/', (req, res) => {
+router.post('*', (req, res) => {
   if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
   const { number, name, src } = req.body
   if (!number || !name || !src) return res.status(400).json({ message: 'Invalid episode data' })
@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
     })
 })
 
-router.delete('/', async (req, res) => {
+router.delete('*', async (req, res) => {
   if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
   const { number } = req.body
   if (!number) return res.status(400).json({ message: 'Must supply episode number delete' })

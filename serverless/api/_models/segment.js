@@ -15,6 +15,16 @@ const segmentSchema = mongoose.Schema({
     type: ObjectId,
     ref: 'Episode'
   },
+  time: {
+    in: {
+      type: Number,
+      require: true
+    },
+    out: {
+      type: Number,
+      require: true
+    }
+  },
   submissions: [
     {
       type: ObjectId,
