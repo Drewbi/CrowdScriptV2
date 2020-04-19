@@ -1,5 +1,6 @@
-const mongoose = require('./mongoose')
+const mongoose = require('mongoose')
 const Session = mongoose.model('Session')
+const tenMinutes = 600000
 
 const createSession = async (userId, segment) => {
   const session = new Session()
@@ -14,4 +15,11 @@ const removeSession = async (userId) => {
   return session
 }
 
-module.exports = { createSession, removeSession, validateSessions }
+const deleteOldSessions = (req, res, next) => {
+  Session.deleteMany({ created_at: { $gte: tenMinutes } }).then(() => next()).catch(err => {
+    console.log(err)
+    next()
+  })
+}
+
+module.exports = { createSession, removeSession, deleteOldSessions }
