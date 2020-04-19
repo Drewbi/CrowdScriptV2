@@ -6,18 +6,15 @@ const mongoose = require('mongoose')
 const Episode = mongoose.model('Episode')
 
 const { verifyUser, verifyAdmin } = require('../_utils/restrict')
+const { validateFields } = require('../_utils/validation')
 
-router.get('*', async (req, res) => {
-  if (!verifyUser(req)) return res.status(401).json({ message: 'Requires user authorisation' })
+router.get('*', verifyUser, async (req, res) => {
   const episodes = await Episode.find()
   return res.status(200).json({ episodes })
 })
 
-router.post('*', (req, res) => {
-  if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
+router.post('*', verifyAdmin, validateFields(["number", "name", "src"]), (req, res) => {
   const { number, name, src } = req.body
-  if (!number || !name || !src) return res.status(400).json({ message: 'Invalid episode data' })
-
   const episode = new Episode()
   episode.number = number
   episode.name = name
@@ -31,10 +28,8 @@ router.post('*', (req, res) => {
     })
 })
 
-router.delete('*', async (req, res) => {
-  if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
+router.delete('*', verifyAdmin, validateFields(["number"]), async (req, res) => {
   const { number } = req.body
-  if (!number) return res.status(400).json({ message: 'Must supply episode number delete' })
   const result = await Episode.deleteOne({ number })
   return res.status(200).json({ result })
 })

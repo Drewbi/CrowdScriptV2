@@ -7,19 +7,17 @@ const User = mongoose.model('User')
 
 const { generateSalt, generateHash } = require('../_utils/password')
 const { verifyUser, verifyAdmin } = require('../_utils/restrict')
+const { validateFields } = require('../_utils/validation')
 
-router.get('*', async (req, res) => {
-  if (!verifyUser(req)) return res.status(401).json({ message: 'Requires user authorisation' })
+router.get('*', verifyUser, async (req, res) => {
   const users = await User.find()
   return res.status(200).json({ users })
 })
 
-router.post('*', (req, res) => {
+router.post('*', validateFields(["name", "email", "credit", "password"]), (req, res) => {
   const {
     name, email, credit, password
   } = req.body
-  if (!name || !email || !credit || !password) return res.status(400).json({ message: 'Invalid user data' })
-
   const user = new User()
   user.name = name
   user.email = email
@@ -35,10 +33,8 @@ router.post('*', (req, res) => {
     })
 })
 
-router.delete('*', async (req, res) => {
-  if (!verifyAdmin(req)) return res.status(401).json({ message: 'Requires admin authorisation' })
+router.delete('*', verifyAdmin, validateFields(["email"]), async (req, res) => {
   const { email } = req.body
-  if (!email) return res.status(400).json({ message: 'Must supply email of user to delete' })
   const result = await User.deleteOne({ email })
   return result.ok === 1 ? res.status(200).json({ message: 'Successfully deleted user' }) : res.status(400).json({ message: 'Failed to delete user' })
 })

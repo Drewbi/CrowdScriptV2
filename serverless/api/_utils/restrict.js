@@ -11,15 +11,18 @@ const verifyJWT = (req) => {
   return null
 }
 
-const verifyAdmin = (req) => {
+const verifyAdmin = (req, res, next) => {
   const payload = verifyJWT(req)
-  if (payload) return payload.admin
-  return false
+  payload && payload.admin
+    ? next()
+    : res.status(401).json({ message: 'Requires admin authorisation' })
 }
 
-const verifyUser = (req) => {
+const verifyUser = (req, res, next) => {
   const payload = verifyJWT(req)
-  return !!payload
+  payload
+    ? next()
+    : res.status(401).json({ message: 'Requires user authorisation' })
 }
 
 module.exports = { verifyUser, verifyAdmin }
