@@ -25,4 +25,9 @@ const verifyUser = (req, res, next) => {
     : res.status(401).json({ message: 'Requires user authorisation' })
 }
 
-module.exports = { verifyUser, verifyAdmin }
+const getIdFromJWT = (req) => {
+  const { id } = verifyJWT(req)
+  return id || null
+}
+
+module.exports = { verifyUser, verifyAdmin, getIdFromJWT }

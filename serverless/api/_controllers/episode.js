@@ -6,7 +6,7 @@ const getAllEpisodes = async (req, res) => {
   return res.status(200).json({ episodes })
 }
 
-const createEpisode = (req, res) => {
+const createEpisode = async (req, res) => {
   const { number, name, src } = req.body
   const episode = new Episode()
   episode.number = number
@@ -14,11 +14,12 @@ const createEpisode = (req, res) => {
   episode.src = src
   episode.completed = false
 
-  return episode.save()
-    .then(result => res.status(200).json({ result }))
-    .catch((err) => {
-      res.status(400).json({ message: 'Error adding episode', error: err })
-    })
+  try {
+    const result = await episode.save()
+    return res.status(200).json({ result })
+  } catch (err) {
+    res.status(400).json({ message: 'Error adding episode', error: err })
+  }
 }
 
 const deleteEpisode = async (req, res) => {

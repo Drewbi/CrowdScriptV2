@@ -3,10 +3,10 @@ const router = Router()
 router.use(json())
 
 const { validateFields } = require('../_utils/validation')
-const { getAllUsers, getUserById, createUser, deleteUser } = require('../_controllers/user')
+const { getAllUsers, getUserById, getUserFromJWT, createUser, deleteUser } = require('../_controllers/user')
 const { verifyUser, verifyAdmin } = require('../_utils/restrict')
 
-router.get('/api/user/current', verifyUser, getAllUsers)
+router.get('/api/user/current', verifyUser, getUserFromJWT)
 
 router.get('/api/user/:id', verifyAdmin, getUserById)
 

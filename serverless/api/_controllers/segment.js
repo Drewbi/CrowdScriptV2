@@ -9,7 +9,7 @@ const getAllSegments = async (req, res) => {
   res.status(200).json({ segments })
 }
 
-const createSegment = (req, res) => {
+const createSegment = async (req, res) => {
   const { number, text, episode, time } = req.body
   const segment = new Segment()
   segment.number = number
@@ -17,11 +17,12 @@ const createSegment = (req, res) => {
   segment.episode = episode
   segment.time = time
 
-  return segment.save()
-    .then(result => res.status(200).json({ result }))
-    .catch((err) => {
-      res.status(400).json({ message: 'Error adding Segment', error: err })
-    })
+  try {
+    const result = await segment.save()
+    return res.status(200).json({ result })
+  } catch (err) {
+    res.status(400).json({ message: 'Error adding Segment', error: err })
+  }
 }
 
 const getNextSegment = async (req, res) => {
