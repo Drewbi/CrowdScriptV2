@@ -12,7 +12,7 @@ const createSubmission = async (req, res) => {
   const { text } = req.body
   const submission = new Submission()
   submission.text = text
-  getUserFromJWT(req)
+  submission.user = getUserFromJWT(req)
   try {
     const result = await submission.save()
     return res.status(200).json({ result })
