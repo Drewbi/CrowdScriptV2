@@ -10,8 +10,14 @@ const getAllUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   const { id } = req.params
-  const user = await User.findOne({ _id: id })
-  return res.status(200).json({ user })
+  try {
+    const user = await User.findOne({ _id: id })
+    if (!user) res.status(404).json({ message: 'Unable to find user' })
+    res.status(200).json({ user })
+  } catch (err) {
+    if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
+    else res.status(400).json({ message: 'Unable to find user' })
+  }
 }
 
 const createUser = (req, res, next) => {
