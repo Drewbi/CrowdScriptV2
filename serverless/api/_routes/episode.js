@@ -8,8 +8,8 @@ const { validateFields } = require('../_utils/validation')
 
 router.get('*', verifyUser, getAllEpisodes)
 
-router.post('*', verifyAdmin, validateFields(["number", "name", "src"]), createEpisode)
+router.post('*', verifyAdmin, validateFields(['number', 'name', 'src']), createEpisode)
 
-router.delete('*', verifyAdmin, validateFields(["number"]), deleteEpisode)
+router.delete('*', verifyAdmin, validateFields(['number']), deleteEpisode)
 
 module.exports = router

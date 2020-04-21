@@ -9,7 +9,7 @@ const { validateFields } = require('../_utils/validation')
 
 router.get('*', verifyAdmin, getAllSegments)
 
-router.post('*', verifyUser, validateFields(["number", "text", "episode", "time"]), createSegment)
+router.post('*', verifyUser, validateFields(['number', 'text', 'episode', 'time']), createSegment)
 
 router.get('/next', verifyUser, deleteOldSessions, getNextSegment)
 

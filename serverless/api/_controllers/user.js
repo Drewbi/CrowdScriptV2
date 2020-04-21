@@ -30,7 +30,7 @@ const createUser = (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   const { email } = req.body
   const result = await User.deleteOne({ email })
-  return result.ok === 1 
+  return result.ok === 1
     ? res.status(200).json({ message: 'Successfully deleted user' })
     : res.status(400).json({ message: 'Failed to delete user' })
 }

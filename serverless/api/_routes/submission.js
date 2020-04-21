@@ -8,8 +8,8 @@ const { verifyUser, verifyAdmin } = require('../_utils/restrict')
 
 router.get('*', verifyUser, getAllSubmissions)
 
-router.post('*', verifyUser, validateFields(["text"]), createSubmission)
+router.post('*', verifyUser, validateFields(['text']), createSubmission)
 
-router.delete('*', verifyAdmin, validateFields(["id"]), deleteSubmission)
+router.delete('*', verifyAdmin, validateFields(['id']), deleteSubmission)
 
 module.exports = router

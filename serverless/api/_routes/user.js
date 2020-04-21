@@ -12,8 +12,8 @@ router.get('/:id', verifyAdmin, getUserFromId)
 
 router.get('*', verifyAdmin, getAllUsers)
 
-router.post('*', validateFields(["name", "email", "credit", "password"]), createUser)
+router.post('*', validateFields(['name', 'email', 'credit', 'password']), createUser)
 
-router.delete('*', verifyAdmin, validateFields(["email"]), deleteUser)
+router.delete('*', verifyAdmin, validateFields(['email']), deleteUser)
 
 module.exports = router
