@@ -8,6 +8,12 @@ const getAllUsers = async (req, res, next) => {
   return res.status(200).json({ users })
 }
 
+const getUserById = async (req, res, next) => {
+  const { id } = req.params
+  const user = await User.findOne({ _id: id })
+  return res.status(200).json({ user })
+}
+
 const createUser = (req, res, next) => {
   const {
     name, email, credit, password
@@ -35,4 +41,4 @@ const deleteUser = async (req, res, next) => {
     : res.status(400).json({ message: 'Failed to delete user' })
 }
 
-module.exports = { createUser, getAllUsers, deleteUser }
+module.exports = { getAllUsers, getUserById, createUser, deleteUser }
