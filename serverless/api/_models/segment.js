@@ -33,7 +33,7 @@ const segmentSchema = mongoose.Schema({
   ]
 })
 
-segmentSchema.pre('remove', (next) => {
+segmentSchema.pre('remove', async (next) => {
   this.model('Submission').deleteMany({ segment: this.id }, next)
 })
 

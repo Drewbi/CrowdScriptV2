@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
+const Submission = mongoose.model('Submission')
 
 const { generateSalt, generateHash } = require('../_utils/password')
-const { getIdFromJWT } = require('../_utils/restrict')
 
 const getAllUsers = async (req, res, next) => {
   const users = await User.find()
@@ -14,7 +14,7 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: id })
     if (!user) res.status(404).json({ message: 'Unable to find user' })
-    res.status(200).json({ user })
+    else res.status(200).json({ user })
   } catch (err) {
     if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
     else res.status(400).json({ message: 'Unable to find user' })
@@ -22,7 +22,7 @@ const getUserById = async (req, res, next) => {
 }
 
 const getUserFromJWT = async (req, res, next) => {
-  const id = getIdFromJWT(req)
+  const id = res.locals.user
   try {
     const user = await User.findOne({ _id: id })
     if (!user) res.status(404).json({ message: 'Unable to find user' })
@@ -55,6 +55,8 @@ const createUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   const { email } = req.body
+  const { _id: userId } = await User.findOne({ email })
+  await Submission.deleteMany({ user: userId })
   const result = await User.deleteOne({ email })
   return result.ok === 1
     ? res.status(200).json({ message: 'Successfully deleted user' })

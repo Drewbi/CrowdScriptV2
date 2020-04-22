@@ -11,23 +11,25 @@ const verifyJWT = (req) => {
   return null
 }
 
-const verifyAdmin = (req, res, next) => {
+const setUser = (req, res, next) => {
   const payload = verifyJWT(req)
-  payload && payload.admin
+  if (payload) {
+    res.locals.user = payload.id
+    res.locals.admin = payload.admin
+  }
+  next()
+}
+
+const verifyAdmin = (req, res, next) => {
+  res.locals.admin
     ? next()
     : res.status(401).json({ message: 'Requires admin authorisation' })
 }
 
 const verifyUser = (req, res, next) => {
-  const payload = verifyJWT(req)
-  payload
+  res.locals.user
     ? next()
     : res.status(401).json({ message: 'Requires user authorisation' })
 }
 
-const getIdFromJWT = (req) => {
-  const { id } = verifyJWT(req)
-  return id || null
-}
-
-module.exports = { verifyUser, verifyAdmin, getIdFromJWT }
+module.exports = { setUser, verifyUser, verifyAdmin }

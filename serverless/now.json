@@ -2,7 +2,8 @@
   "version": 2,
   "rewrites": [
     { "source": "/api/user/current", "destination": "/api/user" },
-    { "source": "/api/user/(.*)", "destination": "/api/user" }
+    { "source": "/api/user/(.*)", "destination": "/api/user" },
+    { "source": "/api/segment/next", "destination": "/api/segment" }
   ],
   "env": {
     "MONGODB_URI": "@mongodb_uri",

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 const Episode = mongoose.model('Episode')
+const Segment = mongoose.model('Segment')
+const Submission = mongoose.model('Submission')
 
 const getAllEpisodes = async (req, res) => {
   const episodes = await Episode.find()
@@ -22,10 +24,27 @@ const createEpisode = async (req, res) => {
   }
 }
 
-const deleteEpisode = async (req, res) => {
-  const { number } = req.body
-  const result = await Episode.deleteOne({ number })
-  return res.status(200).json({ result })
+const completeEpisode = async (episodeId) => {
+  try {
+    const episode = await Episode.findById(episodeId)
+    if (episode) {
+      episode.completed = true
+      episode.save()
+    }
+  } catch (err) {
+    console.log('failed to update episode')
+  }
 }
 
-module.exports = { getAllEpisodes, createEpisode, deleteEpisode }
+const deleteEpisode = async (req, res) => {
+  const { number } = req.body
+  const episode = await Episode.findOne({ number })
+  await Submission.deleteMany({ segment: { $in: episode.segments } })
+  await Segment.deleteMany({ episode: episode._id })
+  const result = await Episode.deleteOne({ number })
+  return result.ok === 1
+    ? res.status(200).json({ message: 'Successfully deleted episode' })
+    : res.status(400).json({ message: 'Failed to delete episode' })
+}
+
+module.exports = { getAllEpisodes, createEpisode, completeEpisode, deleteEpisode }
