@@ -30,8 +30,9 @@ const episodeSchema = mongoose.Schema({
   }
 })
 
-episodeSchema.pre('remove', async (next) => {
-  this.model('Segment').deleteMany({ episode: this._id }, next)
+episodeSchema.pre('remove', async function(next) {
+  const Segment = mongoose.model('Segment')
+  Segment.deleteMany({ episode: this.id }, next)
 })
 
 module.exports = mongoose.model('Episode', episodeSchema)

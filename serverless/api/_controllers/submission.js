@@ -3,7 +3,6 @@ const Submission = mongoose.model('Submission')
 const Segment = mongoose.model('Segment')
 
 const { findSessionByUser, removeSession } = require('../_controllers/session')
-const { completeEpisode } = require('../_controllers/episode')
 
 const getAllSubmissions = async (req, res) => {
   const submissions = await Submission.find()
@@ -30,15 +29,8 @@ const createSubmission = async (req, res) => {
   submission.segment = segment
   try {
     const result = await submission.save()
-    // Update corresponding segment
-    const updateSegment = await Segment.findById(segment)
-    updateSegment.submissions.push(result._id)
-    await updateSegment.save()
-    // Check for episode completion
-    const emptySegments = await Segment.find({ episode: updateSegment.episode, submissions: { $exists: true, $eq: [] } })
-    if (emptySegments.length === 0) await completeEpisode(updateSegment.episode)
     await removeSession(res.locals.user)
-    return res.status(200).json({ result })
+    res.status(200).json({ result })
   } catch (err) {
     res.status(400).json({ message: 'Error adding submission', error: err })
   }

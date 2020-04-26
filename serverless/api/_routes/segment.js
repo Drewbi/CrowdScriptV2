@@ -9,7 +9,7 @@ const { validateFields } = require('../_utils/validation')
 
 router.get('/api/segment', setUser, verifyAdmin, getAllSegments)
 
-router.post('/api/segment', setUser, verifyUser, validateFields(['number', 'text', 'episode', 'time']), createSegment)
+router.post('/api/segment', setUser, verifyAdmin, validateFields(['number', 'text', 'episode', 'time']), createSegment)
 
 router.delete('/api/segment', setUser, verifyAdmin, validateFields(['id']), deleteSegment)
 

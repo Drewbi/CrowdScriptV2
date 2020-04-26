@@ -33,8 +33,21 @@ const segmentSchema = mongoose.Schema({
   ]
 })
 
-segmentSchema.pre('remove', async (next) => {
-  this.model('Submission').deleteMany({ segment: this.id }, next)
+
+segmentSchema.pre('remove', async function(query, next) {
+  const Submission = mongoose.model('Submission')
+  Submission.deleteMany({ segment: this.id })
 })
+
+segmentSchema.post('save', async function() {
+  const Episode = mongoose.model('Episode')
+  Episode.updateOne({ id: this.episode}, { $push: { segments: this.id} })
+})
+
+segmentSchema.pre('remove', async function(query, next) {
+  const Episode = mongoose.model('Episode')
+  Episode.updateOne({ id: this.episode}, { $pull: { segments: this.id} })
+})
+
 
 module.exports = mongoose.model('Segment', segmentSchema)

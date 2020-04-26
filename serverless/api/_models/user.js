@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  submission: [
+  submissions: [
     {
       type: ObjectId,
       ref: 'Submission'
@@ -36,9 +36,9 @@ const userSchema = mongoose.Schema({
   ]
 })
 
-userSchema.pre('remove', (next) => {
-  this.model('Submission').deleteMany({ user: this.id }, next)
-  this.model('Session').deleteMany({ user: this.id }, next)
+userSchema.pre('remove', function(query, next) {
+  const Submission = mongoose.model('Submission')
+  Submission.deleteMany({ user: this.id })
 })
 
 module.exports = mongoose.model('User', userSchema)
