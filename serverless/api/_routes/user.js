@@ -3,17 +3,17 @@ const router = Router()
 router.use(json())
 
 const { validateFields } = require('../_utils/validation')
-const { getAllUsers, getUserById, createUser, deleteUser } = require('../_controllers/user')
-const { verifyUser, verifyAdmin } = require('../_utils/restrict')
+const { getAllUsers, getUserById, getUserFromJWT, createUser, deleteUser } = require('../_controllers/user')
+const { setUser, verifyUser, verifyAdmin } = require('../_utils/restrict')
 
-router.get('/api/user/current', verifyUser, getAllUsers)
+router.get('/api/user/current', setUser, verifyUser, getUserFromJWT)
 
-router.get('/api/user/:id', verifyAdmin, getUserById)
+router.get('/api/user/:id', setUser, verifyAdmin, getUserById)
 
-router.get('/api/user', verifyAdmin, getAllUsers)
+router.get('/api/user', setUser, verifyAdmin, getAllUsers)
 
 router.post('/api/user', validateFields(['name', 'email', 'credit', 'password']), createUser)
 
-router.delete('/api/user', verifyAdmin, validateFields(['email']), deleteUser)
+router.delete('/api/user', setUser, verifyAdmin, validateFields(['email']), deleteUser)
 
 module.exports = router

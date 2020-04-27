@@ -6,7 +6,7 @@ const getAllEpisodes = async (req, res) => {
   return res.status(200).json({ episodes })
 }
 
-const createEpisode = (req, res) => {
+const createEpisode = async (req, res) => {
   const { number, name, src } = req.body
   const episode = new Episode()
   episode.number = number
@@ -14,17 +14,22 @@ const createEpisode = (req, res) => {
   episode.src = src
   episode.completed = false
 
-  return episode.save()
-    .then(result => res.status(200).json({ result }))
-    .catch((err) => {
-      res.status(400).json({ message: 'Error adding episode', error: err })
-    })
+  try {
+    const result = await episode.save()
+    return res.status(200).json({ result })
+  } catch (err) {
+    res.status(400).json({ message: 'Error adding episode', error: err })
+  }
 }
 
 const deleteEpisode = async (req, res) => {
   const { number } = req.body
-  const result = await Episode.deleteOne({ number })
-  return res.status(200).json({ result })
+  const episode = await Episode.findOne({ number })
+  if (!episode) return res.status(404).json({ message: 'Episode not found' })
+  const result = await episode.deleteOne()
+  return result
+    ? res.status(200).json({ message: 'Successfully deleted episode' })
+    : res.status(400).json({ message: 'Failed to delete episode' })
 }
 
 module.exports = { getAllEpisodes, createEpisode, deleteEpisode }

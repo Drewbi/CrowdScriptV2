@@ -1,7 +1,7 @@
 const express = require('express')
 
 require('./_utils/mongoose')
-require('./_models/submission')
+
 const router = require('./_routes/submission')
 
 const app = express()
