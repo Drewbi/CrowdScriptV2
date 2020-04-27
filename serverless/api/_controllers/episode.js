@@ -24,8 +24,10 @@ const createEpisode = async (req, res) => {
 
 const deleteEpisode = async (req, res) => {
   const { number } = req.body
-  const result = await Episode.deleteOne({ number })
-  return result.ok === 1
+  const episode = await Episode.findOne({ number })
+  if (!episode) return res.status(404).json({ message: 'Episode not found' })
+  const result = await episode.deleteOne()
+  return result
     ? res.status(200).json({ message: 'Successfully deleted episode' })
     : res.status(400).json({ message: 'Failed to delete episode' })
 }

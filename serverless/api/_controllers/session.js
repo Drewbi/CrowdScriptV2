@@ -18,7 +18,7 @@ const createSession = async (userId, segmentId) => {
 }
 
 const removeSession = async (userId) => {
-  const session = await Session.findOneAndDelete({ user: userId })
+  const session = await Session.deleteOne({ user: userId })
   return session
 }
 

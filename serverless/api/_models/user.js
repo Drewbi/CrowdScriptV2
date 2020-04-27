@@ -36,9 +36,9 @@ const userSchema = mongoose.Schema({
   ]
 })
 
-userSchema.pre('remove', function(query, next) {
+userSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Submission = mongoose.model('Submission')
-  Submission.deleteMany({ user: this.id })
+  await Submission.deleteMany({ user: this._id })
 })
 
 module.exports = mongoose.model('User', userSchema)

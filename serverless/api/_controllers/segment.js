@@ -40,17 +40,13 @@ const getNextSegment = async (req, res) => {
 }
 
 const deleteSegment = async (req, res, next) => {
-  const { id: segmentId } = req.body
-  try {
-    const segment = await Segment.findById(segmentId)
-    if (!segment) return res.status(404).json({ message: 'Segment not found'})
-    const result = await segment.remove()
-    return Object.keys(result).length  !== 0
-      ? res.status(200).json({ message: 'Successfully deleted segment' })
-      : res.status(400).json({ message: 'Failed to delete segment' })
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to delete segment', err })
-  }
+  const { id } = req.body
+  const segment = await Segment.findById(id)
+  if (!segment) return res.status(404).json({ message: 'Segment not found' })
+  const result = await segment.deleteOne()
+  return result
+    ? res.status(200).json({ message: 'Successfully deleted segment' })
+    : res.status(400).json({ message: 'Failed to delete segment' })
 }
 
 module.exports = { getAllSegments, createSegment, getNextSegment, deleteSegment }

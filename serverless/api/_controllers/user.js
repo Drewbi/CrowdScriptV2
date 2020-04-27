@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const Submission = mongoose.model('Submission')
 
 const { generateSalt, generateHash } = require('../_utils/password')
 
@@ -55,10 +54,10 @@ const createUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   const { email } = req.body
-  const { _id: userId } = await User.findOne({ email })
-  await Submission.deleteMany({ user: userId })
-  const result = await User.deleteOne({ email })
-  return result.ok === 1
+  const user = await User.findOne({ email })
+  if (!user) return res.status(404).json({ message: 'User not found' })
+  const result = await user.deleteOne()
+  return result
     ? res.status(200).json({ message: 'Successfully deleted user' })
     : res.status(400).json({ message: 'Failed to delete user' })
 }

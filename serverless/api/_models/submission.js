@@ -16,39 +16,47 @@ const submissionSchema = mongoose.Schema({
   }
 })
 
-submissionSchema.post('save', async function(query, next) {
+submissionSchema.post('save', async function (query, next) {
   const Segment = mongoose.model('Segment')
-  Segment.updateOne({ id: this.segment}, { $push: { submissions: this.id} })
+  await Segment.findByIdAndUpdate(this.segment, { $push: { submissions: this._id } }, { useFindAndModify: false })
 })
 
-submissionSchema.post('save', async function(query, next) {
+submissionSchema.post('save', async function (query, next) {
   const User = mongoose.model('User')
-  User.updateOne({ id: this.user}, { $push: { submissions: this.id} })
+  await User.findByIdAndUpdate(this.user, { $push: { submissions: this._id } }, { useFindAndModify: false })
 })
 
-submissionSchema.post('save', async function(query, next) {
+submissionSchema.post('save', async function (query, next) {
   const Session = mongoose.model('Session')
-  Session.deleteOne({ user: this.user})
+  await Session.deleteOne({ user: this.user })
 })
 
-submissionSchema.post('save', async function(query, next) {
+submissionSchema.post('save', async function (query, next) {
   const Segment = mongoose.model('Segment')
   const Episode = mongoose.model('Episode')
   const currentSegment = await Segment.findById(this.segment)
   const emptySegments = await Segment.find({ episode: currentSegment.episode, submissions: { $exists: true, $eq: [] } })
   if (emptySegments.length === 0) {
-    Episode.updateOne({ id: this.user }, { completed: true })
+    await Episode.findByIdAndUpdate(currentSegment.episode, { completed: true }, { useFindAndModify: false })
   }
 })
 
-segmentSchema.pre('remove', async function(query, next) {
+// Triggered from submission delete
+submissionSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Segment = mongoose.model('Segment')
-  Segment.updateOne({ id: this.segment}, { $pull: { submissions: this.id} })
+  await Segment.findByIdAndUpdate(this.segment, { $pull: { submissions: this._id } }, { useFindAndModify: false })
 })
 
-segmentSchema.pre('remove', async function(query, next) {
+// Triggered from submission delete
+submissionSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const User = mongoose.model('User')
-  User.updateOne({ id: this.user}, { $pull: { submissions: this.id} })
+  await User.findByIdAndUpdate(this.user, { $pull: { submissions: this._id } }, { useFindAndModify: false })
+})
+
+// Triggerent from segment delete
+submissionSchema.pre('deleteMany', async function (query, next) {
+  const User = mongoose.model('User')
+  await User.findByIdAndUpdate(this.user, { $pull: { submissions: this._id } }, { useFindAndModify: false })
 })
 
 module.exports = mongoose.model('Submission', submissionSchema)

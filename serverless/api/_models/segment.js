@@ -33,21 +33,31 @@ const segmentSchema = mongoose.Schema({
   ]
 })
 
+segmentSchema.post('save', async function () {
+  console.log('setting episode completion false')
+  const Episode = mongoose.model('Episode')
+  await Episode.findByIdAndUpdate(this.episode, { $push: { segments: this._id }, completed: false }, { useFindAndModify: false })
+})
 
-segmentSchema.pre('remove', async function(query, next) {
+// Called when deleting episode
+// TODO fix as this._id will be undefined until episode hook uses document deletion
+segmentSchema.pre('deleteMany', async function (query, next) {
+  console.log('Segment deleteMany triggered')
   const Submission = mongoose.model('Submission')
-  Submission.deleteMany({ segment: this.id })
+  await Submission.deleteMany({ segment: this._id })
 })
 
-segmentSchema.post('save', async function() {
+// Called when deleting segment
+segmentSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
+  console.log('Segment deleteOne triggered')
+  const Submission = mongoose.model('Submission')
+  await Submission.deleteMany({ segment: this._id })
+})
+
+// Called when deleting segment
+segmentSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Episode = mongoose.model('Episode')
-  Episode.updateOne({ id: this.episode}, { $push: { segments: this.id} })
+  await Episode.findByIdAndUpdate(this.episode, { $pull: { segments: this._id } }, { useFindAndModify: false })
 })
-
-segmentSchema.pre('remove', async function(query, next) {
-  const Episode = mongoose.model('Episode')
-  Episode.updateOne({ id: this.episode}, { $pull: { segments: this.id} })
-})
-
 
 module.exports = mongoose.model('Segment', segmentSchema)

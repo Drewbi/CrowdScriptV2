@@ -12,7 +12,7 @@ module.exports.nextSegment = async (episodes) => {
 
 const getSegmentFromEpisode = async (episode) => {
   const segments = await Segment.find(
-    { 'submissions.0': { $exists: false }, episode }
+    { episode, submissions: { $exists: true, $eq: [] } }
   ).sort('number')
   const validSegmentPromises = segments.filter(async (segment) => {
     const existingSessions = await Session.find({ segment: segment.id })

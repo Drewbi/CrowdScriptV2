@@ -1,6 +1,5 @@
 const mongoose = require('mongoose')
 const Submission = mongoose.model('Submission')
-const Segment = mongoose.model('Segment')
 
 const { findSessionByUser, removeSession } = require('../_controllers/session')
 
@@ -37,15 +36,13 @@ const createSubmission = async (req, res) => {
 }
 
 const deleteSubmission = async (req, res) => {
-  const { id: submissionId } = req.body
-  const { segment: segmentId } = await Submission.findById(submissionId)
-  const segment = await Segment.findById(segmentId)
-  const sessionIndex = segment.submissions.indexOf(submissionId)
-  segment.submissions.splice(sessionIndex, 1)
-  await segment.save()
-  const result = await Submission.deleteOne({ _id: submissionId })
-
-  return res.status(200).json({ result })
+  const { id } = req.body
+  const submission = await Submission.findById(id)
+  if (!submission) return res.status(404).json({ message: 'Submission not found' })
+  const result = await submission.deleteOne()
+  return result
+    ? res.status(200).json({ message: 'Successfully deleted submission' })
+    : res.status(400).json({ message: 'Failed to delete submission' })
 }
 
 module.exports = { getAllSubmissions, verifySubmission, createSubmission, deleteSubmission }
