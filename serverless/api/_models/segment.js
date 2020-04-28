@@ -34,20 +34,17 @@ const segmentSchema = mongoose.Schema({
 })
 
 segmentSchema.post('save', async function () {
-  console.log('setting episode completion false')
   const Episode = mongoose.model('Episode')
   await Episode.findByIdAndUpdate(this.episode, { $push: { segments: this._id }, completed: false }, { useFindAndModify: false })
 })
 
-// Called when deleting segment
-segmentSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
-  console.log('Segment deleteOne triggered')
+segmentSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const Submission = mongoose.model('Submission')
-  await Submission.deleteMany({ segment: this._id })
+  const submissions = await Submission.find({ segment: this._id })
+  await Promise.all(submissions.map(submission => submission.deleteOne()))
 })
 
-// Called when deleting segment
-segmentSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
+segmentSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const Episode = mongoose.model('Episode')
   await Episode.findByIdAndUpdate(this.episode, { $pull: { segments: this._id } }, { useFindAndModify: false })
 })

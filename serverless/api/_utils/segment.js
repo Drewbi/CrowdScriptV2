@@ -14,10 +14,12 @@ const getSegmentFromEpisode = async (episode) => {
   const segments = await Segment.find(
     { episode, submissions: { $exists: true, $eq: [] } }
   ).sort('number')
-  const validSegmentPromises = segments.filter(async (segment) => {
-    const existingSessions = await Session.find({ segment: segment.id })
-    return existingSessions.length === 0
+  const sessionPromises = segments.map(segment => {
+    return Session.find({ segment: segment.id })
   })
-  const validSegments = await Promise.all(validSegmentPromises)
+  const sessions = await Promise.all(sessionPromises)
+  const validSegments = segments.filter((segment, index) => {
+    return sessions[index].length === 0
+  })
   return validSegments.length !== 0 ? validSegments[0] : null
 }

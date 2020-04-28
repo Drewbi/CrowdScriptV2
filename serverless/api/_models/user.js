@@ -38,7 +38,8 @@ const userSchema = mongoose.Schema({
 
 userSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Submission = mongoose.model('Submission')
-  await Submission.deleteMany({ user: this._id })
+  const submissions = await Submission.find({ user: this._id })
+  await Promise.all(submissions.map(submission => submission.deleteOne()))
 })
 
 module.exports = mongoose.model('User', userSchema)

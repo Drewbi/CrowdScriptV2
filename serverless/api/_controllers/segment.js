@@ -30,6 +30,8 @@ const getNextSegment = async (req, res) => {
   const lowestEpisodes = await Episode.find({ completed: false }).sort({ number: -1 })
   if (lowestEpisodes.length === 0) return res.status(200).json({ message: 'All episodes complete' })
   const segment = await nextSegment(lowestEpisodes)
+  console.log(!segment);
+  if (!segment) return res.status(200).json({ message: 'All segments are allocated'})
   try {
     await createSession(res.locals.user, segment._id)
     res.status(200).json({ segment })

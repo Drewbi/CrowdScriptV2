@@ -16,22 +16,22 @@ const submissionSchema = mongoose.Schema({
   }
 })
 
-submissionSchema.post('save', async function (query, next) {
+submissionSchema.post('save', async function () {
   const Segment = mongoose.model('Segment')
   await Segment.findByIdAndUpdate(this.segment, { $push: { submissions: this._id } }, { useFindAndModify: false })
 })
 
-submissionSchema.post('save', async function (query, next) {
+submissionSchema.post('save', async function () {
   const User = mongoose.model('User')
   await User.findByIdAndUpdate(this.user, { $push: { submissions: this._id } }, { useFindAndModify: false })
 })
 
-submissionSchema.post('save', async function (query, next) {
+submissionSchema.post('save', async function () {
   const Session = mongoose.model('Session')
   await Session.deleteOne({ user: this.user })
 })
 
-submissionSchema.post('save', async function (query, next) {
+submissionSchema.post('save', async function () {
   const Segment = mongoose.model('Segment')
   const Episode = mongoose.model('Episode')
   const currentSegment = await Segment.findById(this.segment)
@@ -42,19 +42,13 @@ submissionSchema.post('save', async function (query, next) {
 })
 
 // Triggered from submission delete
-submissionSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
+submissionSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const Segment = mongoose.model('Segment')
   await Segment.findByIdAndUpdate(this.segment, { $pull: { submissions: this._id } }, { useFindAndModify: false })
 })
 
 // Triggered from submission delete
-submissionSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
-  const User = mongoose.model('User')
-  await User.findByIdAndUpdate(this.user, { $pull: { submissions: this._id } }, { useFindAndModify: false })
-})
-
-// Triggerent from segment delete
-submissionSchema.pre('deleteMany', async function (query, next) {
+submissionSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const User = mongoose.model('User')
   await User.findByIdAndUpdate(this.user, { $pull: { submissions: this._id } }, { useFindAndModify: false })
 })
