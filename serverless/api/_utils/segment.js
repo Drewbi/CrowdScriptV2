@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Segment = mongoose.model('Segment')
 const Session = mongoose.model('Session')
+const Episode = mongoose.model('Episode')
 
 module.exports.nextSegment = async (episodes) => {
   for (const episode of episodes) {
@@ -22,4 +23,13 @@ const getSegmentFromEpisode = async (episode) => {
     return sessions[index].length === 0
   })
   return validSegments.length !== 0 ? validSegments[0] : null
+}
+
+module.exports.checkEpisodeCompletion = async (episode) => {
+  const segments = await Segment.find({ episode, submissions: { $exists: true, $eq: [] } })
+  console.log(segments)
+  console.log(episode)
+  let completed = false
+  if (segments.length === 0) completed = true
+  await Episode.updateOne({ _id: episode }, { completed })
 }

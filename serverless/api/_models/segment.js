@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const { ObjectId } = mongoose.Schema.Types
 
 const segmentSchema = mongoose.Schema({
@@ -35,7 +34,13 @@ const segmentSchema = mongoose.Schema({
 
 segmentSchema.post('save', async function () {
   const Episode = mongoose.model('Episode')
-  await Episode.findByIdAndUpdate(this.episode, { $push: { segments: this._id }, completed: false }, { useFindAndModify: false })
+  const episode = await Episode.findById(this.episode)
+  await episode.updateOne({ $push: { segments: this._id } })
+})
+
+segmentSchema.post('updateOne', { document: true, query: false }, async function () {
+  const { checkEpisodeCompletion } = require('../_utils/segment')
+  await checkEpisodeCompletion(this.episode)
 })
 
 segmentSchema.pre('deleteOne', { document: true, query: false }, async function () {
@@ -46,7 +51,8 @@ segmentSchema.pre('deleteOne', { document: true, query: false }, async function 
 
 segmentSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const Episode = mongoose.model('Episode')
-  await Episode.findByIdAndUpdate(this.episode, { $pull: { segments: this._id } }, { useFindAndModify: false })
+  const episode = await Episode.findById(this.episode)
+  await episode.updateOne({ $pull: { segments: this._id } })
 })
 
 module.exports = mongoose.model('Segment', segmentSchema)

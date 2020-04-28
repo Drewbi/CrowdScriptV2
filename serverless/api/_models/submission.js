@@ -18,12 +18,14 @@ const submissionSchema = mongoose.Schema({
 
 submissionSchema.post('save', async function () {
   const Segment = mongoose.model('Segment')
-  await Segment.findByIdAndUpdate(this.segment, { $push: { submissions: this._id } }, { useFindAndModify: false })
+  const segment = await Segment.findById(this.segment)
+  await segment.updateOne({ $push: { submissions: this._id } })
 })
 
 submissionSchema.post('save', async function () {
   const User = mongoose.model('User')
-  await User.findByIdAndUpdate(this.user, { $push: { submissions: this._id } }, { useFindAndModify: false })
+  const user = await User.findById(this.user)
+  await user.updateOne({ $push: { submissions: this._id } })
 })
 
 submissionSchema.post('save', async function () {
@@ -37,20 +39,21 @@ submissionSchema.post('save', async function () {
   const currentSegment = await Segment.findById(this.segment)
   const emptySegments = await Segment.find({ episode: currentSegment.episode, submissions: { $exists: true, $eq: [] } })
   if (emptySegments.length === 0) {
-    await Episode.findByIdAndUpdate(currentSegment.episode, { completed: true }, { useFindAndModify: false })
+    const episode = await Episode.findById(this.episode)
+    await episode.updateOne({ completed: true })
   }
 })
 
-// Triggered from submission delete
 submissionSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const Segment = mongoose.model('Segment')
-  await Segment.findByIdAndUpdate(this.segment, { $pull: { submissions: this._id } }, { useFindAndModify: false })
+  const segment = await Segment.findById(this.segment)
+  await segment.updateOne({ $pull: { submissions: this._id } })
 })
 
-// Triggered from submission delete
 submissionSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const User = mongoose.model('User')
-  await User.findByIdAndUpdate(this.user, { $pull: { submissions: this._id } }, { useFindAndModify: false })
+  const user = await User.findById(this.segment)
+  await user.updateOne({ $pull: { submissions: this._id } })
 })
 
 module.exports = mongoose.model('Submission', submissionSchema)
