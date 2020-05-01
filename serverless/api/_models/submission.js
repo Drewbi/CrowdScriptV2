@@ -52,7 +52,7 @@ submissionSchema.pre('deleteOne', { document: true, query: false }, async functi
 
 submissionSchema.pre('deleteOne', { document: true, query: false }, async function () {
   const User = mongoose.model('User')
-  const user = await User.findById(this.segment)
+  const user = await User.findById(this.user)
   await user.updateOne({ $pull: { submissions: this._id } })
 })
 
