@@ -1,5 +1,5 @@
 <template>
   <div>
-    transcript
+    register
   </div>
 </template>

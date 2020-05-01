@@ -1,5 +1,5 @@
 <template>
   <div>
-    transcript
+    login
   </div>
 </template>

@@ -1,5 +1,5 @@
 <template>
   <div>
-    transcript
+    admin
   </div>
 </template>

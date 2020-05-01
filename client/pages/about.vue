@@ -1,5 +1,5 @@
 <template>
   <div>
-    transcript
+    about
   </div>
 </template>

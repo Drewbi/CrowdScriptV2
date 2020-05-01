@@ -5,7 +5,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    title: 'Crowdscript',
+    title: 'CrowdScript',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -23,13 +23,23 @@ export default {
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: {
+    color: '#1abc9c',
+    height: '5px',
+    continuous: true
+  },
   /*
   ** Global CSS
   */
   css: [
     '~/assets/css/main.css'
   ],
+  /*
+  ** Environment Variables
+  */
+  env: {
+    API_URL: 'crowdscript-api.now.sh/api'
+  },
   /*
   ** Nuxt.js modules
   */
