@@ -27,8 +27,6 @@ const getSegmentFromEpisode = async (episode) => {
 
 module.exports.checkEpisodeCompletion = async (episode) => {
   const segments = await Segment.find({ episode, submissions: { $exists: true, $eq: [] } })
-  console.log(segments)
-  console.log(episode)
   let completed = false
   if (segments.length === 0) completed = true
   await Episode.updateOne({ _id: episode }, { completed })
