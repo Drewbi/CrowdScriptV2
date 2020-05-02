@@ -21,7 +21,7 @@ router.post('/api/authentication', async (req, res) => {
   if (!passwordCorrect) return res.status(400).json({ message: 'Password Incorrect' })
 
   config.subject = user.email
-  config.audience = req.headers.host
+  config.audience = process.env.VERCEL_URL || req.headers.host
   const token = sign({ id: user.id, admin: user.admin }, config)
   return res.status(200).json({ token })
 })

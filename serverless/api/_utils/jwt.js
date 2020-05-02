@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
-const privateKEY = Buffer.from(process.env.PRIVATE_KEY, 'base64').toString()
-const publicKEY = Buffer.from(process.env.PUBLIC_KEY, 'base64').toString()
+const privateKEY = process.env.VERCEL_URL ? process.env.PRIVATE_KEY : Buffer.from(process.env.PRIVATE_KEY, 'base64').toString()
+const publicKEY = process.env.VERCEL_URL ? process.env.PUBLIC_KEY : Buffer.from(process.env.PUBLIC_KEY, 'base64').toString()
 
 module.exports = {
   sign: (payload, $Options) => {
@@ -16,7 +16,7 @@ module.exports = {
       issuer: $Options.issuer,
       subject: $Options.subject,
       audience: $Options.audience,
-      expiresIn: '30d', // 30 days validity
+      expiresIn: '10d', // 30 days validity
       algorithm: 'RS256'
     }
     return jwt.sign(payload, privateKEY, signOptions)
