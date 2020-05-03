@@ -8,7 +8,12 @@ const router = require('./_routes/auth')
 
 const app = express()
 app.use(cookieParser())
-app.use(cors())
+
+const corsOptions = {
+  origin: true,
+  credentials: true
+}
+app.use(cors(corsOptions))
 app.use(router)
 
 module.exports = app

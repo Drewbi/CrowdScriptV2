@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/lib/util/colors'
 
 export default {
   /*
@@ -38,7 +38,6 @@ export default {
   ** Environment Variables
   */
   env: {
-    API_URL: 'crowdscript-api.now.sh/api'
   },
   /*
   ** Nuxt.js modules
@@ -54,6 +53,8 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+    baseURL: 'https://crowdscript-api.now.sh/api',
+    withCredentials: true
   },
   /*
   ** vuetify module configuration
@@ -61,13 +62,14 @@ export default {
   */
   vuetify: {
     theme: {
-      primary: colors.blue.darken2,
-      accent: colors.grey.darken3,
-      secondary: colors.amber.darken3,
-      info: colors.teal.lighten1,
-      warning: colors.amber.base,
-      error: colors.deepOrange.accent4,
-      success: colors.green.accent3
+      themes: {
+        light: {
+          primary: colors.teal.lighten2,
+          secondary: '#b0bec5',
+          accent: colors.teal.accent1,
+          error: colors.red.lighten1
+        }
+      }
     }
   }
 }
