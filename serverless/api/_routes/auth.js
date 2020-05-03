@@ -23,7 +23,7 @@ router.post('/api/authentication', async (req, res) => {
   config.subject = user.email
   config.audience = process.env.VERCEL_URL || req.headers.host
   const token = sign({ id: user.id, admin: user.admin }, config)
-  return res.status(200).json({ token })
+  return res.status(200).cookie('access_token', token, { expires: new Date(Date.now() + 864000), secure: true }).json({ token })
 })
 
 module.exports = router

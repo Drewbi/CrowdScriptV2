@@ -1,8 +1,8 @@
 const { decode, verify, retrieve } = require('./jwt')
 
 const verifyJWT = (req) => {
-  if (!req.headers.authorization) return null
-  const token = retrieve(req.headers.authorization)
+  if (!req.cookies.access_token && !req.headers.authorization) return null
+  const token = retrieve(req.cookies.access_token || req.headers.authorization)
   const payload = decode(token) ? decode(token).payload : null
   if (!payload) return null
   const subject = payload.sub
