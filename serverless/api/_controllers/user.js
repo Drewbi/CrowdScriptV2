@@ -3,22 +3,14 @@ const User = mongoose.model('User')
 
 const { generateSalt, generateHash } = require('../_utils/password')
 
-const sanitiseUser = ({
-  credit,
-  admin,
-  submissions,
-  _id,
-  name,
-  email
-}) => {
-  if (!_id) return null
-  return { credit, admin, submissions, _id, name, email }
-}
-
 const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find()
-    const sanitisedUsers = users.map(user => sanitiseUser(user))
+    const users = await User.find().lean()
+    const sanitisedUsers = users.map(user => {
+      delete user.salt
+      delete user.hash
+      return user
+    })
     return res.status(200).json({ users: sanitisedUsers })
   } catch (err) {
     res.status(400).json({ message: 'Error occured finding user' })
@@ -28,11 +20,12 @@ const getAllUsers = async (req, res, next) => {
 const getUserById = async (req, res, next) => {
   const { id } = req.params
   try {
-    const user = await User.findOne({ _id: id })
+    const user = await User.findOne({ _id: id }).lean()
     if (!user) res.status(404).json({ message: 'Unable to find user' })
     else {
-      const sanitisedUser = sanitiseUser(user)
-      res.status(200).json({ user: sanitisedUser })
+      delete user.salt
+      delete user.hash
+      res.status(200).json({ user })
     }
   } catch (err) {
     if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
@@ -43,11 +36,12 @@ const getUserById = async (req, res, next) => {
 const getUserFromJWT = async (req, res, next) => {
   const id = res.locals.user
   try {
-    const user = await User.findOne({ _id: id })
+    const user = await User.findOne({ _id: id }).lean()
     if (!user) res.status(404).json({ message: 'Unable to find user' })
     else {
-      const sanitisedUser = sanitiseUser(user)
-      res.status(200).json({ user: sanitisedUser })
+      delete user.salt
+      delete user.hash
+      res.status(200).json({ user })
     }
   } catch (err) {
     if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
@@ -68,7 +62,7 @@ const createUser = async (req, res, next) => {
   user.hash = generateHash(password, salt)
   try {
     const result = await user.save()
-    return res.status(200).json({ result })
+    return res.status(200).json({ id: result._id, name, email, credit })
   } catch (err) {
     if (err.code === 11000) { return res.status(409).json({ message: 'Email already registered' }) }
     return res.status(400).json({ message: 'Error registering', error: err })
