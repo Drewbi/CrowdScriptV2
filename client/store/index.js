@@ -1,5 +1,3 @@
-const Cookies = require('js-cookie')
-
 export const state = () => ({
   error: ''
 })
@@ -10,9 +8,6 @@ export const getters = {
   },
   errorMessage: (state) => {
     return state.error
-  },
-  isAuthenticated: (state) => {
-    return Cookies.get('access_token')
   }
 }
 
