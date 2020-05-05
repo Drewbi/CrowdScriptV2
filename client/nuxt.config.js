@@ -53,8 +53,11 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    baseURL: 'https://crowdscript-api.now.sh/api',
-    withCredentials: true
+    proxy: true
+  },
+
+  proxy: {
+    '/api/': 'https://crowdscript-api.now.sh'
   },
   /*
   ** vuetify module configuration
