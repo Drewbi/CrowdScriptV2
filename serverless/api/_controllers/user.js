@@ -3,9 +3,26 @@ const User = mongoose.model('User')
 
 const { generateSalt, generateHash } = require('../_utils/password')
 
+const sanitiseUser = ({
+  credit,
+  admin,
+  submissions,
+  _id,
+  name,
+  email
+}) => {
+  if (!_id) return null
+  return { credit, admin, submissions, _id, name, email }
+}
+
 const getAllUsers = async (req, res, next) => {
-  const users = await User.find()
-  return res.status(200).json({ users })
+  try {
+    const users = await User.find()
+    const sanitisedUsers = users.map(user => sanitiseUser(user))
+    return res.status(200).json({ users: sanitisedUsers })
+  } catch (err) {
+    res.status(400).json({ message: 'Error occured finding user' })
+  }
 }
 
 const getUserById = async (req, res, next) => {
@@ -13,10 +30,13 @@ const getUserById = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: id })
     if (!user) res.status(404).json({ message: 'Unable to find user' })
-    else res.status(200).json({ user })
+    else {
+      const sanitisedUser = sanitiseUser(user)
+      res.status(200).json({ user: sanitisedUser })
+    }
   } catch (err) {
     if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
-    else res.status(400).json({ message: 'Unable to find user' })
+    else res.status(400).json({ message: 'Error occured finding user' })
   }
 }
 
@@ -25,10 +45,13 @@ const getUserFromJWT = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: id })
     if (!user) res.status(404).json({ message: 'Unable to find user' })
-    res.status(200).json({ user })
+    else {
+      const sanitisedUser = sanitiseUser(user)
+      res.status(200).json({ user: sanitisedUser })
+    }
   } catch (err) {
     if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
-    else res.status(400).json({ message: 'Unable to find user' })
+    else res.status(400).json({ message: 'Error occured finding user' })
   }
 }
 

@@ -6,7 +6,7 @@ const verifyJWT = (req) => {
   const payload = decode(token) ? decode(token).payload : null
   if (!payload) return null
   const subject = payload.sub
-  const audience = req.headers.host
+  const audience = process.env.VERCEL_URL ? process.env.VERCEL_URL : req.headers.host
   if (verify(token, { issuer: 'crowdscript', subject, audience })) return payload
   return null
 }

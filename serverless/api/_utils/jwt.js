@@ -16,14 +16,14 @@ module.exports = {
       issuer: $Options.issuer,
       subject: $Options.subject,
       audience: $Options.audience,
-      expiresIn: '10d', // 30 days validity
+      expiresIn: '10d', // 10 days validity
       algorithm: 'RS256'
     }
     return jwt.sign(payload, privateKEY, signOptions)
   },
 
   verify: (token, $Option) => {
-  /*
+    /*
   vOption = {
       issuer: "Authorization/Resource/This server",
       subject: "iam@user.me",
@@ -39,6 +39,7 @@ module.exports = {
     }; try {
       return jwt.verify(token, publicKEY, verifyOptions)
     } catch (err) {
+      console.log(err)
       return false
     }
   },
