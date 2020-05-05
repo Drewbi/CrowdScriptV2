@@ -49,11 +49,10 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
-const Cookies = require('js-cookie')
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
-  middleware: 'notAuthenticated',
+  middleware: ['notAuthenticated'],
   data: () => ({
     valid: true,
     email: '',
@@ -66,7 +65,15 @@ export default {
       v => !!v || 'Password is required'
     ]
   }),
+  computed: {
+    ...mapGetters({
+      isAdmin: 'auth/isAdmin'
+    })
+  },
   methods: {
+    ...mapActions({
+      logIn: 'auth/logIn'
+    }),
     ...mapMutations(['setError']),
     register() {
       this.$router.push('/register')
@@ -74,14 +81,10 @@ export default {
     postLogin: async function (e) {
       e.preventDefault()
       try {
-        const response = await this.$axios.post('/authentication', {
-          email: this.email,
-          password: this.password
-        })
-        Cookies.set('access_token', response.data.token)
-        this.$router.push('/about')
+        const response = await this.logIn({ email: this.email, password: this.password })
+        if (!response) this.setError('Login failed.')
+        else this.isAdmin ? this.$router.push('/admin') : this.$router.push('/')
       } catch (err) {
-        console.log(err)
         this.setError('Login failed.')
       }
     }

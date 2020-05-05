@@ -9,8 +9,11 @@
         Transcript
       </v-btn>
       <v-spacer />
-      <v-btn class="menu-button" text nuxt to="login">
+      <v-btn v-if="!isAuthenticated" class="menu-button" text nuxt to="login">
         Login
+      </v-btn>
+      <v-btn v-else @click="logout" class="menu-button" text nuxt>
+        Logout
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -32,7 +35,9 @@
       </v-snackbar>
     </v-content>
     <v-footer dark app>
-      <span>&copy; 2020 Because Language</span>
+      <span class="footerText">&copy; 2020 Because Language</span>
+      <v-spacer />
+      <span v-show="$vuetify.breakpoint.smAndUp" class="footerText">Made by <a href="https://www.github.com/Drewbi">Drew Alexander</a></span>
     </v-footer>
   </v-app>
 </template>
@@ -40,13 +45,17 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex'
 export default {
+  middleware: ['setAuth'],
   data() {
     return {
       errorBar: false
     }
   },
   computed: {
-    ...mapGetters(['isError', 'errorMessage'])
+    ...mapGetters(['isError', 'errorMessage']),
+    ...mapGetters({
+      isAuthenticated: 'auth/isAuthenticated'
+    })
   },
   watch: {
     errorBar(newVal, oldVal) {
@@ -57,7 +66,14 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setError'])
+    ...mapMutations(['setError']),
+    ...mapMutations({
+      clearUser: 'auth/clearUser'
+    }),
+    logout() {
+      this.clearUser()
+      this.$router.push('/about')
+    }
   }
 }
 </script>
@@ -77,5 +93,14 @@ export default {
 
 .menu-button:hover {
     color: white;
+}
+
+.footerText {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  color: #888;
+}
+
+.footerText a {
+  text-decoration: none;
 }
 </style>
