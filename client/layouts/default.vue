@@ -8,6 +8,10 @@
       <v-btn class="menu-button" text nuxt to="/">
         Transcript
       </v-btn>
+      <span v-if="isAdmin" class="divider">/</span>
+      <v-btn v-if="isAdmin" class="menu-button" text nuxt to="admin">
+        Admin
+      </v-btn>
       <v-spacer />
       <v-btn v-if="!isAuthenticated" class="menu-button" text nuxt to="login">
         Login
@@ -54,7 +58,8 @@ export default {
   computed: {
     ...mapGetters(['isError', 'errorMessage']),
     ...mapGetters({
-      isAuthenticated: 'auth/isAuthenticated'
+      isAuthenticated: 'auth/isAuthenticated',
+      isAdmin: 'auth/isAdmin'
     })
   },
   watch: {

@@ -1,51 +1,51 @@
 <template>
-  <div
-    class="d-flex justify-center pt-10"
-  >
-    <v-form
-      ref="form"
-      v-model="valid"
-      @submit="postLogin"
-      class="d-flex flex-column"
-      style="width: calc(200px + 20vw);"
-      lazy-validation
-    >
-      <v-text-field
-        v-model="email"
-        :rules="emailRules"
-        type="email"
-        label="E-mail"
-        outlined
-        required
-      />
+  <v-container class="mt-5" style="width:calc(200px + 20vw)">
+    <v-row>
+      <v-col>
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit="postLogin"
+          class="d-flex flex-column"
+        >
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            type="email"
+            label="E-mail"
+            outlined
+            required
+          />
 
-      <v-text-field
-        v-model="password"
-        :rules="passwordRules"
-        type="password"
-        label="Password"
-        outlined
-        required
-      />
+          <v-text-field
+            v-model="password"
+            :rules="passwordRules"
+            type="password"
+            label="Password"
+            outlined
+            required
+          />
 
-      <v-btn
-        :disabled="!valid"
-        type="submit"
-        color="primary"
-        class="d-inline"
-      >
-        Login
-      </v-btn>
-      <v-btn
-        @click="register"
-        text
-        color="primary"
-        class="d-inline"
-      >
-        Create Account
-      </v-btn>
-    </v-form>
-  </div>
+          <v-btn
+            :disabled="!valid"
+            type="submit"
+            color="primary"
+            class="d-inline"
+          >
+            Login
+          </v-btn>
+          <v-btn
+            @click="$router.push('/register')"
+            text
+            color="primary"
+            class="d-inline"
+          >
+            Create Account
+          </v-btn>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -75,18 +75,24 @@ export default {
       logIn: 'auth/logIn'
     }),
     ...mapMutations(['setError']),
-    register() {
-      this.$router.push('/register')
-    },
     postLogin: async function (e) {
       e.preventDefault()
+      this.$nuxt.$loading.start()
       try {
         const response = await this.logIn({ email: this.email, password: this.password })
-        if (!response) this.setError('Login failed.')
-        else this.isAdmin ? this.$router.push('/admin') : this.$router.push('/')
+        if (!response) {
+          this.setError('Login failed')
+          this.$nuxt.$loading.fail()
+        } else {
+          this.isAdmin ? this.$router.push('/admin') : this.$router.push('/')
+        }
       } catch (err) {
-        this.setError('Login failed.')
+        if (err.response.status === 404) this.setError('Account has not been registered')
+        else if (err.response.status === 400) this.setError(err.response.data.message)
+        else this.setError('Login failed')
+        this.$nuxt.$loading.fail()
       }
+      this.$nuxt.$loading.finish()
     }
   }
 }
