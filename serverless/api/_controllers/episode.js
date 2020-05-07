@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
 const Episode = mongoose.model('Episode')
 
-const getAllEpisodes = async (req, res) => {
+const getAllEpisodes = async (req, res, next) => {
   const episodes = await Episode.find()
   return res.status(200).json({ episodes })
 }
 
-const createEpisode = async (req, res) => {
+const createEpisode = async (req, res, next) => {
   const { number, name, src } = req.body
   const episode = new Episode()
   episode.number = number
@@ -15,8 +15,8 @@ const createEpisode = async (req, res) => {
   episode.completed = false
 
   try {
-    const result = await episode.save()
-    return res.status(200).json({ result })
+    await episode.save()
+    next()
   } catch (err) {
     res.status(400).json({ message: 'Error adding episode', error: err })
   }

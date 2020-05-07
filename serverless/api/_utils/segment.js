@@ -3,7 +3,7 @@ const Segment = mongoose.model('Segment')
 const Session = mongoose.model('Session')
 const Episode = mongoose.model('Episode')
 
-module.exports.nextSegment = async (episodes) => {
+const nextSegment = async (episodes) => {
   for (const episode of episodes) {
     const validSegment = await getSegmentFromEpisode(episode)
     if (validSegment) return validSegment
@@ -25,9 +25,29 @@ const getSegmentFromEpisode = async (episode) => {
   return validSegments.length !== 0 ? validSegments[0] : null
 }
 
-module.exports.checkEpisodeCompletion = async (episode) => {
+const checkEpisodeCompletion = async (episode) => {
   const segments = await Segment.find({ episode, submissions: { $exists: true, $eq: [] } })
   let completed = false
   if (segments.length === 0) completed = true
   await Episode.updateOne({ _id: episode }, { completed })
 }
+
+const createSegment = async ({ number, text, episode, time }) => {
+  const segment = new Segment({
+    number, text, episode, time
+  })
+  return segment.save()
+}
+
+const bulkCreate = async (segmentArray) => {
+  const segmentPromises = segmentArray.map(segmentData => createSegment(segmentData))
+  try {
+    const segments = await Promise.all(segmentPromises)
+    return segments
+  } catch (err) {
+    console.log(err)
+    return null
+  }
+}
+
+module.exports = { nextSegment, checkEpisodeCompletion, createSegment, bulkCreate }
