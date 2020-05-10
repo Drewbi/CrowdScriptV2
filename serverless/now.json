@@ -9,6 +9,8 @@
     "MONGODB_URI": "@mongodb_uri",
     "DEV_MONGODB_URI": "@dev_mongodb_uri",
     "PRIVATE_KEY": "@private_key",
-    "PUBLIC_KEY": "@public_key"
+    "PUBLIC_KEY": "@public_key",
+    "S3_ACCESS_KEY_ID": "@access_key_id",
+    "S3_SECRET_ACCESS_KEY": "@secret_access_key"
   }
 }
