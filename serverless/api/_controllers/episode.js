@@ -7,11 +7,12 @@ const getAllEpisodes = async (req, res, next) => {
 }
 
 const createEpisode = async (req, res, next) => {
-  const { number, name, src } = req.body
+  const { number, name, src, srt } = req.body
   const episode = new Episode()
   episode.number = number
   episode.name = name
   episode.src = src
+  episode.srt = srt
   episode.completed = false
 
   try {
