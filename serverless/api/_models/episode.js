@@ -18,6 +18,10 @@ const episodeSchema = mongoose.Schema({
     type: String,
     required: true
   },
+  srt: {
+    type: String,
+    required: true
+  },
   segments: [
     {
       type: ObjectId,

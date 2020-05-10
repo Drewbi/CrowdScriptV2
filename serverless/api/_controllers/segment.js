@@ -4,6 +4,7 @@ const Episode = mongoose.model('Episode')
 
 const { nextSegment, createSegment, bulkCreate } = require('../_utils/segment')
 const { getSegmentsFromSRT } = require('../_utils/srt')
+const { getDownloadLink } = require('../_utils/file')
 const { findSessionByUser, createSession } = require('../_controllers/session')
 
 const getAllSegments = async (req, res) => {
@@ -18,19 +19,19 @@ const postSegment = async (req, res) => {
 }
 
 const generateSegments = async (req, res) => {
-  const episodeNum = req.body.number
-  const episode = await Episode.findOne({ number: episodeNum })
+  const { number, srt } = req.body
+  const episode = await Episode.findOne({ number })
   if (!episode._id) return res.status(500).json({ error: 'Segment generation could not locate episode' })
-  if (!req.file) {
-    await episode.deleteOne()
-    return res.status(404).json({ error: 'File not found' })
-  }
   try {
-    const segmentArray = getSegmentsFromSRT(req.file, episode._id)
+    const url = await getDownloadLink(srt)
+    const segmentArray = await getSegmentsFromSRT(url, episode._id)
     const segments = await bulkCreate(segmentArray)
     res.status(200).json({ message: `Generated episode and created ${segments.length} segments` })
   } catch (err) {
     await episode.deleteOne()
+    if (err.response && err.response.status === 403) return res.status(403).json({ error: 'Requested resource is restricted' })
+    if (err.response && err.response.status === 404) return res.status(404).json({ error: 'Requested resource was not found' })
+    console.log(err)
     return res.status(500).json({ error: 'Segment generation failed' })
   }
 }
