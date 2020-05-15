@@ -31,7 +31,8 @@ const createSubmission = async (req, res) => {
     await removeSession(res.locals.user)
     res.status(200).json({ result })
   } catch (err) {
-    res.status(400).json({ message: 'Error adding submission', error: err })
+    console.log(err)
+    res.status(400).json({ message: 'Error adding submission' })
   }
 }
 
