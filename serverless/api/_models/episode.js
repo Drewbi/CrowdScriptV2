@@ -32,8 +32,7 @@ episodeSchema.pre('deleteOne', { document: true, query: false }, async function 
   const segments = await Segment.find({ episode: this._id })
   const segmentIds = segments.map(segment => segment._id)
   await Segment.deleteMany({ episode: this._id })
-  console.log(segmentIds)
-  await Submission.deleteMany({ segments: { $in: segmentIds } })
+  await Submission.deleteMany({ segment: { $in: segmentIds } })
 })
 
 module.exports = mongoose.model('Episode', episodeSchema)
