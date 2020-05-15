@@ -40,9 +40,10 @@ const createSegment = async ({ number, text, episode, time }) => {
 }
 
 const bulkCreate = async (segmentArray) => {
-  const segmentPromises = segmentArray.map(segmentData => createSegment(segmentData))
   try {
-    const segments = await Promise.all(segmentPromises)
+    const segments = await Segment.insertMany(segmentArray)
+    const segmentIds = segments.map(segment => segment.id)
+    await Episode.update({ _id: segments[0].episode }, { segments: segmentIds })
     return segments
   } catch (err) {
     console.log(err)
