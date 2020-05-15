@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Segment = mongoose.model('Segment')
+const Submission = mongoose.model('Submission')
 const Session = mongoose.model('Session')
 const Episode = mongoose.model('Episode')
 
@@ -12,17 +13,17 @@ const nextSegment = async (episodes) => {
 }
 
 const getSegmentFromEpisode = async (episode) => {
-  const segments = await Segment.find(
-    { episode, submissions: { $exists: true, $eq: [] } }
-  ).sort('number')
-  const sessionPromises = segments.map(segment => {
-    return Session.find({ segment: segment.id })
+  const segments = await Segment.find({ episode: episode._id }).sort('number')
+  const segmentIds = segments.map(segment => segment._id)
+  const submissions = await Submission.find({ segment: { $in: segmentIds } })
+  const filteredSegments = segments.filter(segment => {
+    return !(submissions.some(submission => submission.segment.toString() === segment._id.toString()))
   })
-  const sessions = await Promise.all(sessionPromises)
-  const validSegments = segments.filter((segment, index) => {
-    return sessions[index].length === 0
+  const sessions = await Session.find()
+  const validSegments = filteredSegments.filter((segment, index) => {
+    return !sessions.some(session => session.segment.toString() === segment._id.toString())
   })
-  return validSegments.length !== 0 ? validSegments[0] : null
+  return validSegments[0]
 }
 
 const checkEpisodeCompletion = async (episode) => {
