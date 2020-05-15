@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-const { ObjectId } = mongoose.Schema.Types
-
 const userSchema = mongoose.Schema({
   email: {
     type: String,
@@ -27,19 +25,12 @@ const userSchema = mongoose.Schema({
   salt: {
     type: String,
     required: true
-  },
-  submissions: [
-    {
-      type: ObjectId,
-      ref: 'Submission'
-    }
-  ]
+  }
 })
 
 userSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Submission = mongoose.model('Submission')
-  const submissions = await Submission.find({ user: this._id })
-  await Promise.all(submissions.map(submission => submission.deleteOne()))
+  await Submission.deleteMany({ user: this._id })
 })
 
 module.exports = mongoose.model('User', userSchema)

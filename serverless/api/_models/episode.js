@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-const { ObjectId } = mongoose.Schema.Types
-
 const episodeSchema = mongoose.Schema({
   number: {
     type: Number,
@@ -22,12 +20,6 @@ const episodeSchema = mongoose.Schema({
     type: String,
     required: true
   },
-  segments: [
-    {
-      type: ObjectId,
-      ref: 'Segment'
-    }
-  ],
   completed: {
     type: Boolean,
     required: true
@@ -36,8 +28,12 @@ const episodeSchema = mongoose.Schema({
 
 episodeSchema.pre('deleteOne', { document: true, query: false }, async function (query, next) {
   const Segment = mongoose.model('Segment')
+  const Submission = mongoose.model('Submission')
   const segments = await Segment.find({ episode: this._id })
-  await Promise.all(segments.map(segment => segment.deleteOne()))
+  const segmentIds = segments.map(segment => segment._id)
+  await Segment.deleteMany({ episode: this._id })
+  console.log(segmentIds)
+  await Submission.deleteMany({ segments: { $in: segmentIds } })
 })
 
 module.exports = mongoose.model('Episode', episodeSchema)
