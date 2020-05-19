@@ -1,7 +1,4 @@
 export default ({ store, redirect }) => {
-  // If the user is an admin
-  if (!store.state.auth.admin) {
-    if (!store.state.auth.user) return redirect('/login')
-    return redirect('/about')
-  }
+  if (!store.getters['auth/isAuthenticated']) return redirect('/login')
+  if (!store.getters['auth/isAdmin']) return redirect('/about')
 }

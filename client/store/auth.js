@@ -1,39 +1,34 @@
-const Cookies = require('js-cookie')
-
 export const state = () => ({
-  admin: false,
-  token: '',
-  id: ''
+  user: null,
+  token: ''
 })
 
 export const getters = {
   isAuthenticated: (state) => {
-    return state.id !== ''
+    return !!state.user
   },
 
   isAdmin: (state) => {
-    return state.admin
+    return state.user && state.user.admin
   }
 }
 
 export const mutations = {
   setCreds(state, { expiry, token }) {
     state.token = token
-    Cookies.set('access_token', token, {
-      expires: new Date(expiry)
+    this.$cookies.set('access_token', token, {
+      expires: new Date(expiry),
+      sameSite: 'lax'
     })
   },
 
-  setUser(state, { _id, admin }) {
-    state.id = _id
-    state.admin = admin
+  setUser(state, user) {
+    state.user = user
   },
 
   clearUser(state) {
-    state.admin = false
-    state.token = ''
-    state.id = ''
-    Cookies.remove('access_token')
+    state.user = null
+    this.$cookies.remove('access_token')
   }
 }
 
@@ -57,10 +52,9 @@ export const actions = {
   async checkUser({ commit }) {
     try {
       const { data } = await this.$axios.get('/api/user/current')
-      const { _id, admin } = data.user
-      if (!_id) return null
-      commit('setUser', { _id, admin })
-      return { _id, admin }
+      if (!data.user) return null
+      commit('setUser', data.user)
+      return data.user
     } catch (err) {
       return null
     }

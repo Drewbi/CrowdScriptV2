@@ -44,8 +44,8 @@ export default {
   */
   modules: [
     '@nuxtjs/vuetify',
-    // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    'cookie-universal-nuxt',
     '@nuxtjs/eslint-module'
   ],
   /*

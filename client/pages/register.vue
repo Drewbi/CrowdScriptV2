@@ -116,7 +116,6 @@ export default {
       this.$nuxt.$loading.start()
       try {
         const response = await this.$axios.post('/api/user', { name: this.name, email: this.email, password: this.password, credit: this.credit })
-        console.log(response)
         if (!response) {
           this.setError('Sign-up failed')
           this.$nuxt.$loading.fail()

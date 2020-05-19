@@ -1,8 +1,8 @@
-const Cookies = require('js-cookie')
-
-export default ({ store }) => {
+export default async ({ app, store }) => {
   if (!store.getters['auth/isAuthenticated']) {
-    const token = Cookies.get('access_token')
-    if (token) store.dispatch('auth/checkUser')
+    const token = app.$cookies.get('access_token')
+    if (token) {
+      await store.dispatch('auth/checkUser')
+    }
   }
 }
