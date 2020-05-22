@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar dark app>
-      <v-btn class="menu-button" text nuxt to="about">
+      <v-btn class="menu-button" text nuxt to="/about">
         About
       </v-btn>
       <span class="divider">/</span>
@@ -9,11 +9,11 @@
         Transcript
       </v-btn>
       <span v-if="isAdmin" class="divider">/</span>
-      <v-btn v-if="isAdmin" class="menu-button" text nuxt to="admin">
+      <v-btn v-if="isAdmin" class="menu-button" text nuxt to="/admin">
         Admin
       </v-btn>
       <v-spacer />
-      <v-btn v-if="!isAuthenticated" class="menu-button" text nuxt to="login">
+      <v-btn v-if="!isAuthenticated" class="menu-button" text nuxt to="/login">
         Login
       </v-btn>
       <v-btn v-else @click="logout" class="menu-button" text nuxt>
