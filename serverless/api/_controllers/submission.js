@@ -8,6 +8,28 @@ const getAllSubmissions = async (req, res) => {
   return res.status(200).json({ submissions })
 }
 
+const getEpisodeSubmissions = async (req, res) => {
+  const { id } = req.params
+  try {
+    const submissions = await Submission.find({ episode: id })
+    res.status(200).json({ submissions })
+  } catch (err) {
+    if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
+    else res.status(400).json({ message: 'Error occured finding submission' })
+  }
+}
+
+const getUserSubmissions = async (req, res) => {
+  const { id } = req.params
+  try {
+    const submissions = await Submission.find({ user: id })
+    res.status(200).json({ submissions })
+  } catch (err) {
+    if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
+    else res.status(400).json({ message: 'Error occured finding submission' })
+  }
+}
+
 const verifySubmission = async (req, res, next) => {
   const { segment } = req.body
   const userId = res.locals.user
@@ -46,4 +68,4 @@ const deleteSubmission = async (req, res) => {
     : res.status(400).json({ message: 'Failed to delete submission' })
 }
 
-module.exports = { getAllSubmissions, verifySubmission, createSubmission, deleteSubmission }
+module.exports = { getAllSubmissions, getEpisodeSubmissions, getUserSubmissions, verifySubmission, createSubmission, deleteSubmission }

@@ -12,6 +12,17 @@ const getAllSegments = async (req, res) => {
   res.status(200).json({ segments })
 }
 
+const getEpisodeSegments = async (req, res) => {
+  const { id } = req.params
+  try {
+    const segments = await Segment.find({ episode: id })
+    res.status(200).json({ segments })
+  } catch (err) {
+    if (err.name === 'CastError') res.status(401).json({ message: 'Invalid Id' })
+    else res.status(400).json({ message: 'Error occured finding segment' })
+  }
+}
+
 const postSegment = async (req, res) => {
   const { number, text, episode, time } = req.body
   const segment = await createSegment({ number, text, episode, time })
@@ -65,4 +76,4 @@ const deleteSegment = async (req, res, next) => {
     : res.status(400).json({ message: 'Failed to delete segment' })
 }
 
-module.exports = { getAllSegments, postSegment, getNextSegment, deleteSegment, generateSegments }
+module.exports = { getAllSegments, getEpisodeSegments, postSegment, getNextSegment, deleteSegment, generateSegments }

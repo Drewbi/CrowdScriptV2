@@ -1,8 +1,9 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/user/current", "destination": "/api/user" },
     { "source": "/api/user/(.*)", "destination": "/api/user" },
-    { "source": "/api/segment/next", "destination": "/api/segment" }
+    { "source": "/api/episode/(.*)", "destination": "/api/episode" },
+    { "source": "/api/segment/(.*)", "destination": "/api/segment" },
+    { "source": "/api/submission/(.*)", "destination": "/api/submission" }
   ]
 }

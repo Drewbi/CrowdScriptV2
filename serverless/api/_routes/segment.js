@@ -2,12 +2,14 @@ const { Router, json } = require('express')
 const router = Router()
 router.use(json())
 
-const { getAllSegments, postSegment, getNextSegment, deleteSegment } = require('../_controllers/segment')
+const { getAllSegments, getEpisodeSegments, postSegment, getNextSegment, deleteSegment } = require('../_controllers/segment')
 const { deleteOldSessions } = require('../_controllers/session')
 const { setUser, verifyUser, verifyAdmin } = require('../_utils/restrict')
 const { validateFields } = require('../_utils/validation')
 
 router.get('/api/segment', setUser, verifyAdmin, getAllSegments)
+
+router.get('/api/segment/episode/:id', setUser, verifyAdmin, getEpisodeSegments)
 
 router.post('/api/segment', setUser, verifyAdmin, validateFields(['number', 'text', 'episode', 'time']), postSegment)
 

@@ -6,6 +6,12 @@ const getAllEpisodes = async (req, res, next) => {
   return res.status(200).json({ episodes })
 }
 
+const getEpisode = async (req, res, next) => {
+  const episode = await Episode.find({ number: req.params.number })
+  if (!episode) res.status(404).json({ message: 'Unable to find episode' })
+  return res.status(200).json({ episode })
+}
+
 const createEpisode = async (req, res, next) => {
   const { number, name, src, srt } = req.body
   const episode = new Episode()
@@ -33,4 +39,4 @@ const deleteEpisode = async (req, res) => {
     : res.status(400).json({ message: 'Failed to delete episode' })
 }
 
-module.exports = { getAllEpisodes, createEpisode, deleteEpisode }
+module.exports = { getAllEpisodes, getEpisode, createEpisode, deleteEpisode }
