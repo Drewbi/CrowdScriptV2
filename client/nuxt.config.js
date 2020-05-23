@@ -57,7 +57,7 @@ export default {
   },
 
   proxy: {
-    '/api/': 'https://crowdscript-api.now.sh'
+    '/api/': process.env.NODE_ENV === 'production' ? 'https://crowdscript-api.now.sh' : 'https://crowdscript-api.rex986.now.sh'
   },
   /*
   ** vuetify module configuration
