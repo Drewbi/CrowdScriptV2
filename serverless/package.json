@@ -11,7 +11,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.9.4",
+    "mongoose": "^5.9.16",
     "subtitles-parser": "^0.0.2"
   },
   "devDependencies": {

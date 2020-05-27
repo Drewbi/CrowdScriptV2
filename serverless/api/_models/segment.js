@@ -15,11 +15,11 @@ const segmentSchema = mongoose.Schema({
     ref: 'Episode'
   },
   time: {
-    in: {
+    start: {
       type: Number,
       require: true
     },
-    out: {
+    end: {
       type: Number,
       require: true
     }

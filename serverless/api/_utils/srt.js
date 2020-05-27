@@ -5,7 +5,7 @@ const getSegmentsFromSRT = async (link, episodeId) => {
   const data = await parseSRT(link)
   return data.map(srtSegment => {
     const { id: number, startTime, endTime, text } = srtSegment
-    return { number, time: { in: startTime, out: endTime }, text, episode: episodeId }
+    return { number, time: { start: startTime, end: endTime }, text, episode: episodeId }
   })
 }
 

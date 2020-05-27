@@ -1,9 +1,9 @@
 const { getDownloadLink, generateKey, getUploadLink, deleteLink } = require('../_utils/file')
 
 const createDownloadLink = async (req, res) => {
-  const { fileKey } = req.body
+  const { key } = req.params
   try {
-    const url = await getDownloadLink(fileKey)
+    const url = await getDownloadLink(key)
     return res.status(200).json({ url })
   } catch (err) {
     if (err.statusCode === 404) {
@@ -26,9 +26,9 @@ const createUploadLink = async (req, res) => {
 }
 
 const deleteUpload = async (req, res) => {
-  const { fileKey } = req.body
+  const { key } = req.params
   try {
-    await deleteLink(fileKey)
+    await deleteLink(key)
     res.status(200).json({ message: 'File deleted' })
   } catch (err) {
     if (err.statusCode === 404) return res.status(404).json({ error: 'File not found' })

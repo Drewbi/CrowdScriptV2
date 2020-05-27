@@ -9,7 +9,7 @@ const { validateFields } = require('../_utils/validation')
 
 router.get('/api/episode', setUser, verifyAdmin, getAllEpisodes)
 
-router.get('/api/episode/:number', setUser, verifyAdmin, getEpisode)
+router.get('/api/episode/:id', setUser, verifyAdmin, getEpisode)
 
 router.post('/api/episode', setUser, verifyAdmin, validateFields(['number', 'name', 'src', 'srt']), createEpisode, generateSegments)
 

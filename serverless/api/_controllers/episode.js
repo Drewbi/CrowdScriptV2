@@ -7,7 +7,7 @@ const getAllEpisodes = async (req, res, next) => {
 }
 
 const getEpisode = async (req, res, next) => {
-  const episode = await Episode.find({ number: req.params.number })
+  const episode = await Episode.findById(req.params.id)
   if (!episode) res.status(404).json({ message: 'Unable to find episode' })
   return res.status(200).json({ episode })
 }

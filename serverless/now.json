@@ -4,6 +4,7 @@
     { "source": "/api/user/(.*)", "destination": "/api/user" },
     { "source": "/api/episode/(.*)", "destination": "/api/episode" },
     { "source": "/api/segment/(.*)", "destination": "/api/segment" },
+    { "source": "/api/file/(.*)", "destination": "/api/file" },
     { "source": "/api/submission/(.*)", "destination": "/api/submission" }
   ]
 }
