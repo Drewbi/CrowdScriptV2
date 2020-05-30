@@ -10,6 +10,12 @@
           {{ episode.number + " - " + episode.name }}
         </h1>
       </v-row>
+      <v-row>
+        {{ submissions }}
+      </v-row>
+      <v-row>
+        {{ segments }}
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -58,7 +64,6 @@ export default {
         const { episode: [episode] } = episodeRes.data
         this.episode = episode
       } catch (err) {
-        console.log(err)
         this.$nuxt.$loading.fail()
       }
       const segmentRes = await this.$axios.get('/api/segment/episode/' + this.episode._id)
