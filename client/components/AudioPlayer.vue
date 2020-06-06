@@ -18,10 +18,18 @@
         {{ playing ? 'pause' : 'mdi-play' }}
       </v-icon>
     </v-btn>
-    <visualiser id="visualiser" :data="waveData" :time="time" :currentTime="currentTime" @seek="skipTo" />
+    <visualiser
+      id="visualiser"
+      :data="waveData"
+      :startTime="startTime"
+      :endTime="endTime"
+      :currentTime="currentTime"
+      @seek="skipTo"
+    />
     <audio ref="audioSource" :src="src" @ended="playing = false" type="audio/mpeg" crossOrigin="anonymous" />
-    <v-btn text large color="white">
-      <p class="font-weight-bold ma-0">
+    <v-btn @click="$emit('submit')" width="100px" text large color="white">
+      <v-progress-circular v-if="submitting" indeterminate />
+      <p v-else class="font-weight-bold ma-0">
         Submit
       </p>
     </v-btn>
@@ -36,9 +44,17 @@ export default {
     visualiser: AudioVisualiser
   },
   props: {
-    time: {
-      type: Object,
-      required: true
+    startTime: {
+      type: Number,
+      default: 0
+    },
+    endTime: {
+      type: Number,
+      default: 0
+    },
+    submitting: {
+      type: Boolean,
+      default: false
     },
     src: {
       type: String,
@@ -57,17 +73,21 @@ export default {
   }),
   watch: {
     currentTime(value) {
-      if (value > this.time.end / 1000) {
+      if (value > this.endTime / 1000) {
         this.audioElem.pause()
         this.playing = false
-        this.audioElem.currentTime = this.time.start / 1000
+        this.audioElem.currentTime = this.startTime / 1000
       }
+    },
+    startTime(value) {
+      this.waveData = this.generateFakeWave()
+      this.audioElem.currentTime = this.startTime / 1000
     }
   },
   mounted() {
     this.context = new AudioContext()
     this.audioElem = this.$refs.audioSource
-    this.audioElem.currentTime = this.time.start / 1000
+    this.audioElem.currentTime = this.startTime / 1000
     const track = this.context.createMediaElementSource(this.audioElem)
     this.analyser = this.context.createAnalyser()
     this.analyser.minDecibels = -90
@@ -75,6 +95,7 @@ export default {
     this.analyser.fftSize = 256
     const bufferLength = this.analyser.frequencyBinCount
     this.dataArray = new Uint8Array(bufferLength)
+    this.waveData = this.generateFakeWave()
     track.connect(this.analyser)
     this.analyser.connect(this.context.destination)
     this.refreshTime()
@@ -91,13 +112,16 @@ export default {
         this.pauseAudio()
       }
     },
+    generateFakeWave() {
+      return [...new Array(100)].map(() => Math.random())
+    },
     refreshTime() {
       const self = this
       this.intervalId = setInterval(() => {
         this.currentTime = self.audioElem.currentTime
-        const duration = this.time.end / 1000 - this.time.start / 1000
+        const duration = this.endTime / 1000 - this.startTime / 1000
         this.analyser.getByteFrequencyData(this.dataArray)
-        this.waveData[Math.round(((this.currentTime - this.time.start) / 1000 / duration) * 100)] = this.dataArray.reduce((acc, value, index) => (acc + value) / index)
+        this.waveData[Math.round(((this.currentTime - this.startTime) / 1000 / duration) * 100)] = this.dataArray.reduce((acc, value, index) => (acc + value) / index)
       }, 10)
     },
     playAudio() {

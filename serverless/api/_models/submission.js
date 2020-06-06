@@ -13,6 +13,10 @@ const submissionSchema = mongoose.Schema({
   segment: {
     type: ObjectId,
     ref: 'Segment'
+  },
+  episode: {
+    type: ObjectId,
+    ref: 'Episode'
   }
 })
 

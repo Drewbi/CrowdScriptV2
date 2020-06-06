@@ -27,17 +27,23 @@ export default {
   async mounted() {
     const userPromise = this.$axios.get('/api/user')
     const episodePromise = this.$axios.get('/api/episode')
-    const [userData, episodeData] = await Promise.all([userPromise, episodePromise])
-    const { users } = userData.data
-    const { episodes } = episodeData.data
     const segmentPromise = this.$axios.get('/api/segment')
     const submissionPromise = this.$axios.get('/api/submission')
-    const [segmentData, submissionData] = await Promise.all([segmentPromise, submissionPromise])
+    const [userData, episodeData, segmentData, submissionData] = await Promise.all([userPromise, episodePromise, segmentPromise, submissionPromise])
+    const { users } = userData.data
+    const { episodes } = episodeData.data
     const { segments } = segmentData.data
     const { submissions } = submissionData.data
+    segments.forEach((segment) => {
+      const segmentSubmissions = submissions.filter(submission => submission.segment === segment._id)
+      segment.submissions = segmentSubmissions
+    })
     episodes.forEach((episode) => {
       const episodeSegments = segments.filter(segment => segment.episode === episode._id)
-      const episodeSubmissions = submissions.filter(submission => submission.episode === episode._id)
+      const episodeSubmissions = []
+      segments.forEach((segment) => {
+        episodeSubmissions.push(...segment.submissions)
+      })
       episode.segments = episodeSegments
       episode.submissions = episodeSubmissions
     })

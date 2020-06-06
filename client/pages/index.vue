@@ -1,7 +1,8 @@
 <template>
   <div v-if="audioSrc">
-    hello
-    <audio-player :time="time" :src="audioSrc" />
+    <v-card-title>{{ `Episode ${episode.number}: ${episode.name}` }}</v-card-title>
+    <v-textarea v-model="text" :hint="'Change Distance: ' + textDistance" auto-grow outlined />
+    <audio-player :startTime="time.start" :endTime="time.end" :src="audioSrc" :submitting="submitProgress" @submit="submitText" />
   </div>
 </template>
 
@@ -17,10 +18,31 @@ export default {
     episode: null,
     audioSrc: '',
     episodeId: '',
+    segmentId: '',
     segmentNumber: 0,
     text: '',
+    originalText: '',
+    submitProgress: false,
     time: null
   }),
+  computed: {
+    textDistance() {
+      if (this.originalText !== '' && this.text === '') return this.originalText.length
+      const matrix = Array(this.originalText.length + 1).fill(0).map(val => Array(this.text.length + 1).fill(0))
+      for (let i = 1; i < matrix.length; i++) {
+        for (let j = 1; j < matrix[i].length; j++) {
+          if (i - 1 === 0) matrix[i - 1][j] = j
+          if (j - 1 === 0) matrix[i][j - 1] = i
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + (this.originalText[i] !== this.text[j] ? 1 : 0)
+          )
+        }
+      }
+      return matrix[this.originalText.length][this.text.length]
+    }
+  },
   watch: {
     episodeId(value) {
       this.loadEpisode(value)
@@ -37,15 +59,18 @@ export default {
       this.$nuxt.$loading.start()
       try {
         const response = await this.$axios('/api/segment/next')
-        const { episode, number, text, time } = response.data.segment
+        const { episode, number, text, time, _id } = response.data.segment
         this.episodeId = episode
+        this.segmentId = _id
         this.segmentNumber = number
         this.text = text
+        this.originalText = text
         this.time = time
       } catch (err) {
         this.setError('Loading failed, please try again')
         this.$nuxt.$loading.fail()
       }
+      this.submitProgress = false
       this.$nuxt.$loading.finish()
     },
     async loadEpisode(episodeId) {
@@ -59,7 +84,20 @@ export default {
         this.setError('Could not load episode data')
         console.log(err)
       }
+      this.submitProgress = false
       this.$nuxt.$loading.finish()
+    },
+    submitText() {
+      if (!this.submitProgress) {
+        this.submitProgress = true
+        this.$axios.post('/api/submission', { text: this.text, segment: this.segmentId, episode: this.episodeId }).then((res) => {
+          this.loadNext()
+        }).catch((err) => {
+          console.log(err)
+          this.submitProgress = false
+          this.setError('Submission failed, please try again')
+        })
+      }
     }
   }
 }

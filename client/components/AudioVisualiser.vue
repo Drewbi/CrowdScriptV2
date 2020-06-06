@@ -7,11 +7,15 @@ export default {
   props: {
     data: {
       type: Array,
-      required: true
+      default: () => []
     },
-    time: {
-      type: Object,
-      required: true
+    startTime: {
+      type: Number,
+      default: 0
+    },
+    endTime: {
+      type: Number,
+      default: 0
     },
     currentTime: {
       type: Number,
@@ -19,9 +23,13 @@ export default {
     }
   },
   data: () => ({
-    canvas: null,
-    duration: 0
+    canvas: null
   }),
+  computed: {
+    duration() {
+      return this.endTime / 1000 - this.startTime / 1000
+    }
+  },
   watch: {
     currentTime() {
       this.displayData()
@@ -29,7 +37,6 @@ export default {
   },
   mounted() {
     this.canvas = this.$refs.canvas
-    this.duration = this.time.end / 1000 - this.time.start / 1000
     this.displayData()
     console.log(this.data)
   },
@@ -37,7 +44,7 @@ export default {
     skipTo(e) {
       const rect = this.canvas.getBoundingClientRect()
       const percentage = (e.clientX - rect.x) / rect.width
-      this.$emit('seek', this.time.start / 1000 + this.duration * percentage)
+      this.$emit('seek', this.startTime / 1000 + this.duration * percentage)
     },
     displayData() {
       const ctx = this.canvas.getContext('2d')
@@ -45,7 +52,7 @@ export default {
       const canvasHeight = this.canvas.height
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
       const maxHeight = 0.9
-      const currentPerc = (this.currentTime - this.time.start / 1000) / this.duration
+      const currentPerc = (this.currentTime - this.startTime / 1000) / this.duration
       this.data.forEach((height, index) => {
         const x = (((canvasWidth - 10) / this.data.length) * index) + 5
         const yOffset = canvasHeight / 2 * this.data[index] * maxHeight

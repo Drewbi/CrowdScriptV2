@@ -43,11 +43,12 @@ const verifySubmission = async (req, res, next) => {
 }
 
 const createSubmission = async (req, res) => {
-  const { text, segment } = req.body
+  const { text, segment, episode } = req.body
   const submission = new Submission()
   submission.text = text
   submission.user = res.locals.user
   submission.segment = segment
+  submission.episode = episode
   try {
     const result = await submission.save()
     await removeSession(res.locals.user)

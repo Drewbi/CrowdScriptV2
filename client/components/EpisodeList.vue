@@ -8,7 +8,7 @@
       <v-list-item
         v-for="episode in episodes"
         :key="episode.number"
-        :to="'admin/' + episode.number"
+        :to="'admin/episode/' + episode._id"
         nuxt
       >
         <v-list-item-icon>
