@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://crowdscript-api.rex986.now.sh/api/$1" }
+  ]
+}

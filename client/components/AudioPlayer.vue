@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import AudioVisualiser from '../components/AudioVisualiser.vue'
 
 export default {
@@ -85,22 +86,29 @@ export default {
     }
   },
   mounted() {
+    const AudioContext = window.AudioContext || // Default
+    window.webkitAudioContext || // Safari and old versions of Chrome
+    false
+    if (!AudioContext) {
+      this.setError('Audio engine not supported')
+    }
     this.context = new AudioContext()
     this.audioElem = this.$refs.audioSource
     this.audioElem.currentTime = this.startTime / 1000
     const track = this.context.createMediaElementSource(this.audioElem)
-    this.analyser = this.context.createAnalyser()
-    this.analyser.minDecibels = -90
-    this.analyser.maxDecibels = -10
-    this.analyser.fftSize = 256
-    const bufferLength = this.analyser.frequencyBinCount
-    this.dataArray = new Uint8Array(bufferLength)
+    track.connect(this.context.destination)
+    // this.analyser = this.context.createAnalyser()
+    // this.analyser.minDecibels = -90
+    // this.analyser.maxDecibels = -10
+    // this.analyser.fftSize = 256
+    // const bufferLength = this.analyser.frequencyBinCount
+    // this.dataArray = new Uint8Array(bufferLength)
+    // this.analyser.connect(this.context.destination)
     this.waveData = this.generateFakeWave()
-    track.connect(this.analyser)
-    this.analyser.connect(this.context.destination)
     this.refreshTime()
   },
   methods: {
+    ...mapMutations(['setError']),
     playButtonClicked() {
       if (this.context.state === 'suspended') {
         this.context.resume()
@@ -119,9 +127,9 @@ export default {
       const self = this
       this.intervalId = setInterval(() => {
         this.currentTime = self.audioElem.currentTime
-        const duration = this.endTime / 1000 - this.startTime / 1000
-        this.analyser.getByteFrequencyData(this.dataArray)
-        this.waveData[Math.round(((this.currentTime - this.startTime) / 1000 / duration) * 100)] = this.dataArray.reduce((acc, value, index) => (acc + value) / index)
+        // const duration = this.endTime / 1000 - this.startTime / 1000
+        // this.analyser.getByteFrequencyData(this.dataArray)
+        // this.waveData[Math.round(((this.currentTime - this.startTime) / 1000 / duration) * 100)] = this.dataArray.reduce((acc, value, index) => (acc + value) / index)
       }, 10)
     },
     playAudio() {

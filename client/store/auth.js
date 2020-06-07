@@ -29,6 +29,7 @@ export const mutations = {
   clearUser(state) {
     state.user = null
     this.$cookies.remove('access_token')
+    this.$axios.setToken(false)
   }
 }
 
@@ -41,10 +42,12 @@ export const actions = {
     const { token, expiry } = data
     if (!token) return false
     commit('setCreds', { expiry, token })
+    this.$axios.setToken(token, 'Bearer')
     const user = await dispatch('checkUser')
     if (user) return true
     else {
       commit('clearUser')
+      this.$axios.setToken(false)
       return false
     }
   },

@@ -11,9 +11,21 @@
         <li>Correct the auto generated transcript where possible</li>
         <li>Submit when satisfactory, ambiguous punctuation and names will be corrected later</li>
       </ol>
-      <v-btn color="primary" class="mt-5" to="/register">
+      <v-btn :to="isAdmin ? '/' : '/register'" color="primary" class="mt-5">
         Get started
       </v-btn>
     </v-col>
   </v-row>
 </template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters({
+      isAdmin: 'auth/isAdmin'
+    })
+  }
+}
+</script>
