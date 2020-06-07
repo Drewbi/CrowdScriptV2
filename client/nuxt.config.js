@@ -1,4 +1,5 @@
 import colors from 'vuetify/lib/util/colors'
+require('dotenv').config()
 
 export default {
   /*
@@ -35,30 +36,26 @@ export default {
     '~/assets/css/main.css'
   ],
   /*
-  ** Environment Variables
-  */
-  env: {
-  },
-  /*
   ** Nuxt.js modules
   */
   modules: [
     '@nuxtjs/vuetify',
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/eslint-module',
+    '@nuxtjs/dotenv'
   ],
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    proxy: true
+    baseURL: process.env.API_URL
   },
 
-  proxy: {
-    '/api/': process.env.NODE_ENV === 'production' ? 'https://crowdscript-api.now.sh' : 'https://crowdscript-api.rex986.now.sh'
-  },
+  // proxy: {
+  //   '/api/': process.env.NODE_ENV === 'production' ? 'https://crowdscript-api.now.sh' : 'https://crowdscript-api.rex986.now.sh'
+  // },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
