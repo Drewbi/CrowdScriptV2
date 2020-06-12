@@ -81,7 +81,7 @@ export default {
         this.episode = episode
         this.breadcrumbs[1].text = episode.number
       } catch (err) {
-        console.log(err)
+        this.setError('Failed to load episode')
         this.$nuxt.$loading.fail()
       }
       const segmentPromise = this.$axios.get('/api/segment/episode/' + this.episode._id)

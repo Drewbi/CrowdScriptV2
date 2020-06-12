@@ -82,7 +82,6 @@ export default {
       } catch (err) {
         this.$nuxt.$loading.fail()
         this.setError('Could not load episode data')
-        console.log(err)
       }
       this.submitProgress = false
       this.$nuxt.$loading.finish()
@@ -92,8 +91,7 @@ export default {
         this.submitProgress = true
         this.$axios.post('/api/submission', { text: this.text, segment: this.segmentId, episode: this.episodeId }).then((res) => {
           this.loadNext()
-        }).catch((err) => {
-          console.log(err)
+        }).catch(() => {
           this.submitProgress = false
           this.setError('Submission failed, please try again')
         })
