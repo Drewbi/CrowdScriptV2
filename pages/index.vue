@@ -48,10 +48,11 @@ export default {
       this.loadEpisode(value)
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.loadNext()
-    })
+  async asyncData({ app }) {
+    const { segment: { episode: episodeId, number, text, time, _id } } = await app.$axios.$get('/api/segment/next')
+    const { episode } = await app.$axios.$get('/api/episode/' + episodeId)
+    const audioResponse = await app.$axios.$get('/api/file/' + episode.src)
+    return { episode, audioSrc: audioResponse.url, episodeId, segmentId: _id, segmentNumber: number, text, originalText: text, time }
   },
   methods: {
     ...mapMutations(['setError']),
