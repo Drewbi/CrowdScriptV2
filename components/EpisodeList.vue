@@ -1,6 +1,14 @@
 <template>
   <v-card flat>
-    <v-card-title>Episodes</v-card-title>
+    <v-card-title>
+      Episodes
+      <v-btn @click="$emit('openDialog')" class="mx-15" color="primary" small>
+        <v-icon dense>
+          mdi-plus
+        </v-icon>
+        Add Episode
+      </v-btn>
+    </v-card-title>
     <v-list>
       <v-list-item v-if="episodes.length === 0">
         No Episodes
