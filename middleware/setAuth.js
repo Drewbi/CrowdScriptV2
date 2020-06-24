@@ -1,4 +1,5 @@
 export default ({ app, store }) => {
+  console.log('Setting Auth')
   app.$axios.setToken(false)
   let token = store.getters['auth/getToken']
   if (token) {
