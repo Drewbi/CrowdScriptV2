@@ -60,11 +60,16 @@ export default {
       return (this.submissions.length / this.segments.length) * 100
     },
     submissionText() {
-      return this.submissions.reduce((prev, curr) => prev + curr.text, '')
+      return this.sortedSubmissions.reduce((prev, curr) => prev + ' ' + curr.text, '')
     },
     userCredits() {
       const userCopy = [...this.users]
       return userCopy.filter(user => user.submissions.length > 0).sort((a, b) => b.submissions.length - a.submissions.length)
+    },
+    sortedSubmissions() {
+      return this.segments.map((segment) => {
+        return this.submissions.find(submission => submission.segment === segment._id)
+      }).filter(submission => !!submission)
     }
   },
   mounted() {
@@ -81,7 +86,7 @@ export default {
         this.episode = episode
         this.breadcrumbs[1].text = episode.number
       } catch (err) {
-        console.log(err)
+        this.setError('Failed to load episode')
         this.$nuxt.$loading.fail()
       }
       const segmentPromise = this.$axios.get('/api/segment/episode/' + this.episode._id)

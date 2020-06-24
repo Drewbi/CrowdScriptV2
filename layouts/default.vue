@@ -20,7 +20,7 @@
         Logout
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
@@ -37,7 +37,7 @@
           <v-icon>close</v-icon>
         </v-btn>
       </v-snackbar>
-    </v-content>
+    </v-main>
     <v-footer dark app>
       <span class="footerText">&copy; 2020 Because Language</span>
       <v-spacer />
