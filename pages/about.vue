@@ -22,7 +22,6 @@
 import { mapGetters } from 'vuex'
 
 export default {
-  middleware: ['checkLogin'],
   computed: {
     ...mapGetters({
       isAdmin: 'auth/isAdmin'
