@@ -86,9 +86,8 @@ export default {
         } else {
           this.isAdmin ? this.$router.push('/admin') : this.$router.push('/')
         }
-      } catch (err) {
-        if (err.response.status === 404) this.setError('Account has not been registered')
-        else if (err.response.status === 400) this.setError(err.response.data.message)
+      } catch ({ response: { status, data } }) {
+        if (status === 404 || status === 400) this.setError(data.message)
         else this.setError('Login failed')
         this.$nuxt.$loading.fail()
       }
