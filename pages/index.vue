@@ -56,6 +56,7 @@ export default {
   },
   methods: {
     ...mapMutations(['setError']),
+    loading: false,
     async loadNext() {
       this.$nuxt.$loading.start()
       try {
@@ -75,6 +76,7 @@ export default {
       this.$nuxt.$loading.finish()
     },
     async loadEpisode(episodeId) {
+      this.$nuxt.$loading.start()
       try {
         const episodeResponse = await this.$axios('/api/episode/' + episodeId)
         this.episode = episodeResponse.data.episode
