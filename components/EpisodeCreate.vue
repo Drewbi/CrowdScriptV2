@@ -53,7 +53,7 @@
           </v-row>
           <v-row>
             <v-btn :disabled="!valid" @click="uploadEpisode" color="primary">
-              <v-progress-circular v-if="uploading" indeterminate />
+              <v-progress-circular v-if="uploading" indeterminate small />
               {{ uploading ? "" : "Create" }}
             </v-btn>
             <v-spacer />
