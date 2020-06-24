@@ -5,21 +5,31 @@ export const state = () => ({
 
 export const getters = {
   isAuthenticated: (state) => {
-    return !!state.user
+    return !!state.user && state.token && state.token.length !== 0
   },
 
   isAdmin: (state) => {
     return state.user && state.user.admin
+  },
+
+  getToken: (state) => {
+    return state.token
   }
 }
 
 export const mutations = {
+  setToken(state, token) {
+    state.token = token
+    this.$axios.setToken(token, 'Bearer', ['post', 'delete', 'get'])
+  },
+
   setCreds(state, { expiry, token }) {
     state.token = token
     this.$cookies.set('access_token', token, {
       expires: new Date(expiry),
       sameSite: 'lax'
     })
+    this.$axios.setToken(token, 'Bearer', ['post', 'delete', 'get'])
   },
 
   setUser(state, user) {
@@ -28,6 +38,7 @@ export const mutations = {
 
   clearUser(state) {
     state.user = null
+    state.token = null
     this.$cookies.remove('access_token')
     this.$axios.setToken(false)
   }
@@ -42,7 +53,7 @@ export const actions = {
     const { token, expiry } = data
     if (!token) return false
     commit('setCreds', { expiry, token })
-    this.$axios.setToken(token, 'Bearer')
+    this.$axios.setToken(token, 'Bearer', ['post', 'delete', 'get'])
     const user = await dispatch('checkUser')
     if (user) return true
     else {
@@ -52,14 +63,19 @@ export const actions = {
     }
   },
 
-  async checkUser({ commit }) {
-    try {
-      const { data } = await this.$axios.get('/api/user/current')
-      if (!data.user) return null
-      commit('setUser', data.user)
-      return data.user
-    } catch (err) {
-      return null
-    }
+  checkUser({ commit }) {
+    return new Promise((resolve, reject) => {
+      this.$axios.get('/api/user/current').then(({ data }) => {
+        if (!data.user) {
+          commit('clearUser')
+          reject(Error('Failed to load user'))
+        }
+        commit('setUser', data.user)
+        resolve(data.user)
+      }).catch((err) => {
+        commit('clearUser')
+        reject(Error('Failed to load user:', err))
+      })
+    })
   }
 }

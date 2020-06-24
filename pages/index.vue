@@ -48,10 +48,11 @@ export default {
       this.loadEpisode(value)
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.loadNext()
-    })
+  async asyncData({ app }) {
+    const { segment: { episode: episodeId, number, text, time, _id } } = await app.$axios.$get('/api/segment/next')
+    const { episode } = await app.$axios.$get('/api/episode/' + episodeId)
+    const audioResponse = await app.$axios.$get('/api/file/' + episode.src)
+    return { episode, audioSrc: audioResponse.url, episodeId, segmentId: _id, segmentNumber: number, text, originalText: text, time }
   },
   methods: {
     ...mapMutations(['setError']),
@@ -82,7 +83,6 @@ export default {
       } catch (err) {
         this.$nuxt.$loading.fail()
         this.setError('Could not load episode data')
-        console.log(err)
       }
       this.submitProgress = false
       this.$nuxt.$loading.finish()
@@ -92,8 +92,7 @@ export default {
         this.submitProgress = true
         this.$axios.post('/api/submission', { text: this.text, segment: this.segmentId, episode: this.episodeId }).then((res) => {
           this.loadNext()
-        }).catch((err) => {
-          console.log(err)
+        }).catch(() => {
           this.submitProgress = false
           this.setError('Submission failed, please try again')
         })

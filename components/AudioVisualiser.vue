@@ -38,7 +38,6 @@ export default {
   mounted() {
     this.canvas = this.$refs.canvas
     this.displayData()
-    console.log(this.data)
   },
   methods: {
     skipTo(e) {
