@@ -56,6 +56,7 @@
               <v-progress-circular v-if="uploading" indeterminate />
               {{ uploading ? "" : "Create" }}
             </v-btn>
+            <v-spacer />
             <p>
               {{ progressText }}
             </p>
