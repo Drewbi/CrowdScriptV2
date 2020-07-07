@@ -14,11 +14,12 @@
         <v-container>
           <v-row>
             <v-text-field
-              v-model="number"
+              v-model.number="number"
               :rules="numberRules"
               name="number"
+              inputmode="numeric"
+              pattern="[0-9]*"
               label="Number"
-              type="number"
               class="mr-5"
               style="width: 50px"
               outlined
