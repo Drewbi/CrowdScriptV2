@@ -1,6 +1,7 @@
 <template>
   <v-row>
     <v-col>
+      {{ baseUrl }}
       <h2>
         Thanks for helping us transcribe episodes of Because Language!
       </h2>
