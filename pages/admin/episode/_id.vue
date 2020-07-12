@@ -143,6 +143,9 @@ export default {
         if (res.status === 200) {
           this.episode.active = active
         }
+      }).catch(() => {
+        this.toggling = false
+        this.setError('Failed to toggle Active status')
       })
     }
   }
