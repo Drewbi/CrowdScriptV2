@@ -63,10 +63,10 @@ export default {
   async asyncData({ app, error }) {
     const res = await app.$axios.$get('/api/segment/next')
     if (res.message === 'All episodes complete') return { message: res.message }
-    const { segment: { episode: episodeId, number, text, time, _id } } = res
+    const { segment: { episode: episodeId, number: segmentNumber, text, time, _id: segmentId } } = res
     const { episode } = await app.$axios.$get('/api/episode/' + episodeId)
     const audioResponse = await app.$axios.$get('/api/file/' + episode.src)
-    return { status: res.status, episode, audioSrc: audioResponse.url, episodeId, segmentId: _id, segmentNumber: number, text, originalText: text, time }
+    return { episode, audioSrc: audioResponse.url, episodeId, segmentId, segmentNumber, text, originalText: text, time }
   },
   methods: {
     ...mapMutations(['setError']),
