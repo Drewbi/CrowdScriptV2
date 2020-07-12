@@ -9,6 +9,8 @@
         <h1 class="ml-5">
           {{ episode.number + " - " + episode.name }}
         </h1>
+        <v-spacer />
+        <v-checkbox v-model="isActive" :disabled="toggling" label="Active" class="px-5" />
       </v-row>
       <v-hover v-slot:default="{ hover }" class="mt-10">
         <v-textarea
@@ -40,6 +42,7 @@ export default {
   },
   data: () => ({
     loading: true,
+    toggling: false,
     episode: null,
     segments: [],
     submissions: [],
@@ -70,6 +73,14 @@ export default {
       return this.segments.map((segment) => {
         return this.submissions.find(submission => submission.segment === segment._id)
       }).filter(submission => !!submission)
+    },
+    isActive: {
+      get: function () {
+        return this.episode.active
+      },
+      set: function (newVal) {
+        this.toggleActive(this.episode.number, newVal)
+      }
     }
   },
   mounted() {
@@ -121,6 +132,18 @@ export default {
     copyUsers() {
       const userText = this.userCredits.reduce((prev, curr) => prev + curr.name + ', ', '')
       navigator.clipboard.writeText(userText)
+    },
+    toggleActive(episodeNum, active) {
+      this.toggling = true
+      this.$axios.put('/api/episode', {
+        number: episodeNum,
+        active
+      }).then((res) => {
+        this.toggling = false
+        if (res.status === 200) {
+          this.episode.active = active
+        }
+      })
     }
   }
 }
