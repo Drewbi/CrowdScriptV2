@@ -74,6 +74,7 @@ export default {
       this.$nuxt.$loading.start()
       try {
         const response = await this.$axios('/api/segment/next')
+        if (response.data.message === 'All episodes complete') return this.$router.go({ path: '/', force: true })
         const { episode, number, text, time, _id } = response.data.segment
         this.episodeId = episode
         this.segmentId = _id
