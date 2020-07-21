@@ -29,6 +29,9 @@
         <v-list-item-content>
           {{ episode.completed ? 'Completed' : episode.submissions.length + '/' + episode.segments.length }}
         </v-list-item-content>
+        <v-list-item-content>
+          <v-checkbox v-model="episode.active" label="Active" class="px-5" disabled />
+        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-card>

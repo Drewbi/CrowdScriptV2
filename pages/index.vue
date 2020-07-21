@@ -1,8 +1,17 @@
 <template>
-  <div v-if="audioSrc">
-    <v-card-title>{{ `Episode ${episode.number}: ${episode.name}` }}</v-card-title>
-    <v-textarea v-model="text" :hint="'Change Distance: ' + textDistance" auto-grow outlined />
-    <audio-player :startTime="time.start" :endTime="time.end" :src="audioSrc" :submitting="submitProgress" @submit="submitText" />
+  <div>
+    <div v-if="audioSrc">
+      <v-card-title>{{ `Episode ${episode.number}: ${episode.name}` }}</v-card-title>
+      <v-textarea v-model="text" :hint="'Change Distance: ' + textDistance" auto-grow outlined />
+      <audio-player :startTime="time.start" :endTime="time.end" :src="audioSrc" :submitting="submitProgress" @submit="submitText" />
+    </div>
+    <div v-else class="d-flex flex-column justify-center align-center mt-10">
+      <div
+        v-text="message"
+        class="text-h5 mb-10"
+      />
+      <v-img :src="getImage" max-width="200" />
+    </div>
   </div>
 </template>
 
@@ -41,6 +50,9 @@ export default {
         }
       }
       return matrix[this.originalText.length][this.text.length]
+    },
+    getImage() {
+      return Math.random() > 0.5 ? '/image/undraw_order_confirmed_aaw7.svg' : '/image/undraw_sync_files_xb3r.svg'
     }
   },
   watch: {
@@ -48,11 +60,13 @@ export default {
       this.loadEpisode(value)
     }
   },
-  async asyncData({ app }) {
-    const { segment: { episode: episodeId, number, text, time, _id } } = await app.$axios.$get('/api/segment/next')
+  async asyncData({ app, error }) {
+    const res = await app.$axios.$get('/api/segment/next')
+    if (res.message === 'All episodes complete') return { message: res.message }
+    const { segment: { episode: episodeId, number: segmentNumber, text, time, _id: segmentId } } = res
     const { episode } = await app.$axios.$get('/api/episode/' + episodeId)
     const audioResponse = await app.$axios.$get('/api/file/' + episode.src)
-    return { episode, audioSrc: audioResponse.url, episodeId, segmentId: _id, segmentNumber: number, text, originalText: text, time }
+    return { episode, audioSrc: audioResponse.url, episodeId, segmentId, segmentNumber, text, originalText: text, time }
   },
   methods: {
     ...mapMutations(['setError']),
@@ -60,6 +74,7 @@ export default {
       this.$nuxt.$loading.start()
       try {
         const response = await this.$axios('/api/segment/next')
+        if (response.data.message === 'All episodes complete') return this.$router.go({ path: '/', force: true })
         const { episode, number, text, time, _id } = response.data.segment
         this.episodeId = episode
         this.segmentId = _id

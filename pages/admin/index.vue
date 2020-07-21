@@ -30,23 +30,24 @@ export default {
     dialog: false
   }),
   async asyncData({ app, redirect, error }) {
-    const userPromise = app.$axios.get('/api/user')
-    const episodePromise = app.$axios.get('/api/episode')
-    const segmentPromise = app.$axios.get('/api/segment')
-    const submissionPromise = app.$axios.get('/api/submission')
+    const userPromise = app.$axios.$get('/api/user')
+    const episodePromise = app.$axios.$get('/api/episode')
+    const segmentPromise = app.$axios.$get('/api/segment')
+    const submissionPromise = app.$axios.$get('/api/submission')
     const [
-      { data: { users } },
-      { data: { episodes } },
-      { data: { segments } },
-      { data: { submissions } }
+      { users = [] },
+      { episodes = [] },
+      { segments = [] },
+      { submissions = [] }
     ] = await Promise.all([userPromise, episodePromise, segmentPromise, submissionPromise])
-    if (!users || !episodes || !segments || !submissions) {
-      return error({ statusCode: 400, message: 'Could not get data' })
-    }
+
+    // Populate segments with submissions
     segments.forEach((segment) => {
       const segmentSubmissions = submissions.filter(submission => submission.segment === segment._id)
       segment.submissions = segmentSubmissions
     })
+
+    // Populate episodes with segments and submissions
     episodes.forEach((episode) => {
       const episodeSegments = segments.filter(segment => segment.episode === episode._id)
       const episodeSubmissions = []
@@ -56,6 +57,8 @@ export default {
       episode.segments = episodeSegments
       episode.submissions = episodeSubmissions
     })
+
+    // Populate users with submissions
     users.forEach((user) => {
       const userSubmissions = submissions.filter(submission => submission.user === user._id)
       user.submissions = userSubmissions
