@@ -1,9 +1,11 @@
 <template>
   <div>
     <loading-overlay :loading="loading" />
-    <episode-list :episodes="episodes" @openDialog="dialog=true" />
-    <episode-dialog :dialogOpen="dialog" @closeDialog="dialog=false" @uploadComplete="handleUpload" />
-    <user-list :users="users" />
+    <episode-list :episodes="episodes" @openDialog="episodeDialog = true" />
+    <episode-dialog :dialogOpen="episodeDialog" @closeDialog="episodeDialog = false" @uploadComplete="handleUpload" />
+    <user-list :users="users" @deleteUser="handleUserDelete" />
+    <ban-dialog :dialogOpen="userDeleteDialog" :user="bannedUser" @closeDialog="closeUserDelete" @confirmDelete="confirmUserDelete" />
+    <banned-users :users="bannedUsers" @unban="unbanUser" />
   </div>
 </template>
 
@@ -12,6 +14,8 @@ import { mapMutations } from 'vuex'
 import EpisodeList from '~/components/EpisodeList'
 import EpisodeCreate from '~/components/EpisodeCreate'
 import UserList from '~/components/UserList'
+import BannedUsers from '~/components/BannedUsers'
+import BanDialog from '~/components/BanDialog'
 import LoadingOverlay from '~/components/LoadingOverlay'
 
 export default {
@@ -20,14 +24,15 @@ export default {
     'episode-list': EpisodeList,
     'episode-dialog': EpisodeCreate,
     'user-list': UserList,
+    'banned-users': BannedUsers,
+    'ban-dialog': BanDialog,
     'loading-overlay': LoadingOverlay
   },
   data: () => ({
-    episodes: [],
-    users: [],
-    submissions: [],
     loading: true,
-    dialog: false
+    episodeDialog: false,
+    userDeleteDialog: false,
+    bannedUser: {}
   }),
   async asyncData({ app, redirect, error }) {
     const userPromise = app.$axios.$get('/api/user')
@@ -35,12 +40,14 @@ export default {
     const segmentPromise = app.$axios.$get('/api/segment')
     const submissionPromise = app.$axios.$get('/api/submission')
     const [
-      { users = [] },
+      { users: allUsers = [] },
       { episodes = [] },
       { segments = [] },
       { submissions = [] }
     ] = await Promise.all([userPromise, episodePromise, segmentPromise, submissionPromise])
 
+    const users = allUsers.filter(user => !user.banned)
+    const bannedUsers = allUsers.filter(user => user.banned)
     // Populate segments with submissions
     segments.forEach((segment) => {
       const segmentSubmissions = submissions.filter(submission => submission.segment === segment._id)
@@ -60,25 +67,56 @@ export default {
 
     // Populate users with submissions
     users.forEach((user) => {
-      const userSubmissions = submissions.filter(submission => submission.user === user._id)
+      const userSubmissions = submissions.filter(submission => submission.user === user._id && !user.banned)
       user.submissions = userSubmissions
     })
-    return { users, episodes, segments, submissions }
+
+    return { users, bannedUsers, episodes, segments, submissions }
   },
   mounted() {
     this.loading = false
   },
   methods: {
     ...mapMutations(['setError']),
-    openDialog() {
-      this.dialog = true
-    },
-    closeDialog() {
-      this.dialog = false
-    },
     handleUpload() {
-      this.closeDialog()
+      this.episodeDialog = false
       this.$router.go()
+    },
+    handleUserDelete(user) {
+      this.bannedUser = user
+      this.userDeleteDialog = true
+    },
+    closeUserDelete(value) {
+      this.bannedUser = {}
+      this.userDeleteDialog = false
+    },
+    async confirmUserDelete() {
+      try {
+        const res = await this.$axios.put('/api/user/ban/' + this.bannedUser._id)
+        if (res.status !== 200) return this.setError('Could not ban user, please try again.')
+        else {
+          const userIndex = this.users.findIndex(user => user._id === this.bannedUser._id)
+          this.users.splice(userIndex, 1)
+          this.bannedUsers.push(this.bannedUser)
+        }
+      } catch (err) {
+        console.log(err)
+        this.setError('Could not ban user, please try again.')
+      }
+    },
+    async unbanUser(user) {
+      try {
+        const res = await this.$axios.put('/api/user/' + this.bannedUser._id, { banned: false })
+        if (res.status !== 200) return this.setError('Could not unban user, please try again.')
+        else {
+          const userIndex = this.bannedUsers.findIndex(bannedUser => user._id === bannedUser._id)
+          this.bannedUsers.splice(userIndex, 1)
+          this.users.push(this.bannedUser)
+        }
+      } catch (err) {
+        console.log(err)
+        this.setError('Could not unban user, please try again.')
+      }
     }
   }
 }
