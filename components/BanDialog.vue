@@ -22,6 +22,7 @@
           v-model="valid"
         >
           <v-text-field
+            v-model="email"
             :rules="emailRules"
             label="Confirm User"
           />
@@ -78,10 +79,11 @@ export default {
         this.$emit('closeDialog')
       }
     }
+  },
+  watch: {
+    'user.email'(newVal, oldVal) {
+      if (newVal === undefined) this.email = ''
+    }
   }
 }
 </script>
-
-<style>
-
-</style>
