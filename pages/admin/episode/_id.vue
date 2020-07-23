@@ -106,6 +106,7 @@ export default {
       const [segmentRes, submissionRes, userRes] = await Promise.all([segmentPromise, submissionPromise, userPromise])
       if (segmentRes.status === 200) {
         const { segments } = segmentRes.data
+        segments.sort((seg1, seg2) => seg1.number - seg2.number)
         this.segments = segments
       }
       if (submissionRes.status === 200) {

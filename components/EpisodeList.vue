@@ -19,9 +19,9 @@
         :to="'admin/episode/' + episode._id"
         nuxt
       >
-        <v-list-item-icon>
+        <v-list-item-action>
           {{ episode.number }}
-        </v-list-item-icon>
+        </v-list-item-action>
         <v-list-item-content>
           {{ episode.name }}
         </v-list-item-content>
