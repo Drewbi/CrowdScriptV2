@@ -4,7 +4,7 @@
     <episode-list :episodes="episodes" @openDialog="episodeDialog = true" />
     <episode-dialog :dialogOpen="episodeDialog" @closeDialog="episodeDialog = false" @uploadComplete="handleUpload" />
     <user-list :users="users" @deleteUser="handleUserDelete" />
-    <ban-dialog :dialogOpen="userDeleteDialog" :user="bannedUser" @closeDialog="closeUserDelete" @confirmDelete="confirmUserDelete" />
+    <ban-dialog :dialogOpen="userBanDialog" :user="bannedUser" @closeDialog="closeUserBanDialog" @confirmDelete="confirmUserBan" />
     <banned-users :users="bannedUsers" @unban="unbanUser" />
   </div>
 </template>
@@ -31,7 +31,7 @@ export default {
   data: () => ({
     loading: true,
     episodeDialog: false,
-    userDeleteDialog: false,
+    userBanDialog: false,
     bannedUser: {}
   }),
   async asyncData({ app, redirect, error }) {
@@ -70,6 +70,9 @@ export default {
       const userSubmissions = submissions.filter(submission => submission.user === user._id && !user.banned)
       user.submissions = userSubmissions
     })
+    bannedUsers.forEach((user) => {
+      user.submissions = []
+    })
 
     return { users, bannedUsers, episodes, segments, submissions }
   },
@@ -84,13 +87,13 @@ export default {
     },
     handleUserDelete(user) {
       this.bannedUser = user
-      this.userDeleteDialog = true
+      this.userBanDialog = true
     },
-    closeUserDelete(value) {
+    closeUserBanDialog(value) {
       this.bannedUser = {}
-      this.userDeleteDialog = false
+      this.userBanDialog = false
     },
-    async confirmUserDelete() {
+    async confirmUserBan() {
       try {
         const res = await this.$axios.put('/api/user/ban/' + this.bannedUser._id)
         if (res.status !== 200) return this.setError('Could not ban user, please try again.')
@@ -98,6 +101,7 @@ export default {
           const userIndex = this.users.findIndex(user => user._id === this.bannedUser._id)
           this.users.splice(userIndex, 1)
           this.bannedUsers.push(this.bannedUser)
+          this.closeUserBanDialog()
         }
       } catch (err) {
         console.log(err)
@@ -105,13 +109,14 @@ export default {
       }
     },
     async unbanUser(user) {
+      console.log(user)
       try {
-        const res = await this.$axios.put('/api/user/' + this.bannedUser._id, { banned: false })
+        const res = await this.$axios.put('/api/user/' + user._id, { banned: false })
         if (res.status !== 200) return this.setError('Could not unban user, please try again.')
         else {
           const userIndex = this.bannedUsers.findIndex(bannedUser => user._id === bannedUser._id)
           this.bannedUsers.splice(userIndex, 1)
-          this.users.push(this.bannedUser)
+          this.users.push(user)
         }
       } catch (err) {
         console.log(err)
