@@ -35,6 +35,13 @@
         <v-list-item-content v-show="verbose">
           <v-checkbox v-model="user.credit" label="Credit" disabled />
         </v-list-item-content>
+        <v-list-item-action>
+          <v-btn @click="$emit('deleteUser', user)" icon>
+            <v-icon>
+              mdi-delete
+            </v-icon>
+          </v-btn>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
   </v-card>
