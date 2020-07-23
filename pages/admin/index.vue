@@ -100,6 +100,7 @@ export default {
         else {
           const userIndex = this.users.findIndex(user => user._id === this.bannedUser._id)
           this.users.splice(userIndex, 1)
+          this.bannedUser.submissions = []
           this.bannedUsers.push(this.bannedUser)
           this.closeUserBanDialog()
         }
