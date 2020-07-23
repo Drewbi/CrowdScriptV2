@@ -59,7 +59,7 @@ export default {
       const episodeSegments = segments.filter(segment => segment.episode === episode._id)
       const episodeSubmissions = []
       episodeSegments.forEach((segment) => {
-        episodeSubmissions.push(...segment.submissions)
+        episodeSubmissions.push(...segment.submissions) // Not correct when more than 1 submission is entered
       })
       episode.segments = episodeSegments
       episode.submissions = episodeSubmissions
