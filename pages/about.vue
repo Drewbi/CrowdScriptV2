@@ -36,9 +36,12 @@ export default {
       isAdmin: 'auth/isAdmin'
     }),
     isUnsupported() {
-      const isFirefox = typeof InstallTrigger !== 'undefined'
-      const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
-      return !isFirefox && !isChrome
+      if (process.client) {
+        const isFirefox = typeof InstallTrigger !== 'undefined'
+        const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
+        return !isFirefox && !isChrome
+      }
+      return false
     }
   }
 }
