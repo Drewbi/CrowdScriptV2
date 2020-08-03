@@ -1,5 +1,14 @@
 <template>
   <div>
+    <v-alert
+      :value="isUnsupported"
+      color="orange"
+      dismissible
+      type="info"
+      dense
+    >
+      Audio functionality for your browser is not yet supported and may not work as intended. Please use Chrome or Firefox.
+    </v-alert>
     <div v-if="audioSrc">
       <v-card-title>{{ `Episode ${episode.number}: ${episode.name}` }}</v-card-title>
       <v-textarea v-model="text" :hint="'Change Distance: ' + textDistance" auto-grow outlined />
@@ -53,6 +62,14 @@ export default {
     },
     getImage() {
       return Math.random() > 0.5 ? '/image/undraw_order_confirmed_aaw7.svg' : '/image/undraw_sync_files_xb3r.svg'
+    },
+    isUnsupported() {
+      if (process.client) {
+        const isFirefox = typeof InstallTrigger !== 'undefined'
+        const isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
+        return !isFirefox && !isChrome
+      }
+      return false
     }
   },
   watch: {
@@ -74,7 +91,7 @@ export default {
       this.$nuxt.$loading.start()
       try {
         const response = await this.$axios('/api/segment/next')
-        if (response.data.message === 'All episodes complete') return this.$router.go({ path: '/', force: true })
+        if (response.data.message === 'All episodes complete' || response.data.message === 'All segments are allocated') return this.$router.go({ path: '/', force: true })
         const { episode, number, text, time, _id } = response.data.segment
         this.episodeId = episode
         this.segmentId = _id
