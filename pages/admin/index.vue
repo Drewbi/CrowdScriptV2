@@ -110,7 +110,6 @@ export default {
       }
     },
     async unbanUser(user) {
-      console.log(user)
       try {
         const res = await this.$axios.put('/api/user/' + user._id, { banned: false })
         if (res.status !== 200) return this.setError('Could not unban user, please try again.')
