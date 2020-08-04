@@ -12,6 +12,17 @@
     <div v-if="audioSrc">
       <v-card-title>{{ `Episode ${episode.number}: ${episode.name}` }}</v-card-title>
       <v-textarea v-model="text" :hint="'Change Distance: ' + textDistance" auto-grow outlined />
+      <v-card flat>
+        <v-card-subtitle>Suggestions for transcribing</v-card-subtitle>
+        <v-card-text>
+          <ul>
+            <li>Correct the text so it matches the words you hear. If there's crosstalk, just disentangle it the best you can.</li>
+            <li>If you feel confident with adding punctuation, go ahead. Otherwise, just get the words. We'll add all of the punctuation later.</li>
+            <li>Can’t figure out a word at all? Just type ???, and we’ll figure it out.</li>
+            <li>Please don't use Safari! It has its own way of doing sound, and the audio won't sync up with the words. Please use a different browser, like Chrome or Firefox.</li>
+          </ul>
+        </v-card-text>
+      </v-card>
       <audio-player :startTime="time.start" :endTime="time.end" :src="audioSrc" :submitting="submitProgress" @submit="submitText" />
     </div>
     <div v-else class="d-flex flex-column justify-center align-center mt-10">
