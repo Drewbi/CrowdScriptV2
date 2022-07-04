@@ -1,22 +1,15 @@
-# crowdscript
+# Crowdscript
 
 > A transcripting web app for podcasts
 
-## Build Setup
+Allows distributed editing of roughly pre-generated transcriptions. Audio and text snippets are served to users one at a time and the collated transcript is able to be edited by an admin. 
 
-``` bash
-# install dependencies
-$ yarn install
+User transcribing: 
+![image](https://user-images.githubusercontent.com/38243574/177150213-88b0266f-e463-4e5a-98f1-6741b3e3b9dd.png)
 
-# serve with hot reload at localhost:3000
-$ yarn dev
+Admin Editing:
+![image](https://user-images.githubusercontent.com/38243574/177150307-4a8506fb-880e-4eb2-8806-878beb55c087.png)
 
-# build for production and launch server
-$ yarn build
-$ yarn start
+Adding new audio and SRT file:
+![image](https://user-images.githubusercontent.com/38243574/177150423-178c29fc-334a-4e10-845c-bd70c1f4f0ca.png)
 
-# generate static project
-$ yarn generate
-```
-
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
